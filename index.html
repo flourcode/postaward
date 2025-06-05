@@ -1084,7 +1084,7 @@ We're showing YTD. Want to dig deeper? Go to FPDS.gov and run an “EZ Search”
           <button id="loadExample2" class="btn btn-secondary"><span class="btn-text">SaaS 3YR</span></button>
           <button id="loadExample3" class="btn btn-secondary"><span class="btn-text">CSP YTD</span></button>
           
-          <input type="file" id="csvFile" accept=".csv" class="file-input">
+          <input type="file" id="csvFile" accept=".csv,.xls" class="file-input">
           <label for="csvFile" class="btn btn-secondary"><i class="fas fa-upload mr-2"></i>
               <span class="btn-text">Upload fpds.gov CSV</span>
           </label>
@@ -1885,28 +1885,45 @@ We're showing YTD. Want to dig deeper? Go to FPDS.gov and run an “EZ Search”
       },
       handleFileUpload: function() {
         const file = elements.csvFile.files[0];
-        if (!file) return; 
-        if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) { this.showError('Please upload a valid CSV file.'); elements.csvFile.value = ''; return; }
+        if (!file) return;
+
+        const fileName = file.name.toLowerCase();
+        // Allow .csv or .xls (for iOS renamed CSVs like 'filename.csv.xls')
+        const isValidExtension = fileName.endsWith('.csv') || fileName.endsWith('.xls');
+
+        if (!isValidExtension) {
+          this.showError('Please upload a valid CSV file (or .xls if from iOS).');
+          elements.csvFile.value = ''; // Clear the file input
+          return;
+        }
+
+        // If it's an .xls, we're assuming it's a CSV in disguise due to iOS.
+        // The utils.parseCSV function will determine if the content is actually valid CSV.
+
         elements.loadingIndicator.style.display = 'flex';
         elements.errorMessage.style.display = 'none';
         elements.noDataMessage.style.display = 'none';
         elements.dashboard.style.display = 'none';
         elements.statusBox.style.display = 'none';
+
         const reader = new FileReader();
         reader.onload = (event) => {
+          // The file.name is passed for display and error messages
           this.processAndDisplayCsv(event.target.result, file.name);
           const uploadBtnTextSpan = elements.uploadBtn.querySelector('.btn-text');
-          if(uploadBtnTextSpan) uploadBtnTextSpan.textContent = ` ${utils.truncateText(file.name,10)}`;
+          if (uploadBtnTextSpan) {
+            uploadBtnTextSpan.textContent = ` ${utils.truncateText(file.name, 10)}`;
+          }
         };
         reader.onerror = () => {
           this.showError('Error reading the file.');
           elements.loadingIndicator.style.display = 'none';
-           if(app.data.length === 0) {
-                elements.noDataMessage.style.display = 'flex';
-           } else {
-                elements.dashboard.style.display = 'flex';
-                elements.statusBox.style.display = 'flex';
-           }
+          if (app.data.length === 0) {
+            elements.noDataMessage.style.display = 'flex';
+          } else {
+            elements.dashboard.style.display = 'flex';
+            elements.statusBox.style.display = 'flex';
+          }
         };
         reader.readAsText(file);
       },
