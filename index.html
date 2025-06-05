@@ -1736,7 +1736,7 @@ We're showing YTD. Want to dig deeper? Go to FPDS.gov and run an “EZ Search”
             if (app.data.length === 0 && app.filteredData.length === 0) titleText = 'No data loaded';
             else if (app.filteredData.length === 0 && app.data.length > 0) titleText = 'No contracts match current filters';
             else if (app.filteredData.length < app.data.length) titleText = `Viewing ${app.filteredData.length.toLocaleString()} filtered contracts`;
-            else titleText = `Viewing all ${app.filteredData.length.toLocaleString()} contracts`;
+            else titleText = `Viewing ${app.filteredData.length.toLocaleString()} contracts`;
             statusTitleElement.textContent = titleText + dateRangeSuffix;
         }
       },
