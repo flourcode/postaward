@@ -1080,11 +1080,10 @@ We're showing YTD. Want to dig deeper? Go to FPDS.gov and run an “EZ Search”
       <!-- This is inside your .app-header -->
       <div class="example-csv-loader">
         <div class="example-csv-buttons">
-          <button id="loadExample1" class="btn btn-secondary"><span class="btn-text">YTD</span></button>
-          <button id="loadExample2" class="btn btn-secondary"><span class="btn-text">DA10</span></button>
-          <button id="loadExample3" class="btn btn-secondary"><span class="btn-text">CSP</span></button>
+          <button id="loadExample1" class="btn btn-primary"><span class="btn-text">YTD</span></button>
+          <button id="loadExample2" class="btn btn-secondary"><span class="btn-text">SaaS 3YR</span></button>
+          <button id="loadExample3" class="btn btn-secondary"><span class="btn-text">CSP YTD</span></button>
           
-          <!-- Manual Upload Button - Integrated -->
           <input type="file" id="csvFile" accept=".csv" class="file-input">
           <label for="csvFile" class="btn btn-secondary"><i class="fas fa-upload mr-2"></i>
               <span class="btn-text">Upload fpds.gov CSV</span>
@@ -1929,9 +1928,24 @@ We're showing YTD. Want to dig deeper? Go to FPDS.gov and run an “EZ Search”
       });
       
       // Example CSV Buttons
-      if(elements.loadExample1Btn) elements.loadExample1Btn.addEventListener('click', () => fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'example1.csv', 'Example 1'));
-      if(elements.loadExample2Btn) elements.loadExample2Btn.addEventListener('click', () => fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'example2.csv', 'Example 2'));
-      if(elements.loadExample3Btn) elements.loadExample3Btn.addEventListener('click', () => fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'example3.csv', 'Example 3'));
+  if (elements.loadExample1Btn) {
+    elements.loadExample1Btn.addEventListener('click', () => {
+      fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'ytd.csv', 'YTD Data');
+      updateExampleButtonActiveState(elements.loadExample1Btn);
+    });
+  }
+  if (elements.loadExample2Btn) {
+    elements.loadExample2Btn.addEventListener('click', () => {
+      fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'da10.csv', 'SaaS 3YR Data (da10.csv)');
+      updateExampleButtonActiveState(elements.loadExample2Btn);
+    });
+  }
+  if (elements.loadExample3Btn) {
+    elements.loadExample3Btn.addEventListener('click', () => {
+      fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'csp.csv', 'CSP YTD Data (csp.csv)');
+      updateExampleButtonActiveState(elements.loadExample3Btn);
+    });
+  }
       
       // Filter triggers
       elements.searchInput.addEventListener('input', () => { clearTimeout(elements.searchInput.timer); elements.searchInput.timer = setTimeout(() => { app.filters.search = elements.searchInput.value; filterManager.applyFilters(); dashboardManager.refreshDashboard(); }, 300); });
@@ -1993,13 +2007,25 @@ We're showing YTD. Want to dig deeper? Go to FPDS.gov and run an “EZ Search”
         icon.className = effectiveTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
       }
     }
-
+function updateExampleButtonActiveState(activeButton) {
+  const exampleButtons = [elements.loadExample1Btn, elements.loadExample2Btn, elements.loadExample3Btn];
+  exampleButtons.forEach(button => {
+    if (button) { // Check if the element exists
+      if (button === activeButton) {
+        button.classList.remove('btn-secondary');
+        button.classList.add('btn-primary');
+      } else {
+        button.classList.remove('btn-primary');
+        button.classList.add('btn-secondary');
+      }
+    }
+  });
+}
     function init() {
       loadSavedTheme();
       setupEventListeners();
-      fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'ytd.csv', 'Default Data (ytd.csv)');
-    }
-
+      fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'ytd.csv', 'YTD Data (Initially Loaded)');
+}
     init();
 </script>
 </body>
