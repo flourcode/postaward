@@ -1512,7 +1512,7 @@ main#dashboard {
 			<span>Post Award</span>
                 </div>
                 <span class="logo-subtitle">
-                    Daily Federal Awards Dashboard<br><br>
+                    Federal Awards Dashboard<br><br>
                     PostAward.com lets you visualize fpds.gov search results.<br>Go to FPDS.gov and do an "EZ Search" by agency, vendor, keyword, etc.<br>Download the CSV and upload it here to spot who's buying what from who.
                 </span>
             </div>
@@ -3541,8 +3541,8 @@ function setupEventListeners() {
   });
   
   if(elements.loadExample3Btn) elements.loadExample2Btn.addEventListener('click', () => { 
-    fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q125.csv', 'Q125 > $100K  (q125.csv)'); 
-    updateExampleButtonActiveState(elements.loadExample2Btn); 
+    fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q125.csv', 'Q125 > $100K (q125.csv)'); 
+    updateExampleButtonActiveState(elements.loadExample3Btn); 
   });
 
   let searchTimeout;
