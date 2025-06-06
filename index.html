@@ -3530,18 +3530,21 @@ const fileHandler = {
 function setupEventListeners() {
   if(elements.csvFile) elements.csvFile.addEventListener('change', () => fileHandler.handleFileUpload());
   
-  if(elements.loadExample1Btn) elements.loadExample1Btn.addEventListener('click', () => { 
-    fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q225.csv', 'YTD Data'); 
-    updateExampleButtonActiveState(elements.loadExample1Btn); 
-  });
-  
-  if(elements.loadExample2Btn) elements.loadExample2Btn.addEventListener('click', () => { 
-    fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'da10.csv', 'SaaS 3YR Data (da10.csv)'); 
-    updateExampleButtonActiveState(elements.loadExample2Btn); 
-  });
-  
-  if(elements.loadExample3Btn) elements.loadExample3Btn.addEventListener('click', () => { 
-  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q125.csv', 'Q125 > $100K Data'); 
+  // Example 1 button (works)
+if(elements.loadExample1Btn) elements.loadExample1Btn.addEventListener('click', () => { 
+  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q225.csv', 'Q225 > $100K (q225.csv)'); 
+  updateExampleButtonActiveState(elements.loadExample1Btn); 
+});
+
+// Example 2 button (works)
+if(elements.loadExample2Btn) elements.loadExample2Btn.addEventListener('click', () => { 
+  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'da10.csv', 'SaaS 3YR (da10.csv)'); 
+  updateExampleButtonActiveState(elements.loadExample2Btn); 
+});
+
+// Example 3 button (not working - fixed version)
+if(elements.loadExample3Btn) elements.loadExample3Btn.addEventListener('click', () => { 
+  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q125.csv', 'Q125 > $100K (q125.csv)'); 
   updateExampleButtonActiveState(elements.loadExample3Btn); 
 });
 
