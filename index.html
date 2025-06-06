@@ -130,7 +130,7 @@
       flex-direction: column;
       width: 100%; 
       margin: 0 auto; 
-      max-width: 1900px; 
+      max-width: 1600px; 
       padding: 0; 
     }
 
@@ -156,8 +156,8 @@
     }
     .header-main-content-row .logo-container { flex-grow: 1; }
     .logo-main-line { display: flex; align-items: center; gap: var(--space-2); }
-    .logo-main-line > i { font-size: var(--font-3xl); color: var(--primary); } /* Primary color for icon */
-    .logo-main-line > span { font-size: var(--font-3xl); font-weight: 600; color: var(--text-primary); }
+    .logo-main-line > i { font-size: var(--font-3xl); color: var(--text-primary); } /* Primary color for icon */
+    .logo-main-line > span { font-size: var(--font-3xl); font-weight: 700; color: var(--text-primary); }
     .header-main-content-row .logo-subtitle {
       font-size: var(--font-sm);
       color: var(--text-secondary);
@@ -956,107 +956,153 @@ main#dashboard {
     grid-template-columns: repeat(2, 1fr); /* Two columns on tablet */
   }
 }
-/* Theme Toggle Switch - Sun/Moon */
-#darkmode-toggle {
+/* Improved header layout styles */
+.header-main-content-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Align to top to account for subtitle */
+  width: 100%;
+  margin-bottom: var(--space-4);
+}
+
+.logo-container {
+  flex: 1;
+  max-width: 85%; /* Prevent overly wide content on smaller screens */
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: var(--space-4);
+  padding-top: var(--space-2);
+}
+
+/* Theme Toggle Switch - Clean Slider */
+#color-scheme {
   width: 0;
   height: 0;
   visibility: hidden;
+  position: absolute;
 }
 
-#themeToggle {
-  width: 60px;
-  height: 30px;
+.toggle-item {
+  width: 3em;
+  height: 1.5em;
+  display: inline-block;
+  border-radius: 50px;
+  margin: 0;
   position: relative;
-  display: block;
-  background: #ebebeb;
-  border-radius: 30px;
-  box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.4),
-    inset 0px -2px 5px rgba(255, 255, 255, 0.4);
+  transition: all .3s ease;
   cursor: pointer;
-  transition: 0.3s;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
 }
 
-#themeToggle:after {
-  content: "";
-  width: 26px;
-  height: 26px;
+.toggle-item:before {
+  content: '';
   position: absolute;
-  top: 2px;
-  left: 2px;
-  background: linear-gradient(180deg, #ffcc89, #d8860b);
+  display: block;
+  width: 1.2em;
+  height: 1.2em;
+  top: 0.1em;
+  left: 0.1em;
   border-radius: 50%;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-  transition: 0.3s;
+  transition: .3s ease;
+  background: var(--bg-primary);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  border: none;
 }
 
-#themeToggle svg {
-  position: absolute;
-  width: 14px;
-  top: 8px;
-  z-index: 100;
+#color-scheme:checked + .toggle-item {
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
-#themeToggle svg.sun {
-  left: 8px;
-  fill: #fff;
-  transition: 0.3s;
+#color-scheme:checked + .toggle-item:before {
+  transform: translateX(1.4em);
+  background: var(--bg-primary);
 }
 
-#themeToggle svg.moon {
-  left: 38px;
-  fill: #7e7e7e;
-  transition: 0.3s;
+.toggle-item:hover {
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.15), 0 0 0 3px rgba(var(--primary-rgb, 0, 122, 255), 0.1);
 }
 
-#darkmode-toggle:checked + #themeToggle {
-  background: #242424;
+/* Dark theme adjustments */
+[data-theme="dark"] .toggle-item {
+  background: var(--bg-tertiary);
+  border-color: var(--border);
 }
 
-#darkmode-toggle:checked + #themeToggle:after {
-  left: 58px;
-  transform: translateX(-100%);
-  background: linear-gradient(180deg, #777, #3a3a3a);
+[data-theme="dark"] .toggle-item:before {
+  background: var(--text-primary);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
 }
 
-#darkmode-toggle:checked + #themeToggle svg.sun {
-  fill: #7e7e7e;
-}
-
-#darkmode-toggle:checked + #themeToggle svg.moon {
-  fill: #fff;
-}
-
-#darkmode-toggle:active + #themeToggle:after {
-  width: 35px;
+[data-theme="dark"] #color-scheme:checked + .toggle-item:before {
+  background: var(--bg-primary);
 }
 
 /* Responsive adjustments */
 @media (max-width: 767px) {
-  #themeToggle {
-    width: 50px;
-    height: 25px;
+  .toggle-item {
+    width: 2.5em;
+    height: 1.25em;
   }
   
-  #themeToggle:after {
-    width: 21px;
-    height: 21px;
+  .toggle-item:before {
+    width: 1em;
+    height: 1em;
+    top: 0.1em;
+    left: 0.1em;
   }
   
-  #themeToggle svg {
-    width: 12px;
-    top: 6px;
+  #color-scheme:checked + .toggle-item:before {
+    transform: translateX(1.15em);
+  }
+}
+/* Table column specific styling */
+.data-table td.table-date-cell {
+  white-space: nowrap;
+  min-width: 80px;
+  width: 80px;
+}
+
+.data-table td.table-contract-id {
+  white-space: nowrap;
+  min-width: 120px;
+  font-family: monospace;
+  font-size: 0.85em;
+}
+
+.data-table td.table-value-cell {
+  white-space: nowrap;
+  text-align: right;
+  min-width: 90px;
+}
+
+.data-table td.table-actions-cell {
+  white-space: nowrap;
+  width: 80px;
+  text-align: center;
+}
+
+/* Ensure badges don't wrap */
+.agency-badge, .office-badge, .vendor-badge {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Better responsive table handling */
+@media (max-width: 768px) {
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
   
-  #themeToggle svg.sun {
-    left: 6px;
-  }
-  
-  #themeToggle svg.moon {
-    left: 32px;
-  }
-  
-  #darkmode-toggle:checked + #themeToggle:after {
-    left: 48px;
+  .data-table {
+    min-width: 800px; /* Force horizontal scroll on small screens */
   }
 }
   </style>
@@ -1065,6 +1111,7 @@ main#dashboard {
   <div class="app-container">
     <header class="app-header">
         <div class="header-main-content-row">
+            <!-- Logo on the left -->
             <div class="logo-container">
                 <div class="logo-main-line">
                     <i class="fa-regular fa-newspaper"></i>
@@ -1072,52 +1119,28 @@ main#dashboard {
                 </div>
                 <span class="logo-subtitle">
                     Daily Federal Awards Dashboard<br><br>
-                    We're showing YTD. Want to dig deeper? Go to FPDS.gov and run an "EZ Search" using an agency, vendor, keyword, or NAICS code.<br>Download the CSV, upload it to FedLook.com, and instantly spot who's buying what from whom. See examples below.
+                    Want to DYOR? Go to FPDS.gov and do an "EZ Search" by agency, vendor, keyword, etc.<br>Download the CSV and upload it here to spot who's buying what from who.
                 </span>
             </div>
-    <input type="checkbox" id="darkmode-toggle" />
-<label for="darkmode-toggle" id="themeToggle">
-    <svg version="1.1" class="sun" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 496 496" style="enable-background:new 0 0 496 496;" xml:space="preserve">
-        <rect x="152.994" y="58.921" transform="matrix(0.3827 0.9239 -0.9239 0.3827 168.6176 -118.5145)" width="40.001" height="16" />
-        <rect x="46.9" y="164.979" transform="matrix(0.9239 0.3827 -0.3827 0.9239 71.29 -12.4346)" width="40.001" height="16" />
-        <rect x="46.947" y="315.048" transform="matrix(0.9239 -0.3827 0.3827 0.9239 -118.531 50.2116)" width="40.001" height="16" />
-        <rect x="164.966" y="409.112" transform="matrix(-0.9238 -0.3828 0.3828 -0.9238 168.4872 891.7491)" width="16" height="39.999" />
-        <rect x="303.031" y="421.036" transform="matrix(-0.3827 -0.9239 0.9239 -0.3827 50.2758 891.6655)" width="40.001" height="16" />
-        <rect x="409.088" y="315.018" transform="matrix(-0.9239 -0.3827 0.3827 -0.9239 701.898 785.6559)" width="40.001" height="16" />
-        <rect x="409.054" y="165.011" transform="matrix(-0.9239 0.3827 -0.3827 -0.9239 891.6585 168.6574)" width="40.001" height="16" />
-        <rect x="315.001" y="46.895" transform="matrix(0.9238 0.3828 -0.3828 0.9238 50.212 -118.5529)" width="16" height="39.999" />
-        <path d="M248,88c-88.224,0-160,71.776-160,160s71.776,160,160,160s160-71.776,160-160S336.224,88,248,88z M248,392
-            c-79.4,0-144-64.6-144-144s64.6-144,144-144s144,64.6,144,144S327.4,392,248,392z" />
-        <rect x="240" width="16" height="72" />
-        <rect x="62.097" y="90.096" transform="matrix(0.7071 0.7071 -0.7071 0.7071 98.0963 -40.6334)" width="71.999" height="16" />
-        <rect y="240" width="72" height="16" />
-        <rect x="90.091" y="361.915" transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 -113.9157 748.643)" width="16" height="71.999" />
-        <rect x="240" y="424" width="16" height="72" />
-        <rect x="361.881" y="389.915" transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 397.8562 960.6281)" width="71.999" height="16" />
-        <rect x="424" y="240" width="72" height="16" />
-        <rect x="389.911" y="62.091" transform="matrix(0.7071 0.7071 -0.7071 0.7071 185.9067 -252.6357)" width="16" height="71.999" />
-    </svg>
-    <svg version="1.1" class="moon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 49.739 49.739" style="enable-background:new 0 0 49.739 49.739;" xml:space="preserve">
-        <path d="M25.068,48.889c-9.173,0-18.017-5.06-22.396-13.804C-3.373,23.008,1.164,8.467,13.003,1.979l2.061-1.129l-0.615,2.268
-           c-1.479,5.459-0.899,11.25,1.633,16.306c2.75,5.493,7.476,9.587,13.305,11.526c5.831,1.939,12.065,1.492,17.559-1.258v0
-           c0.25-0.125,0.492-0.258,0.734-0.391l2.061-1.13l-0.585,2.252c-1.863,6.873-6.577,12.639-12.933,15.822
-           C32.639,48.039,28.825,48.888,25.068,48.889z M12.002,4.936c-9.413,6.428-12.756,18.837-7.54,29.253
-           c5.678,11.34,19.522,15.945,30.864,10.268c5.154-2.582,9.136-7.012,11.181-12.357c-5.632,2.427-11.882,2.702-17.752,0.748
-           c-6.337-2.108-11.473-6.557-14.463-12.528C11.899,15.541,11.11,10.16,12.002,4.936z" />
-    </svg>
-</label>        
+            
+            <!-- Theme toggle on the right -->
+            <div class="header-actions">
+                <input id="color-scheme" type="checkbox" aria-hidden />
+                <label class="toggle-item" for="color-scheme"></label>
+            </div>
         </div>
 
-      <div class="data-load-controls example-csv-loader">
-    <div class="example-csv-buttons">
-        <button id="loadExample1" class="btn btn-primary"><span class="btn-text">YTD</span></button>
-        <button id="loadExample2" class="btn btn-secondary"><span class="btn-text">SaaS 3YR</span></button>
-        <input type="file" id="csvFile" accept=".csv,.xls" class="file-input" style="display: none;">
-        <label for="csvFile" class="btn btn-secondary"><i class="fas fa-upload mr-2"></i>
-            <span class="btn-text">Upload CSV</span>
-        </label>
-    </div>
-</div>
+        <!-- Rest of the header content -->
+        <div class="data-load-controls example-csv-loader">
+            <div class="example-csv-buttons">
+                <button id="loadExample1" class="btn btn-primary"><span class="btn-text">YTD</span></button>
+                <button id="loadExample2" class="btn btn-secondary"><span class="btn-text">SaaS 3YR</span></button>
+                <input type="file" id="csvFile" accept=".csv,.xls" class="file-input" style="display: none;">
+                <label for="csvFile" class="btn btn-secondary"><i class="fas fa-upload mr-2"></i>
+                    <span class="btn-text">Upload CSV</span>
+                </label>
+            </div>
+        </div>
         
         <div class="status-and-active-filters" id="statusBox">
             <div class="status-title">No data loaded</div>
@@ -1128,7 +1151,6 @@ main#dashboard {
         <div class="primary-controls-area">
             <div class="main-filter-inputs">
                 <div class="search-bar">
-                    <span class="search-icon"><i class="fas fa-search"></i></span>
                     <input type="text" id="searchInput" placeholder="Search contracts, agencies, vendors..." class="search-input">
                 </div>
                 <div class="filter-group">
@@ -1161,14 +1183,14 @@ main#dashboard {
 
         <section id="advancedFiltersPanel" class="filters-panel">
             <div class="panel-header">
-                <h3>Advanced Filters</h3>
+                <h3></h3>
                 <button id="closeFilters" class="btn-icon" aria-label="Close advanced filters">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="filters-grid">
                 <div class="filter-group">
-                    <label for="startDate" class="filter-label">Date Signed</label> 
+                    <label for="startDate" class="filter-label"></label> 
                     <div class="date-range-picker" id="dateRangeLabel">
                         <input type="date" id="startDate" class="filter-date" aria-label="Start date">
                         <span class="date-separator">to</span>
@@ -1176,19 +1198,19 @@ main#dashboard {
                     </div>
                 </div>
                 <div class="filter-group">
-                    <label for="officeFilter" class="filter-label">Contracting Office</label> 
+                    <label for="officeFilter" class="filter-label"></label> 
                     <select id="officeFilter" class="filter-select" aria-label="Filter by contracting office">
                         <option value="">Any Office</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label for="naicsFilter" class="filter-label">NAICS Code</label> 
+                    <label for="naicsFilter" class="filter-label"></label> 
                     <select id="naicsFilter" class="filter-select" aria-label="Filter by NAICS code">
                         <option value="">Any NAICS</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label for="valueFilter" class="filter-label">Action Obligation ($)</label> 
+                    <label for="valueFilter" class="filter-label"></label> 
                     <select id="valueFilter" class="filter-select" aria-label="Filter by action obligation value">
                         <option value="">Any Value</option>
                         <option value="0-100000">Under $100K</option>
@@ -1220,7 +1242,7 @@ main#dashboard {
 <!-- First row: Sankey (2/3) and Value by Month (1/3) -->
 <section class="primary-viz-row">
   <div class="dashboard-section-header" style="display:flex; justify-content: space-between; align-items:center;">
-    <span>Contract Value Flow & Monthly Trends</span>
+    <span>Award Value Flow & Monthly Trends</span>
     <div class="sankey-controls">
       <button id="sankeyTop10" class="btn btn-sm btn-primary"><span class="btn-text">Top 10</span></button>
       <button id="sankeyTop25" class="btn btn-sm btn-secondary"><span class="btn-text">Top 25</span></button>
@@ -1234,7 +1256,7 @@ main#dashboard {
       </div>
     </div>
     <div class="month-chart-wrapper">
-      <h3 class="chart-title-integrated">Contract Value by Month</h3>
+      <h3 class="chart-title-integrated">Award Value by Month</h3>
       <div class="chart-container" id="valueTimeChartContainer">
         <canvas id="valueTimeChart"></canvas>
         <div class="selection-indicator"></div>
@@ -1273,7 +1295,7 @@ main#dashboard {
 <section class="stats-section">
         <div class="stats-row">
           <div class="stat-card">
-            <div class="stat-label">Total Contracts</div>
+            <div class="stat-label">Total Awards</div>
             <div id="totalContracts" class="stat-value">0</div>
           </div>
           <div class="stat-card">
@@ -1281,7 +1303,7 @@ main#dashboard {
             <div id="totalValue" class="stat-value">$0</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Avg. Contract</div>
+            <div class="stat-label">Avg. Award</div>
             <div id="avgValue" class="stat-value">$0</div>
           </div>
           <div class="stat-card">
@@ -1291,7 +1313,7 @@ main#dashboard {
         </div>
       </section>
 <section class="tables-section-container">
-  <h2 class="dashboard-section-header">Contract Details</h2>
+  <h2 class="dashboard-section-header">Award Details</h2>
   <div class="tables-section">
     <div class="tabs">
       <button class="tab-btn active" data-tab="recent">Recent Awards</button>
@@ -1375,205 +1397,194 @@ main#dashboard {
   <button id="mobileFilterBtn" class="mobile-action-btn" aria-label="Open filters">
     <i class="fas fa-filter"></i>
   </button>
+<script>
+// Main application data object
+const app = {
+  data: [],
+  filteredData: [],
+  agencies: {},
+  offices: {},
+  vendors: {},
+  naicsCodes: {},
+  pscCodes: {},
+  charts: {},
+  filters: {},
+  selection: { type: null, value: null, container: null },
+  sankeyDisplayLimit: 10,
+  s3BaseUrl: "https://subhoodata.s3.us-east-1.amazonaws.com/data/"
+};
 
-  <script>
-    
-    const app = {
-      data: [],
-      filteredData: [],
-      agencies: {},
-      offices: {},
-      vendors: {},
-      naicsCodes: {},
-      pscCodes: {},
-      charts: {},
-      filters: {},
-      selection: { type: null, value: null, container: null },
-      sankeyDisplayLimit: 10
-    };
+const elements = {
+  csvFile: document.getElementById('csvFile'),
+  uploadBtn: document.querySelector('label[for="csvFile"]'),
+  loadExample1Btn: document.getElementById('loadExample1'),
+  loadExample2Btn: document.getElementById('loadExample2'),
+  statusBox: document.getElementById('statusBox'), 
+  activeFilters: document.getElementById('activeFilters'),
+  searchInput: document.getElementById('searchInput'),
+  agencyFilter: document.getElementById('agencyFilter'),
+  vendorFilter: document.getElementById('vendorFilter'),
+  pscFilter: document.getElementById('pscFilter'),
+  resetFilters: document.getElementById('resetFilters'),
+  moreFiltersBtn: document.getElementById('moreFiltersBtn'),
+  advancedFiltersPanel: document.getElementById('advancedFiltersPanel'),
+  closeFilters: document.getElementById('closeFilters'),
+  startDate: document.getElementById('startDate'),
+  endDate: document.getElementById('endDate'),
+  officeFilter: document.getElementById('officeFilter'), 
+  naicsFilter: document.getElementById('naicsFilter'),   
+  valueFilter: document.getElementById('valueFilter'),   
+  themeToggle: document.getElementById('themeToggle'),
+  loadingIndicator: document.getElementById('loadingIndicator'),
+  errorMessage: document.getElementById('errorMessage'),
+  noDataMessage: document.getElementById('noDataMessage'),
+  dashboard: document.getElementById('dashboard'),
+  mobileFilterBtn: document.getElementById('mobileFilterBtn'),
+  totalContracts: document.getElementById('totalContracts'),
+  totalValue: document.getElementById('totalValue'),
+  avgValue: document.getElementById('avgValue'),
+  uniqueVendors: document.getElementById('uniqueVendors'),
+  sankeyTop10: document.getElementById('sankeyTop10'),
+  sankeyTop25: document.getElementById('sankeyTop25'),
+  sankeyAll: document.getElementById('sankeyAll'),
+  sankeyChartContainer: document.getElementById('sankeyChartContainer'),
+  sankeyTooltip: document.getElementById('sankeyTooltip'),
+  valueTimeChartContainer: document.getElementById('valueTimeChartContainer'),
+  agencyChartContainer: document.getElementById('agencyChartContainer'),
+  naicsBubbleChartContainer: document.getElementById('naicsBubbleChartContainer'),
+  vendorChartContainer: document.getElementById('vendorChartContainer'),
+  valueTimeChart: document.getElementById('valueTimeChart').getContext('2d'),
+  agencyChart: document.getElementById('agencyChart').getContext('2d'),
+  naicsBubbleChart: document.getElementById('naicsBubbleChart').getContext('2d'),
+  vendorChart: document.getElementById('vendorChart').getContext('2d'),
+  contractsTable: document.getElementById('contractsTable').querySelector('tbody'),
+  largestContractsTable: document.getElementById('largestContractsTable').querySelector('tbody'),
+  officesTable: document.getElementById('officesTable').querySelector('tbody'),
+  tabButtons: document.querySelectorAll('.tab-btn'),
+  tabContents: document.querySelectorAll('.tab-content'),
+  contractModal: document.getElementById('contractModal'),
+  closeModal: document.getElementById('closeModal'),
+  closeModalBtn: document.getElementById('closeModalBtn'),
+  contractModalBody: document.getElementById('contractModalBody')
+};
 
-    const elements = {
-      csvFile: document.getElementById('csvFile'),
-      uploadBtn: document.querySelector('label[for="csvFile"]'),
-      loadExample1Btn: document.getElementById('loadExample1'),
-      loadExample2Btn: document.getElementById('loadExample2'),
-      statusBox: document.getElementById('statusBox'), 
-      activeFilters: document.getElementById('activeFilters'),
-      searchInput: document.getElementById('searchInput'),
-      agencyFilter: document.getElementById('agencyFilter'),
-      vendorFilter: document.getElementById('vendorFilter'),
-      pscFilter: document.getElementById('pscFilter'),
-      resetFilters: document.getElementById('resetFilters'),
-      moreFiltersBtn: document.getElementById('moreFiltersBtn'),
-      advancedFiltersPanel: document.getElementById('advancedFiltersPanel'),
-      closeFilters: document.getElementById('closeFilters'),
-      startDate: document.getElementById('startDate'),
-      endDate: document.getElementById('endDate'),
-      officeFilter: document.getElementById('officeFilter'), 
-      naicsFilter: document.getElementById('naicsFilter'),   
-      valueFilter: document.getElementById('valueFilter'),   
-      themeToggle: document.getElementById('themeToggle'),
-      loadingIndicator: document.getElementById('loadingIndicator'),
-      errorMessage: document.getElementById('errorMessage'),
-      noDataMessage: document.getElementById('noDataMessage'),
-      dashboard: document.getElementById('dashboard'),
-      mobileFilterBtn: document.getElementById('mobileFilterBtn'),
-      totalContracts: document.getElementById('totalContracts'),
-      totalValue: document.getElementById('totalValue'),
-      avgValue: document.getElementById('avgValue'),
-      uniqueVendors: document.getElementById('uniqueVendors'),
-      sankeyTop10: document.getElementById('sankeyTop10'),
-      sankeyTop25: document.getElementById('sankeyTop25'),
-      sankeyAll: document.getElementById('sankeyAll'),
-      sankeyChartContainer: document.getElementById('sankeyChartContainer'),
-      sankeyTooltip: document.getElementById('sankeyTooltip'),
-      valueTimeChartContainer: document.getElementById('valueTimeChartContainer'),
-      agencyChartContainer: document.getElementById('agencyChartContainer'),
-      naicsBubbleChartContainer: document.getElementById('naicsBubbleChartContainer'),
-      vendorChartContainer: document.getElementById('vendorChartContainer'),
-      valueTimeChart: document.getElementById('valueTimeChart').getContext('2d'), // Get context directly
-      agencyChart: document.getElementById('agencyChart').getContext('2d'),     // Get context directly
-      naicsBubbleChart: document.getElementById('naicsBubbleChart').getContext('2d'), // Get context directly
-      vendorChart: document.getElementById('vendorChart').getContext('2d'),   // Get context directly
-      contractsTable: document.getElementById('contractsTable').querySelector('tbody'),
-      largestContractsTable: document.getElementById('largestContractsTable').querySelector('tbody'),
-      officesTable: document.getElementById('officesTable').querySelector('tbody'),
-      tabButtons: document.querySelectorAll('.tab-btn'),
-      tabContents: document.querySelectorAll('.tab-content'),
-      contractModal: document.getElementById('contractModal'),
-      closeModal: document.getElementById('closeModal'),
-      closeModalBtn: document.getElementById('closeModalBtn'),
-      contractModalBody: document.getElementById('contractModalBody')
-    };
-
-    const utils = {
-      formatMoney: function(value) {
-        if (!value && value !== 0) return '$0';
-        const number = parseFloat(value);
-        if (isNaN(number)) return '$0';
-        if (Math.abs(number) >= 1000000000) return '$' + (number / 1000000000).toFixed(1) + 'B';
-        if (Math.abs(number) >= 1000000) return '$' + (number / 1000000).toFixed(1) + 'M';
-        if (Math.abs(number) >= 1000) return '$' + (number / 1000).toFixed(1) + 'K';
-        return '$' + number.toFixed(0);
-      },
-      formatDate: function(dateInput) { 
-        if (!dateInput) return 'N/A';
-        const date = (dateInput instanceof Date && !isNaN(dateInput)) ? dateInput : new Date(dateInput);
-        if (isNaN(date.getTime())) {
-          if (typeof dateInput === 'string') {
-            const parts = dateInput.split('-'); 
-            if (parts.length === 3) {
-              const months = {'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11};
-              const day = parseInt(parts[0]);
-              const month = months[parts[1]];
-              let year = parseInt(parts[2]);
-              if (year < 100) year = year < 50 ? 2000 + year : 1900 + year; 
-              if (!isNaN(day) && month !== undefined && !isNaN(year)) {
-                const parsedDate = new Date(year, month, day);
-                return parsedDate.toLocaleDateString('en-US', { year: '2-digit', month: 'short', day: 'numeric' });
-              }
-            }
-          }
-          return String(dateInput); 
-        }
-        return date.toLocaleDateString('en-US', { year: '2-digit', month: 'short', day: 'numeric' });
-      },
-      parseMoney: function(value) {
-        if (!value) return 0;
-        return parseFloat(String(value).replace(/[$,\s]/g, '')) || 0;
-      },
-      parseCSV: function(text) {
-        const lines = text.split(/\r\n|\n/);
-        if (lines.length === 0) return { headers: [], data: [] };
-        
-        const parseLine = function(line) {
-          const values = []; let current = ''; let inQuotes = false;
-          for (let i = 0; i < line.length; i++) {
-            const char = line[i];
-            const nextChar = line[i + 1] || '';
-            if (char === '"') {
-              if (inQuotes && nextChar === '"') { current += '"'; i++; } 
-              else { inQuotes = !inQuotes; }
-            } else if (char === ',' && !inQuotes) { values.push(current.trim()); current = ''; } 
-            else { current += char; }
-          }
-          values.push(current.trim()); return values;
-        };
-
-        const headers = parseLine(lines[0]);
-        const data = [];
-        for (let i = 1; i < lines.length; i++) {
-          if (lines[i].trim()) { 
-            const values = parseLine(lines[i]);
-            const row = {};
-            for (let j = 0; j < Math.min(headers.length, values.length); j++) {
-              if (headers[j]) row[headers[j].trim()] = values[j] || ''; 
-            }
-            data.push(row);
+const utils = {
+  formatMoney: function(value) {
+    if (!value && value !== 0) return '$0';
+    const number = parseFloat(value);
+    if (isNaN(number)) return '$0';
+    if (number >= 1000000000) return '$' + (number / 1000000000).toFixed(1) + 'B';
+    if (number >= 1000000) return '$' + (number / 1000000).toFixed(1) + 'M';
+    if (number >= 1000) return '$' + (number / 1000).toFixed(1) + 'K';
+    return '$' + number.toFixed(0);
+  },
+  formatDate: function(dateInput) { 
+    if (!dateInput) return 'N/A';
+    const date = (dateInput instanceof Date && !isNaN(dateInput)) ? dateInput : new Date(dateInput);
+    if (isNaN(date.getTime())) {
+      if (typeof dateInput === 'string') {
+        const parts = dateInput.split('-');
+        if (parts.length === 3) {
+          const months = {'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11};
+          const day = parseInt(parts[0]);
+          const month = months[parts[1]];
+          let year = parseInt(parts[2]);
+          if (year < 100) year = year < 50 ? 2000 + year : 1900 + year;
+          if (!isNaN(day) && month !== undefined && !isNaN(year)) {
+            const parsedDate = new Date(year, month, day);
+            return parsedDate.toLocaleDateString('en-US', { year: '2-digit', month: 'short', day: 'numeric' });
           }
         }
-        return { headers, data };
-      },
-      parseDate: function(dateString) {
-        if (!dateString) return null;
-        if (dateString instanceof Date && !isNaN(dateString)) return dateString; 
-
-        const s = String(dateString);
-        const fpdsParts = s.match(/^(\d{1,2})-([A-Za-z]{3})-(\d{2})$/);
-        if (fpdsParts) {
-            const day = parseInt(fpdsParts[1]);
-            const monthStr = fpdsParts[2];
-            const yearDigits = parseInt(fpdsParts[3]);
-            const months = {'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11};
-            const month = months[monthStr.charAt(0).toUpperCase() + monthStr.slice(1).toLowerCase()];
-            if (!isNaN(day) && month !== undefined && !isNaN(yearDigits)) {
-                const year = yearDigits < 50 ? 2000 + yearDigits : 1900 + yearDigits; 
-                return new Date(year, month, day);
-            }
-        }
-        const date = new Date(s);
-        return !isNaN(date.getTime()) ? date : null;
-      },
-      truncateText: function(text, maxLength) {
-        if (!text || text.length <= maxLength) return text || '';
-        return text.substring(0, maxLength) + '...';
-      },
-      stringToColor: function(str) {
-        if (!str) return '#cccccc'; let hash = 0;
-        for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
-        const mutedColors = ['#4F6D7A','#56A3A6','#84B59F','#A6D3A0','#D1B280','#EDAE49','#D1495B','#9D5C63','#647AA3','#7D938A','#BFAE9F','#FAD4C0','#CE8147','#B0C592','#91A6FF'];
-        return mutedColors[Math.abs(hash) % mutedColors.length];
-      },
-      getInitials: function(name) {
-        if (!name) return '?'; const words = name.trim().split(/\s+/).filter(Boolean); 
-        if (words.length === 0) return '?';
-        return words.length > 1 ? (words[0].charAt(0) + words[words.length-1].charAt(0)).toUpperCase() : words[0].charAt(0).toUpperCase();
-      },
-      parseValueRange: function(rangeStr) {
-        if (!rangeStr) return null; const parts = rangeStr.split('-');
-        return parts.length !== 2 ? null : {min:parseFloat(parts[0]),max:parseFloat(parts[1])};
       }
+      return String(dateInput); 
+    }
+    return date.toLocaleDateString('en-US', { year: '2-digit', month: 'short', day: 'numeric' });
+  },
+  parseMoney: function(value) {
+    if (!value) return 0;
+    return parseFloat(String(value).replace(/[$,\s]/g, '')) || 0;
+  },
+  parseCSV: function(text) {
+    const lines = text.split(/\r\n|\n/);
+    if (lines.length === 0) return { headers: [], data: [] };
+    const parseLine = function(line) {
+      const values = []; let current = ''; let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i], nextChar = line[i + 1] || '';
+        if (char === '"') {
+          if (inQuotes && nextChar === '"') { current += '"'; i++; } 
+          else inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) { values.push(current.trim()); current = ''; } 
+        else current += char;
+      }
+      values.push(current.trim()); return values;
     };
+    const headers = parseLine(lines[0]);
+    const data = [];
+    for (let i = 1; i < lines.length; i++) {
+      if (lines[i].trim()) {
+        const values = parseLine(lines[i]);
+        const row = {};
+        for (let j = 0; j < Math.min(headers.length, values.length); j++) {
+          if (headers[j]) row[headers[j]] = values[j] || '';
+        }
+        data.push(row);
+      }
+    }
+    return { headers, data };
+  },
+  parseDate: function(dateString) {
+    if (!dateString) return null;
+    if (dateString instanceof Date && !isNaN(dateString)) return dateString; 
+
+    const s = String(dateString);
+    const parts = s.split('-');
+    if (parts.length === 3) {
+      const months = {'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11};
+      const day = parseInt(parts[0]);
+      const month = months[parts[1]];
+      let year = parseInt(parts[2]);
+      if (year < 100) year = year < 50 ? 2000 + year : 1900 + year;
+      if (!isNaN(day) && month !== undefined && !isNaN(year)) {
+        return new Date(year, month, day);
+      }
+    }
+    const date = new Date(s);
+    return !isNaN(date.getTime()) ? date : null;
+  },
+  truncateText: function(text, maxLength) {
+    if (!text || text.length <= maxLength) return text || '';
+    return text.substring(0, maxLength) + '...';
+  },
+  stringToColor: function(str) {
+    if (!str) return '#cccccc'; let hash = 0;
+    for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    const mutedColors = ['#4F6D7A','#56A3A6','#84B59F','#A6D3A0','#D1B280','#EDAE49','#D1495B','#9D5C63','#647AA3','#7D938A','#BFAE9F','#FAD4C0','#CE8147','#B0C592','#91A6FF'];
+    return mutedColors[Math.abs(hash) % mutedColors.length];
+  },
+  getInitials: function(name) {
+    if (!name) return '?'; const words = name.split(/\s+/);
+    return words.length > 1 ? (words[0].charAt(0) + words[1].charAt(0)).toUpperCase() : name.charAt(0).toUpperCase();
+  },
+  parseValueRange: function(rangeStr) {
+    if (!rangeStr) return null; const parts = rangeStr.split('-');
+    return parts.length !== 2 ? null : {min:parseFloat(parts[0]),max:parseFloat(parts[1])};
+  }
+};
     
 const dataProcessor = {
   processData: function(csvData) {
     if (!csvData || !csvData.data || csvData.data.length === 0) throw new Error('No valid data found in CSV file');
     const requiredFields = ['Contract ID','Date Signed','Contracting Agency','Legal Business Name','Action Obligation ($)'];
-    for (const field of requiredFields) {
-        if (!csvData.headers.some(h => h.trim() === field)) {
-            throw new Error(`Required field "${field}" not found in CSV file headers: ${csvData.headers.join(', ')}`);
-        }
-    }
+    for (const field of requiredFields) if (!csvData.headers.includes(field)) throw new Error(`Required field "${field}" not found in CSV file`);
     return csvData.data.map(row => ({
       id:row['Contract ID']||'', reference:row['Reference IDV']||'', modification:row['Modification Number']||'',
       date:row['Date Signed']||'', parsedDate:utils.parseDate(row['Date Signed']), type:row['Award/IDV Type']||'',
       value:utils.parseMoney(row['Action Obligation ($)']), agency:row['Contracting Agency']||'', office:row['Contracting Office Name']||'',
       psc:row['PSC']||'', pscDescription:row['PSC Description']||'', naics:row['NAICS']||'', naicsDescription:row['NAICS Description']||'',
-      vendor:row['Legal Business Name']||'', parentVendor:row['Ultimate Parent Legal Business Name']||'', 
-      description:row['PSC Description'] || row['Product or Service Code (PSC) / NAICS Code Description'] || row['NAICS Description'] || '' 
+      vendor:row['Legal Business Name']||'', parentVendor:row['Ultimate Parent Legal Business Name']||'', description:row['PSC Description']||''
     }));
   },
-  
   analyzeData: function(data) {
     const agencies={},offices={},vendors={},naicsCodes={},pscCodes={};
     data.forEach(contract => {
@@ -1613,262 +1624,139 @@ const dataProcessor = {
     });
     return {agencies,offices,vendors,naicsCodes,pscCodes};
   },
-  
   generateSankeyData: function(data, limit=10) {
-    const agencyOfficeFlows = {}, officeVendorFlows = {}, nodeMap = new Map();
-    
-    // Process each contract to build flows
+    const agencyOfficeFlows={}, officeVendorFlows={}, nodeMap=new Map();
     data.forEach(c => {
-      if (c.agency && c.office && c.vendor && c.value > 0) { 
-        // Add agency-office flow
-        const aok = `${c.agency}|${c.office}`;
-        if (!agencyOfficeFlows[aok]) {
-          agencyOfficeFlows[aok] = {source: c.agency, target: c.office, value: 0};
-        } 
-        agencyOfficeFlows[aok].value += c.value;
-        
-        // Add office-vendor flow
-        const ovk = `${c.office}|${c.vendor}`;
-        if (!officeVendorFlows[ovk]) {
-          officeVendorFlows[ovk] = {source: c.office, target: c.vendor, value: 0};
-        }
-        officeVendorFlows[ovk].value += c.value;
-        
-        // Add nodes to the map
-        if (!nodeMap.has(c.agency)) nodeMap.set(c.agency, {name: c.agency, type: 'agency'});
-        if (!nodeMap.has(c.office)) nodeMap.set(c.office, {name: c.office, type: 'office'});
-        if (!nodeMap.has(c.vendor)) nodeMap.set(c.vendor, {name: c.vendor, type: 'vendor'});
+      if(c.agency&&c.office&&c.vendor&&c.value>0){
+        const aok=`${c.agency}|${c.office}`; if(!agencyOfficeFlows[aok]) agencyOfficeFlows[aok]={source:c.agency,target:c.office,value:0}; agencyOfficeFlows[aok].value+=c.value;
+        const ovk=`${c.office}|${c.vendor}`; if(!officeVendorFlows[ovk]) officeVendorFlows[ovk]={source:c.office,target:c.vendor,value:0}; officeVendorFlows[ovk].value+=c.value;
       }
     });
-    
-    // Convert nodes to array with IDs
-    const nodesArray = Array.from(nodeMap.values()).map((n, i) => ({...n, id: i}));
-    
-    // Create a map of node names to IDs
-    const nodeIndexMap = new Map(nodesArray.map(n => [n.name, n.id]));
-    
-    // Create links from both types of flows
-    const allLinks = [
-      ...Object.values(agencyOfficeFlows).map(f => ({
-        sourceName: f.source,
-        targetName: f.target,
-        value: f.value,
-        type: 'agency-office'
-      })),
-      ...Object.values(officeVendorFlows).map(f => ({
-        sourceName: f.source,
-        targetName: f.target,
-        value: f.value,
-        type: 'office-vendor'
-      }))
-    ]
-    // Filter to include only nodes that exist in our nodeMap
-    .filter(l => nodeIndexMap.has(l.sourceName) && nodeIndexMap.has(l.targetName))
-    // Convert node names to IDs
-    .map(l => ({
-      source: nodeIndexMap.get(l.sourceName),
-      target: nodeIndexMap.get(l.targetName),
-      value: l.value,
-      type: l.type
-    }))
-    // Sort by value descending
-    .sort((a, b) => b.value - a.value);
-    
-    // Apply limit if specified
-    let finalLinks = limit === 0 ? allLinks : allLinks.slice(0, limit * 2);
-    
-    // If limit is applied, ensure we have a mix of both flow types
-    if (limit > 0) {
-      const agencyOfficeLinks = allLinks
-        .filter(l => l.type === 'agency-office')
-        .slice(0, limit);
-      
-      const officeVendorLinks = allLinks
-        .filter(l => l.type === 'office-vendor')
-        .slice(0, limit);
-      
-      finalLinks = [...agencyOfficeLinks, ...officeVendorLinks];
-    }
-    
-    // Find all nodes used in our links
-    const includedNodeIndices = new Set();
-    finalLinks.forEach(l => {
-      includedNodeIndices.add(l.source);
-      includedNodeIndices.add(l.target);
-    });
-    
-    // Filter nodes to include only those in our links
-    const finalNodes = nodesArray.filter(n => includedNodeIndices.has(n.id));
-    
-    // Create a mapping from old IDs to new sequential IDs
-    const finalNodeReIndexMap = new Map(finalNodes.map((n, i) => [n.id, i]));
-    
-    // Update links to use new node IDs
-    finalLinks = finalLinks
-      .map(l => ({
-        source: finalNodeReIndexMap.get(l.source),
-        target: finalNodeReIndexMap.get(l.target),
-        value: l.value,
-        type: l.type
-      }))
-      .filter(l => l.source !== undefined && l.target !== undefined);
-    
-    return {
-      nodes: finalNodes.map(n => ({name: n.name, type: n.type})),
-      links: finalLinks
-    };
+    Object.values(agencyOfficeFlows).forEach(f => { if(!nodeMap.has(f.source)) nodeMap.set(f.source,{name:f.source,type:'agency'}); if(!nodeMap.has(f.target)) nodeMap.set(f.target,{name:f.target,type:'office'}); });
+    Object.values(officeVendorFlows).forEach(f => { if(!nodeMap.has(f.target)) nodeMap.set(f.target,{name:f.target,type:'vendor'}); });
+    const nodesArray = Array.from(nodeMap.values()); nodesArray.forEach((n,i)=>n.id=i);
+    const nodeIndexMap = new Map(); nodesArray.forEach((n,i)=>nodeIndexMap.set(n.name,i));
+    const agencyOfficeLinks=Object.values(agencyOfficeFlows).map(f=>({source:nodeIndexMap.get(f.source),target:nodeIndexMap.get(f.target),value:f.value,type:'agency-office'}));
+    const officeVendorLinks=Object.values(officeVendorFlows).map(f=>({source:nodeIndexMap.get(f.source),target:nodeIndexMap.get(f.target),value:f.value,type:'office-vendor'}));
+    const linksArray=[...agencyOfficeLinks,...officeVendorLinks].sort((a,b)=>b.value-a.value);
+    const topLinks=[], includedNodes=new Set(), maxLinks = limit===0?linksArray.length:Math.min(limit,linksArray.length);
+    for(let i=0;i<maxLinks;i++){ topLinks.push(linksArray[i]); includedNodes.add(linksArray[i].source); includedNodes.add(linksArray[i].target); }
+    const finalNodes=nodesArray.filter((n,i)=>includedNodes.has(i)).map(n=>({...n}));
+    const finalNodeIndexMap=new Map(); finalNodes.forEach((n,i)=>finalNodeIndexMap.set(n.name,i));
+    const finalLinks=topLinks.map(l=>({source:finalNodeIndexMap.get(nodesArray[l.source].name),target:finalNodeIndexMap.get(nodesArray[l.target].name),value:l.value,type:l.type}));
+    return {nodes:finalNodes,links:finalLinks};
   }
 };
 
-    const filterManager = {
-      applyFilters: function() {
-        const filters = app.filters;
-        let filtered = [...app.data];
-        if (filters.valueRange) filtered = filtered.filter(c => c.value >= filters.valueRange.min && c.value <= filters.valueRange.max);
-        if (filters.startDate) filtered = filtered.filter(c => c.parsedDate && c.parsedDate >= new Date(filters.startDate));
-        if (filters.endDate) { const ed = new Date(filters.endDate); ed.setHours(23, 59, 59, 999); filtered = filtered.filter(c => c.parsedDate && c.parsedDate <= ed); }
-        if (filters.agency) filtered = filtered.filter(c => c.agency === filters.agency);
-        if (filters.office) filtered = filtered.filter(c => c.office === filters.office);
-        if (filters.naics) filtered = filtered.filter(c => c.naics === filters.naics);
-        if (filters.psc) filtered = filtered.filter(c => c.psc === filters.psc);
-        if (filters.vendor) filtered = filtered.filter(c => c.vendor === filters.vendor);
-        if (filters.search) { 
-            const s = filters.search.toLowerCase(); 
-            filtered = filtered.filter(c => 
-                (c.id && c.id.toLowerCase().includes(s)) || 
-                (c.agency && c.agency.toLowerCase().includes(s)) || 
-                (c.office && c.office.toLowerCase().includes(s)) || 
-                (c.vendor && c.vendor.toLowerCase().includes(s)) || 
-                (c.description && c.description.toLowerCase().includes(s)) || 
-                (c.naics && c.naics.toLowerCase().includes(s)) ||
-                (c.naicsDescription && c.naicsDescription.toLowerCase().includes(s)) || 
-                (c.psc && c.psc.toLowerCase().includes(s)) ||
-                (c.pscDescription && c.pscDescription.toLowerCase().includes(s))
-            ); 
-        }
-        app.filteredData = filtered;
-        return filtered;
-      },
-      applySelectionFilter: function(type, value, container) {
+const filterManager = {
+  applyFilters: function() {
+    const filters = app.filters;
+    let filtered = [...app.data];
+    if (filters.valueRange) filtered = filtered.filter(c => c.value >= filters.valueRange.min && c.value <= filters.valueRange.max);
+    if (filters.startDate) filtered = filtered.filter(c => c.parsedDate && c.parsedDate >= new Date(filters.startDate));
+    if (filters.endDate) { const ed = new Date(filters.endDate); ed.setHours(23, 59, 59, 999); filtered = filtered.filter(c => c.parsedDate && c.parsedDate <= ed); }
+    if (filters.agency) filtered = filtered.filter(c => c.agency === filters.agency);
+    if (filters.office) filtered = filtered.filter(c => c.office === filters.office);
+    if (filters.naics) filtered = filtered.filter(c => c.naics === filters.naics);
+    if (filters.psc) filtered = filtered.filter(c => c.psc === filters.psc);
+    if (filters.vendor) filtered = filtered.filter(c => c.vendor === filters.vendor);
+    if (filters.search) { const s = filters.search.toLowerCase(); filtered = filtered.filter(c => (c.id && c.id.toLowerCase().includes(s)) || (c.agency && c.agency.toLowerCase().includes(s)) || (c.office && c.office.toLowerCase().includes(s)) || (c.vendor && c.vendor.toLowerCase().includes(s)) || (c.description && c.description.toLowerCase().includes(s)) || (c.naicsDescription && c.naicsDescription.toLowerCase().includes(s)) || (c.pscDescription && c.pscDescription.toLowerCase().includes(s))); }
+    app.filteredData = filtered;
+    return filtered;
+  },
+  applySelectionFilter: function(type, value, container) {
+    document.querySelectorAll('.selection-indicator').forEach(ind => ind.style.display = 'none');
+    if (app.selection.type === type && app.selection.value === value) { app.selection = { type: null, value: null, container: null }; delete app.filters[type]; } 
+    else {
+      delete app.filters.agency; delete app.filters.office; delete app.filters.naics; delete app.filters.vendor;
+      if (type && value) { app.filters[type] = value; app.selection = { type, value, container }; if (container) { const ind = container.querySelector('.selection-indicator'); if (ind) ind.style.display = 'block'; } }
+    }
+    this.applyFilters(); this.updateFilterTags(); dashboardManager.refreshDashboard();
+  },
+  updateFilterTags: function() {
+    const filters = app.filters;
+    const activeFiltersContainer = elements.activeFilters;
+    activeFiltersContainer.innerHTML = '';
+    const tags = [];
+    if (filters.valueRange) tags.push({ key: 'valueRange', label: 'Value', value: `${utils.formatMoney(filters.valueRange.min)} - ${utils.formatMoney(filters.valueRange.max)}` });
+    if (filters.startDate) tags.push({ key: 'startDate', label: 'From', value: new Date(filters.startDate).toLocaleDateString() });
+    if (filters.endDate) tags.push({ key: 'endDate', label: 'To', value: new Date(filters.endDate).toLocaleDateString() });
+    if (filters.agency) tags.push({ key: 'agency', label: 'Agency', value: filters.agency });
+    if (filters.office) tags.push({ key: 'office', label: 'Office', value: filters.office });
+    if (filters.naics) tags.push({ key: 'naics', label: 'NAICS', value: filters.naics });
+    if (filters.psc) tags.push({ key: 'psc', label: 'PSC', value: filters.psc });
+    if (filters.vendor) tags.push({ key: 'vendor', label: 'Vendor', value: filters.vendor });
+    if (filters.search) tags.push({ key: 'search', label: 'Search', value: filters.search });
+    
+    tags.forEach(tag => {
+      const tagElement = document.createElement('div');
+      tagElement.className = 'filter-tag';
+      tagElement.innerHTML = `${tag.label}: ${utils.truncateText(tag.value, 15)} <button class="filter-tag-remove" data-filter="${tag.key}"><i class="fas fa-times"></i></button>`;
+      activeFiltersContainer.appendChild(tagElement);
+      tagElement.querySelector('.filter-tag-remove').addEventListener('click', function() {
+        const filterKey = this.getAttribute('data-filter');
+        if (filterKey === 'valueRange') { delete app.filters.valueRange; elements.valueFilter.value = ''; } 
+        else if (filterKey === 'startDate') { delete app.filters.startDate; elements.startDate.value = ''; } 
+        else if (filterKey === 'endDate') { delete app.filters.endDate; elements.endDate.value = ''; } 
+        else if (filterKey === 'agency') { delete app.filters.agency; elements.agencyFilter.value = ''; if (app.selection.type === 'agency') app.selection = { type: null, value: null, container: null }; } 
+        else if (filterKey === 'office') { delete app.filters.office; elements.officeFilter.value = ''; if (app.selection.type === 'office') app.selection = { type: null, value: null, container: null }; } 
+        else if (filterKey === 'naics') { delete app.filters.naics; elements.naicsFilter.value = ''; if (app.selection.type === 'naics') app.selection = { type: null, value: null, container: null }; } 
+        else if (filterKey === 'psc') { delete app.filters.psc; elements.pscFilter.value = ''; if (app.selection.type === 'psc') app.selection = { type: null, value: null, container: null }; } 
+        else if (filterKey === 'vendor') { delete app.filters.vendor; elements.vendorFilter.value = ''; if (app.selection.type === 'vendor') app.selection = { type: null, value: null, container: null }; } 
+        else if (filterKey === 'search') { delete app.filters.search; elements.searchInput.value = ''; }
         document.querySelectorAll('.selection-indicator').forEach(ind => ind.style.display = 'none');
-        if (app.selection.type === type && app.selection.value === value) { 
-            app.selection = { type: null, value: null, container: null }; 
-            delete app.filters[type]; 
-            if (type === 'agency' && elements.agencyFilter) elements.agencyFilter.value = '';
-            if (type === 'office' && elements.officeFilter) elements.officeFilter.value = '';
-            if (type === 'naics' && elements.naicsFilter) elements.naicsFilter.value = '';
-            if (type === 'vendor' && elements.vendorFilter) elements.vendorFilter.value = '';
-            if (type === 'psc' && elements.pscFilter) elements.pscFilter.value = '';
-        } else {
-          if (['agency', 'office', 'naics', 'vendor', 'psc'].includes(type)) {
-            Object.keys(app.filters).forEach(key => {
-                if (['agency', 'office', 'naics', 'vendor', 'psc'].includes(key) && key !== type) {
-                }
-            });
-          }
-          if (type && value) { 
-            app.filters[type] = value; 
-            app.selection = { type, value, container }; 
-            if (container) { const ind = container.querySelector('.selection-indicator'); if (ind) ind.style.display = 'block'; } 
-          } else { 
-            delete app.filters[type];
-            app.selection = { type: null, value: null, container: null };
-          }
-        }
-        this.applyFilters(); this.updateFilterTags(); dashboardManager.refreshDashboard();
-      },
-      updateFilterTags: function() {
-        const filters = app.filters;
-        const activeFiltersContainer = elements.activeFilters;
-        if (!activeFiltersContainer) return;
-        activeFiltersContainer.innerHTML = '';
-        const tags = [];
-        if (filters.valueRange) tags.push({ key: 'valueRange', label: 'Value', value: `${utils.formatMoney(filters.valueRange.min)} - ${utils.formatMoney(filters.valueRange.max)}` });
-        if (filters.startDate) tags.push({ key: 'startDate', label: 'From', value: utils.formatDate(new Date(filters.startDate + 'T00:00:00')) }); 
-        if (filters.endDate) tags.push({ key: 'endDate', label: 'To', value: utils.formatDate(new Date(filters.endDate + 'T00:00:00')) });     
-        if (filters.agency) tags.push({ key: 'agency', label: 'Agency', value: filters.agency });
-        if (filters.office) tags.push({ key: 'office', label: 'Office', value: filters.office });
-        if (filters.naics) tags.push({ key: 'naics', label: 'NAICS', value: filters.naics });
-        if (filters.psc) tags.push({ key: 'psc', label: 'PSC', value: filters.psc });
-        if (filters.vendor) tags.push({ key: 'vendor', label: 'Vendor', value: filters.vendor });
-        if (filters.search) tags.push({ key: 'search', label: 'Search', value: filters.search });
-        
-        tags.forEach(tag => {
-          const tagElement = document.createElement('div');
-          tagElement.className = 'filter-tag';
-          tagElement.innerHTML = `<span class="filter-tag-label">${tag.label}:</span> ${utils.truncateText(tag.value, 20)} <button class="filter-tag-remove" data-filter="${tag.key}"><i class="fas fa-times"></i></button>`;
-          activeFiltersContainer.appendChild(tagElement);
-          tagElement.querySelector('.filter-tag-remove').addEventListener('click', function() {
-            const filterKey = this.getAttribute('data-filter');
-            if (filterKey === 'valueRange') { delete app.filters.valueRange; elements.valueFilter.value = ''; } 
-            else if (filterKey === 'startDate') { delete app.filters.startDate; elements.startDate.value = ''; } 
-            else if (filterKey === 'endDate') { delete app.filters.endDate; elements.endDate.value = ''; } 
-            else if (filterKey === 'agency') { delete app.filters.agency; elements.agencyFilter.value = ''; if (app.selection.type === 'agency') app.selection = { type: null, value: null, container: null }; } 
-            else if (filterKey === 'office') { delete app.filters.office; elements.officeFilter.value = ''; if (app.selection.type === 'office') app.selection = { type: null, value: null, container: null }; } 
-            else if (filterKey === 'naics') { delete app.filters.naics; elements.naicsFilter.value = ''; if (app.selection.type === 'naics') app.selection = { type: null, value: null, container: null }; } 
-            else if (filterKey === 'psc') { delete app.filters.psc; elements.pscFilter.value = ''; if (app.selection.type === 'psc') app.selection = { type: null, value: null, container: null }; } 
-            else if (filterKey === 'vendor') { delete app.filters.vendor; elements.vendorFilter.value = ''; if (app.selection.type === 'vendor') app.selection = { type: null, value: null, container: null }; } 
-            else if (filterKey === 'search') { delete app.filters.search; elements.searchInput.value = ''; }
-            document.querySelectorAll('.selection-indicator').forEach(ind => ind.style.display = 'none');
-            filterManager.applyFilters(); dashboardManager.refreshDashboard();
-          });
+        filterManager.applyFilters(); dashboardManager.refreshDashboard();
+      });
+    });
+
+    const statusTitleElement = document.querySelector('#statusBox .status-title');
+    let titleText = '';
+    let dateRangeSuffix = '';
+
+    if (app.filteredData.length > 0) {
+        let minDate = null;
+        let maxDate = null;
+        app.filteredData.forEach(contract => {
+            if (contract.parsedDate && contract.parsedDate instanceof Date && !isNaN(contract.parsedDate.getTime())) {
+                if (!minDate || contract.parsedDate < minDate) minDate = contract.parsedDate;
+                if (!maxDate || contract.parsedDate > maxDate) maxDate = contract.parsedDate;
+            }
         });
-
-        const statusTitleElement = document.querySelector('#statusBox .status-title');
-        if (!statusTitleElement) return;
-        let titleText = '';
-        let dateRangeSuffix = '';
-
-        if (app.filteredData.length > 0) {
-            let minDate = null;
-            let maxDate = null;
-            app.filteredData.forEach(contract => {
-                if (contract.parsedDate && contract.parsedDate instanceof Date && !isNaN(contract.parsedDate.getTime())) {
-                    if (!minDate || contract.parsedDate < minDate) minDate = contract.parsedDate;
-                    if (!maxDate || contract.parsedDate > maxDate) maxDate = contract.parsedDate;
-                }
-            });
-            if (minDate && maxDate) {
-                const formattedMinDate = utils.formatDate(minDate);
-                const formattedMaxDate = utils.formatDate(maxDate);
-                if (formattedMinDate === formattedMaxDate) {
-                    if (formattedMinDate !== 'N/A') dateRangeSuffix = ` (Date: ${formattedMinDate})`;
-                } else {
-                    if (formattedMinDate !== 'N/A' && formattedMaxDate !== 'N/A') dateRangeSuffix = ` (${formattedMinDate} - ${formattedMaxDate})`;
-                    else if (formattedMinDate !== 'N/A') dateRangeSuffix = ` (From: ${formattedMinDate})`;
-                    else if (formattedMaxDate !== 'N/A') dateRangeSuffix = ` (To: ${formattedMaxDate})`;
-                }
+        if (minDate && maxDate) {
+            const formattedMinDate = utils.formatDate(minDate);
+            const formattedMaxDate = utils.formatDate(maxDate);
+            if (formattedMinDate === formattedMaxDate) {
+                if (formattedMinDate !== 'N/A') dateRangeSuffix = ` (Date: ${formattedMinDate})`;
+            } else {
+                if (formattedMinDate !== 'N/A' && formattedMaxDate !== 'N/A') dateRangeSuffix = ` (${formattedMinDate} - ${formattedMaxDate})`;
+                else if (formattedMinDate !== 'N/A') dateRangeSuffix = ` (From: ${formattedMinDate})`;
+                else if (formattedMaxDate !== 'N/A') dateRangeSuffix = ` (To: ${formattedMaxDate})`;
             }
         }
-        if (statusTitleElement) {
-            if (app.data.length === 0 && app.filteredData.length === 0) titleText = 'No data loaded';
-            else if (app.filteredData.length === 0 && app.data.length > 0) titleText = 'No contracts match current filters';
-            else if (app.filteredData.length < app.data.length) titleText = `Viewing ${app.filteredData.length.toLocaleString()} filtered contracts`;
-            else titleText = `Viewing all ${app.filteredData.length.toLocaleString()} contracts`;
-            statusTitleElement.textContent = titleText + dateRangeSuffix;
-        }
-      },
-      resetFilters: function() {
-        app.filters = {}; app.selection = { type: null, value: null, container: null };
-        if(elements.valueFilter) elements.valueFilter.value = ''; 
-        if(elements.startDate) elements.startDate.value = ''; 
-        if(elements.endDate) elements.endDate.value = '';
-        if(elements.agencyFilter) elements.agencyFilter.value = ''; 
-        if(elements.officeFilter) elements.officeFilter.value = ''; 
-        if(elements.naicsFilter) elements.naicsFilter.value = '';
-        if(elements.pscFilter) elements.pscFilter.value = ''; 
-        if(elements.vendorFilter) elements.vendorFilter.value = ''; 
-        if(elements.searchInput) elements.searchInput.value = '';
-        document.querySelectorAll('.selection-indicator').forEach(ind => ind.style.display = 'none');
-        app.filteredData = [...app.data];
-        this.updateFilterTags(); dashboardManager.refreshDashboard();
-      }
-    };
+    }
+    if (statusTitleElement) {
+        if (app.data.length === 0 && app.filteredData.length === 0) titleText = 'No data loaded';
+        else if (app.filteredData.length === 0 && app.data.length > 0) titleText = 'No contracts match current filters';
+        else if (app.filteredData.length < app.data.length) titleText = `Viewing ${app.filteredData.length.toLocaleString()} filtered contracts`;
+        else titleText = `Viewing ${app.filteredData.length.toLocaleString()} contracts`;
+        statusTitleElement.textContent = titleText + dateRangeSuffix;
+    }
+  },
+  resetFilters: function() {
+    app.filters = {}; app.selection = { type: null, value: null, container: null };
+    elements.valueFilter.value = ''; elements.startDate.value = ''; elements.endDate.value = '';
+    elements.agencyFilter.value = ''; elements.officeFilter.value = ''; elements.naicsFilter.value = '';
+    elements.pscFilter.value = ''; elements.vendorFilter.value = ''; elements.searchInput.value = '';
+    document.querySelectorAll('.selection-indicator').forEach(ind => ind.style.display = 'none');
+    app.filteredData = [...app.data];
+    this.updateFilterTags(); dashboardManager.refreshDashboard();
+  }
+};
+
 const chartManager = {
   initCharts: function() {
     Object.values(app.charts).forEach(c => { if (c instanceof Chart) c.destroy(); });
     app.charts = {};
-    if (!Chart) { console.error("Chart.js not loaded"); return; }
     
     const cssVars = {
       fontFamily: getComputedStyle(document.documentElement).getPropertyValue('--font-sans').trim(),
@@ -1876,1119 +1764,1057 @@ const chartManager = {
       border: getComputedStyle(document.documentElement).getPropertyValue('--border').trim(),
       bgPrimary: getComputedStyle(document.documentElement).getPropertyValue('--bg-primary').trim(),
       textPrimary: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim(),
-      primary: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim(),
-      radiusSm: 4, // var(--radius-sm)
-      radiusMd: 8, // var(--radius-md)
+      primary: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim()
     };
     
-    Chart.defaults.font.family = cssVars.fontFamily;
-    Chart.defaults.font.size = 12;
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.font.size = 11;
     Chart.defaults.color = cssVars.textSecondary;
-    Chart.defaults.borderColor = cssVars.border;
     
-    // Tooltip defaults
-    Chart.defaults.plugins.tooltip.backgroundColor = cssVars.bgPrimary;
-    Chart.defaults.plugins.tooltip.titleColor = cssVars.textPrimary;
-    Chart.defaults.plugins.tooltip.bodyColor = cssVars.textSecondary;
-    Chart.defaults.plugins.tooltip.borderColor = cssVars.border;
-    Chart.defaults.plugins.tooltip.borderWidth = 1;
-    Chart.defaults.plugins.tooltip.padding = 10;
-    Chart.defaults.plugins.tooltip.cornerRadius = cssVars.radiusMd;
-    Chart.defaults.plugins.tooltip.boxPadding = 5;
-
-    this.initValueTimeChart(cssVars); 
-    this.initAgencyChart(cssVars); 
+    this.initValueTimeChart(); 
+    this.initAgencyChart(); 
     this.initNaicsBubbleChart(cssVars); 
-    this.initVendorChart(cssVars); 
+    this.initVendorChart(); 
     this.initSankeyChart(); 
     this.addChartClickEvents();
   },
-  
-  initValueTimeChart: function(cssVars) {
-    if (!elements.valueTimeChart) return;
-    app.charts.valueTimeChart = new Chart(elements.valueTimeChart, {
-        type: 'line', 
-        data: { 
-            labels: [], 
-            datasets: [{ 
-                label: 'Contract Value', 
-                data: [], 
-                borderColor: cssVars.primary, 
-                backgroundColor: cssVars.primary + '26', // Softer fill
-                tension: 0.3, 
-                fill: true, 
-                pointBackgroundColor: cssVars.primary, 
-                pointBorderColor: cssVars.bgPrimary, 
-                pointHoverBackgroundColor: cssVars.bgPrimary,
-                pointHoverBorderColor: cssVars.primary,
-                pointBorderWidth: 2,
-                pointHoverBorderWidth: 2,
-                pointRadius: 4,
-                pointHoverRadius: 6,
-                borderWidth: 2.5 
-            }] 
+  initValueTimeChart: function() {
+  app.charts.valueTimeChart = new Chart(elements.valueTimeChart, { 
+    type: 'line', 
+    data: { 
+      labels: [], 
+      datasets: [{ 
+        label: 'Contract Value', 
+        data: [], 
+        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary'), 
+        backgroundColor: 'rgba(0,112,243,0.1)', 
+        tension: 0.4, 
+        fill: true, 
+        pointBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary'), 
+        pointBorderColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-primary'), 
+        pointBorderWidth: 1, 
+        pointRadius: 3, 
+        borderWidth: 2 
+      }] 
+    }, 
+    options: { 
+      responsive: true, 
+      maintainAspectRatio: false, 
+      plugins: { 
+        legend: { display: false }, 
+        tooltip: { callbacks: { label: c => utils.formatMoney(c.raw) } } 
+      }, 
+      scales: { 
+        x: { 
+          grid: { display: false }, 
+          ticks: { maxRotation: 45, minRotation: 45, font: { size: 10 } } 
         }, 
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false, 
-            plugins: { 
-                legend: { display: false }, 
-                tooltip: { callbacks: { label: c => utils.formatMoney(c.raw) } } 
-            }, 
-            scales: { 
-                x: { 
-                    grid: { display: false }, 
-                    ticks: { font: { size: 11 } } 
-                }, 
-                y: { 
-                    beginAtZero: true, 
-                    grid: { color: cssVars.border + '80' }, // Softer grid lines
-                    ticks: { callback: v => utils.formatMoney(v), font: { size: 11 } } 
-                } 
-            },
-            interaction: {
-                mode: 'index',
-                intersect: false,
-            },
+        y: { 
+          beginAtZero: true,
+          grid: { display: false }, 
+          ticks: { callback: v => utils.formatMoney(v), font: { size: 10 } } 
         } 
-    });
-  },
-  
-  initAgencyChart: function(cssVars) {
-    if (!elements.agencyChart) return;
-    app.charts.agencyChart = new Chart(elements.agencyChart, { 
-        type: 'bar', 
-        data: { 
-            labels: [], 
-            datasets: [{ 
-                label: 'Contract Value', 
-                data: [], 
-                backgroundColor: [], 
-                borderWidth: 0, 
-                borderRadius: { topLeft: cssVars.radiusSm, topRight: cssVars.radiusSm }, // Only top radius for vertical bars
-                barPercentage: 0.7, // Relative to Category
-                categoryPercentage: 0.6 // Relative to Bar
-            }] 
-        }, 
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false, 
-            indexAxis: 'y', 
-            plugins: { 
-                legend: { display: false }, 
-                tooltip: { callbacks: { label: c => utils.formatMoney(c.raw) } } 
-            }, 
-            scales: { 
-                x: { 
-                    beginAtZero: true, 
-                    grid: { color: cssVars.border + '80' },
-                    ticks: { callback: v => utils.formatMoney(v), font: { size: 11 } } 
-                }, 
-                y: { 
-                    grid: { display: false }, 
-                    ticks: { font: { size: 11 }, callback: function(value) { return utils.truncateText(this.getLabelForValue(value), 18);} } // More text
-                } 
-            } 
-        } 
-    });
-  },
-  
-  initNaicsBubbleChart: function(cssVars) {
-    if (!elements.naicsBubbleChart) return;
-    app.charts.naicsBubbleChart = new Chart(elements.naicsBubbleChart, { 
-        type: 'bubble', 
-        data: { datasets: [] }, 
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false, 
-            plugins: { 
-                legend: { display: false }, 
-                tooltip: { 
-                    callbacks: { 
-                        label: c => { 
-                            const d = c.dataset.data[c.dataIndex]; 
-                            return [
-                                utils.truncateText(d.label, 40) || '', 
-                                `Contracts: ${d.x.toLocaleString()}`, 
-                                `Value: ${utils.formatMoney(d.y)}`
-                            ]; 
-                        } 
-                    } 
-                } 
-            }, 
-            scales: { 
-                x: { 
-                    type: 'logarithmic', // Better for wide range of contract counts
-                    position: 'bottom', 
-                    title: { display: true, text: 'Number of Contracts (Log Scale)', font: { size: 11 } }, 
-                    grid: { color: cssVars.border + '80' },
-                    ticks: { font: { size: 10 }, 
-                        callback: function(value, index, values) {
-                            if (value === 1 || value === 10 || value === 100 || value === 1000 || value === 10000 || value === 100000) {
-                                return value.toLocaleString();
-                            }
-                            return null; // Hide other ticks for log scale
-                        }
-                    } 
-                }, 
-                y: { 
-                    type: 'logarithmic', // Better for wide range of values
-                    title: { display: true, text: 'Total Contract Value (Log Scale)', font: { size: 11 } }, 
-                    grid: { color: cssVars.border + '80' },
-                    ticks: { callback: v => {
-                            if (v >= 1000000000) return (v/1000000000).toFixed(0) + 'B';
-                            if (v >= 1000000) return (v/1000000).toFixed(0) + 'M';
-                            if (v >= 1000) return (v/1000).toFixed(0) + 'K';
-                            return v.toFixed(0);
-                        }, font: { size: 10 } 
-                    } 
-                } 
-            } 
-        } 
-    });
-  },
-  
-  initVendorChart: function(cssVars) {
-    if (!elements.vendorChart) return;
-    app.charts.vendorChart = new Chart(elements.vendorChart, { 
-        type: 'bar', 
-        data: { 
-            labels: [], 
-            datasets: [{ 
-                label: 'Contract Value', 
-                data: [], 
-                backgroundColor: [], 
-                borderWidth: 0, 
-                borderRadius: { topLeft: cssVars.radiusSm, topRight: cssVars.radiusSm },
-                barPercentage: 0.7,
-                categoryPercentage: 0.6 
-            }] 
-        }, 
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false, 
-            indexAxis: 'y', 
-            plugins: { 
-                legend: { display: false }, 
-                tooltip: { callbacks: { label: c => utils.formatMoney(c.raw) } } 
-            }, 
-            scales: { 
-                x: { 
-                    beginAtZero: true, 
-                    grid: { color: cssVars.border + '80' },
-                    ticks: { callback: v => utils.formatMoney(v), font: { size: 11 } } 
-                }, 
-                y: { 
-                    grid: { display: false }, 
-                    ticks: { font: { size: 11 }, callback: function(value) { return utils.truncateText(this.getLabelForValue(value), 18);}} 
-                } 
-            } 
-        } 
-    });
-  },
-  
-  initSankeyChart: function() {
-    if (!elements.sankeyChartContainer || !d3 || !d3.sankey) {
-         console.warn("Sankey chart container or D3/D3-Sankey not found."); return;
-    }
-    const c = elements.sankeyChartContainer; c.innerHTML = ''; 
-    elements.sankeyTop10.addEventListener('click', () => { app.sankeyDisplayLimit = 10; elements.sankeyTop10.className = 'btn btn-sm btn-primary'; elements.sankeyTop25.className = 'btn btn-sm btn-secondary'; elements.sankeyAll.className = 'btn btn-sm btn-secondary'; this.updateSankeyChart(); });
-    elements.sankeyTop25.addEventListener('click', () => { app.sankeyDisplayLimit = 25; elements.sankeyTop10.className = 'btn btn-sm btn-secondary'; elements.sankeyTop25.className = 'btn btn-sm btn-primary'; elements.sankeyAll.className = 'btn btn-sm btn-secondary'; this.updateSankeyChart(); });
-    elements.sankeyAll.addEventListener('click', () => { app.sankeyDisplayLimit = 0; elements.sankeyTop10.className = 'btn btn-sm btn-secondary'; elements.sankeyTop25.className = 'btn btn-sm btn-secondary'; elements.sankeyAll.className = 'btn btn-sm btn-primary'; this.updateSankeyChart(); });
-  },
-  
-  updateSankeyChart: function() {
-    if (!elements.sankeyChartContainer || !d3 || !d3.sankey) return;
-    const data = app.filteredData; 
-    if (!data || data.length === 0) { 
-        elements.sankeyChartContainer.innerHTML = '<p style="text-align:center; padding-top:20px; color:var(--text-secondary);">No data for Sankey chart.</p>'; 
-        return; 
-    }
-    
-    const sankeyData = dataProcessor.generateSankeyData(data, app.sankeyDisplayLimit);
-    if (!sankeyData || !sankeyData.nodes || sankeyData.nodes.length === 0 || !sankeyData.links || sankeyData.links.length === 0) {
-        elements.sankeyChartContainer.innerHTML = '<p style="text-align:center; padding-top:20px; color:var(--text-secondary);">Not enough data relationships for Sankey chart.</p>';
-        return;
-    }
-
-    const container = elements.sankeyChartContainer; container.innerHTML = ''; 
-    const width = container.clientWidth, height = container.clientHeight;
-    if (width <= 0 || height <= 0) { 
-        console.warn("Sankey container has no dimensions."); 
-        return;
-    }
-
-    const svg = d3.select(container).append('svg').attr('width', width).attr('height', height);
-    const sankeyLayout = d3.sankey()
-        .nodeWidth(18) // Slightly wider nodes
-        .nodePadding(12) // More padding
-        .extent([[10, 10], [width - 10, height - 10]])
-        .nodeSort((a,b) => b.value - a.value); 
-    
-    try {
-        const graph = sankeyLayout({ nodes: sankeyData.nodes.map(d => ({...d})), links: sankeyData.links.map(d => ({...d})) });
-        
-        graph.nodes.forEach(n => n.color = utils.stringToColor(n.name + n.type)); 
-        graph.links.forEach(l => {
-          l.gradientId = `gradient-${l.source.index}-${l.target.index}`;
-          const sourceColor = graph.nodes[l.source.index].color;
-          const targetColor = graph.nodes[l.target.index].color;
-        
-          const gradient = svg.append("defs")
-            .append("linearGradient")
-            .attr("id", l.gradientId)
-            .attr("gradientUnits", "userSpaceOnUse")
-            .attr("x1", l.source.x1)
-            .attr("x2", l.target.x0);
-
-          gradient.append("stop").attr("offset", "0%").attr("stop-color", sourceColor);
-          gradient.append("stop").attr("offset", "100%").attr("stop-color", targetColor);
-        });
-
-        const link = svg.append('g').attr('fill', 'none').attr('stroke-opacity', 0.6) // Slightly more opaque
-          .selectAll('path')
-          .data(graph.links)
-          .join('path')
-            .attr('d', d3.sankeyLinkHorizontal())
-            .attr('stroke', d => `url(#${d.gradientId})`)
-            .attr('stroke-width', d => Math.max(1.5, d.width)); // Slightly thicker base
-        
-        link.on('mouseover', function(event, d) {
-              d3.select(this).attr('stroke-opacity', 0.9);
-              elements.sankeyTooltip.style.opacity = 1;
-              elements.sankeyTooltip.style.left = (event.pageX + 15) + 'px';
-              elements.sankeyTooltip.style.top = (event.pageY - 15) + 'px';
-              elements.sankeyTooltip.innerHTML = `
-                <div style="font-weight:600;">${utils.truncateText(d.source.name, 25)} → ${utils.truncateText(d.target.name, 25)}</div>
-                <div>Value: ${utils.formatMoney(d.value)}</div>`;
-            })
-            .on('mouseout', function() {
-              d3.select(this).attr('stroke-opacity', 0.6);
-              elements.sankeyTooltip.style.opacity = 0;
-            })
-            .on('click', (event, d) => {
-              const sourceNode = d.source; const targetNode = d.target;
-              if (sourceNode.type === 'agency' && targetNode.type === 'office') { filterManager.applySelectionFilter('agency', sourceNode.name, null); elements.agencyFilter.value = sourceNode.name; } 
-              else if (sourceNode.type === 'office' && targetNode.type === 'vendor') { filterManager.applySelectionFilter('office', sourceNode.name, null); elements.officeFilter.value = sourceNode.name; }
-            });
-
-        const node = svg.append('g').attr('stroke', 'none') // No stroke on nodes for cleaner look
-          .selectAll('rect')
-          .data(graph.nodes)
-          .join('rect')
-            .attr('x', d => d.x0)
-            .attr('y', d => d.y0)
-            .attr('height', d => Math.max(1, d.y1 - d.y0)) 
-            .attr('width', d => d.x1 - d.x0)
-            .attr('fill', d => d.color)
-            .attr('rx', 4) // Rounded corners for nodes
-            .attr('ry', 4);
-
-        node.on('mouseover', function(event, d) {
-              d3.select(this).attr('fill', d3.color(d.color).darker(0.5));
-              link.attr('stroke-opacity', l => l.source.index === d.index || l.target.index === d.index ? 0.9 : 0.15);
-              elements.sankeyTooltip.style.opacity = 1;
-              elements.sankeyTooltip.style.left = (event.pageX + 15) + 'px';
-              elements.sankeyTooltip.style.top = (event.pageY - 15) + 'px';
-              elements.sankeyTooltip.innerHTML = `
-                <div style="font-weight:600;">${utils.truncateText(d.name, 30)}</div>
-                <div>Type: ${d.type.charAt(0).toUpperCase() + d.type.slice(1)}</div>
-                <div>Total Flow: ${utils.formatMoney(d.value)}</div>`;
-            })
-            .on('mouseout', function(event,d) {
-              d3.select(this).attr('fill', d.color);
-              link.attr('stroke-opacity', 0.6);
-              elements.sankeyTooltip.style.opacity = 0;
-            })
-            .on('click', (event, d) => {
-              if (d.type === 'agency') { filterManager.applySelectionFilter('agency', d.name, null); elements.agencyFilter.value = d.name; } 
-              else if (d.type === 'office') { filterManager.applySelectionFilter('office', d.name, null); elements.officeFilter.value = d.name; } 
-              else if (d.type === 'vendor') { filterManager.applySelectionFilter('vendor', d.name, null); elements.vendorFilter.value = d.name; }
-            });
-        
-        const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim();
-        
-        svg.append('g').attr('font-family', 'var(--font-sans)').attr('font-size', 11).attr('font-weight', 500)
-          .selectAll('text')
-          .data(graph.nodes)
-          .join('text')
-            .attr('x', d => d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
-            .attr('y', d => (d.y1 + d.y0) / 2)
-            .attr('dy', '0.35em')
-            .attr('text-anchor', d => d.x0 < width / 2 ? 'start' : 'end')
-            .attr('fill', textColor)
-            .text(d => utils.truncateText(d.name, (d.x1 - d.x0 > 60) ? 45 : 20)); 
-
-    } catch (sankeyError) {
-        console.error("Error rendering Sankey chart:", sankeyError);
-        elements.sankeyChartContainer.innerHTML = '<p style="text-align:center; padding-top:20px; color:var(--text-secondary);">Error rendering Sankey chart.</p>';
-    }
-  },
-  
-  addChartClickEvents: function() {
-    const addClickHandler = (container, chartGetter, filterTypeSetter) => {
-        if (!container) return;
-        container.addEventListener('click', ev => {
-            const chart = chartGetter();
-            if (!chart) return;
-            const activePoints = chart.getElementsAtEventForMode(ev, 'nearest', { intersect: true }, true);
-            if (activePoints.length > 0) {
-                filterTypeSetter(chart, activePoints[0], container);
-            }
-        });
-    };
-    addClickHandler(elements.valueTimeChartContainer, () => app.charts.valueTimeChart, (chart, point) => {
-        const label = chart.data.labels[point.index];
-        const match = label.match(/(\w+)\s*'?(\d+)?/);
-        if (match) {
-            const monthName = match[1], yearShort = match[2] || new Date().getFullYear().toString().substr(2);
-            const monthMap = { 'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5, 'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11 };
-            if (monthMap[monthName] !== undefined) {
-                const fullYear = parseInt('20' + yearShort);
-                const startDate = new Date(fullYear, monthMap[monthName], 1);
-                const endDate = new Date(fullYear, monthMap[monthName] + 1, 0);
-                const startDateStr = startDate.toISOString().split('T')[0];
-                const endDateStr = endDate.toISOString().split('T')[0];
-                elements.startDate.value = startDateStr; elements.endDate.value = endDateStr;
-                app.filters.startDate = startDateStr; app.filters.endDate = endDateStr;
-                filterManager.applyFilters(); filterManager.updateFilterTags(); dashboardManager.refreshDashboard();
-            }
-        }
-    });
-    addClickHandler(elements.agencyChartContainer, () => app.charts.agencyChart, (chart, point, cont) => {
-        const label = chart.data.labels[point.index];
-        const agencyName = Object.keys(app.agencies).find(name => utils.truncateText(name,18) === label || name === label);
-        if (agencyName) { filterManager.applySelectionFilter('agency', agencyName, cont); if(elements.agencyFilter) elements.agencyFilter.value = agencyName; }
-    });
-    addClickHandler(elements.naicsBubbleChartContainer, () => app.charts.naicsBubbleChart, (chart, point, cont) => {
-        const dataPoint = chart.data.datasets[point.datasetIndex].data[point.index];
-        const fullLabel = dataPoint.label; // Get full label from data point
-        const naicsCodeMatch = fullLabel.match(/^(\d[\d\w.-]*)/); 
-        if (naicsCodeMatch && naicsCodeMatch[1]) {
-            const naicsCode = naicsCodeMatch[1];
-            filterManager.applySelectionFilter('naics', naicsCode, cont); if(elements.naicsFilter) elements.naicsFilter.value = naicsCode;
-        }
-    });
-    addClickHandler(elements.vendorChartContainer, () => app.charts.vendorChart, (chart, point, cont) => {
-        const label = chart.data.labels[point.index];
-        const vendorName = Object.keys(app.vendors).find(name => utils.truncateText(name,18) === label || name === label);
-        if (vendorName) { filterManager.applySelectionFilter('vendor', vendorName, cont); if(elements.vendorFilter) elements.vendorFilter.value = vendorName; }
-    });
-  },
-  
-  updateCharts: function() { 
-      this.updateValueTimeChart(); this.updateAgencyChart(); this.updateNaicsBubbleChart(); this.updateVendorChart(); this.updateSankeyChart(); 
-  },
-  
-  updateValueTimeChart: function() { 
-    if (!app.charts.valueTimeChart) return;
-    const data = app.filteredData; 
-    const valueByMonth = {}; 
-    data.forEach(c => { 
-        if (c.parsedDate) { 
-            const monthYear = `${c.parsedDate.getFullYear()}-${(c.parsedDate.getMonth() + 1).toString().padStart(2, '0')}`; 
-            if (!valueByMonth[monthYear]) valueByMonth[monthYear] = 0; 
-            valueByMonth[monthYear] += c.value; 
-        } 
-    }); 
-    const sortedMonths = Object.keys(valueByMonth).sort(), labels = [], values = []; 
-    sortedMonths.forEach(m => { 
-        const [year, monthNum] = m.split('-'), date = new Date(parseInt(year), parseInt(monthNum) - 1, 1); 
-        labels.push(date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })); 
-        values.push(valueByMonth[m]); 
-    }); 
-    const chart = app.charts.valueTimeChart; 
-    chart.data.labels = labels; chart.data.datasets[0].data = values; chart.update(); 
-  },
-  
-  updateAgencyChart: function() { 
-    if (!app.charts.agencyChart) return;
-    const data = app.filteredData; 
-    const valueByAgency = {}; 
-    data.forEach(c => { if (c.agency) { if (!valueByAgency[c.agency]) valueByAgency[c.agency] = 0; valueByAgency[c.agency] += c.value; } }); 
-    const agencies = Object.keys(valueByAgency).map(a => ({ name: a, value: valueByAgency[a] })).sort((a, b) => b.value - a.value).slice(0, 10); // Top 10
-    const chart = app.charts.agencyChart; 
-    chart.data.labels = agencies.map(a => utils.truncateText(a.name, 18)); 
-    chart.data.datasets[0].data = agencies.map(a => a.value); 
-    chart.data.datasets[0].backgroundColor = agencies.map(a => utils.stringToColor(a.name)); 
-    chart.update(); 
-  },
-  
-  updateNaicsBubbleChart: function() { 
-    if (!app.charts.naicsBubbleChart) return;
-    const data = app.filteredData; 
-    const naicsData = {}; 
-    data.forEach(c => { 
-        if (c.naics) { 
-            if (!naicsData[c.naics]) naicsData[c.naics] = { code: c.naics, description: c.naicsDescription || c.naics, count: 0, value: 0 }; 
-            naicsData[c.naics].count++; naicsData[c.naics].value += c.value; 
-        } 
-    }); 
-    const topNaics = Object.values(naicsData).filter(n => n.count > 0 && n.value > 0).sort((a, b) => b.value - a.value).slice(0, 25); 
-    
-    const values = topNaics.map(n => n.value);
-    const maxValue = Math.max(...values, 1); // Avoid division by zero if no values
-    const radiusScale = d3.scaleSqrt().domain([0, maxValue]).range([4, 35]); // minRadius, maxRadius
-
-
-    const chart = app.charts.naicsBubbleChart; 
-    chart.data.datasets = [{ 
-        label: topNaics.map(n => `${n.code} - ${utils.truncateText(n.description, 30)}`), // Used in tooltip
-        data: topNaics.map(n => ({ 
-            x: n.count, 
-            y: n.value, 
-            r: radiusScale(n.value), // Radius based on dollar value
-            label: `${n.code} - ${n.description}` // Store full label for tooltip
-        })), 
-        backgroundColor: topNaics.map(n => utils.stringToColor(n.code) + 'B3'), 
-        borderColor: topNaics.map(n => utils.stringToColor(n.code)), 
-        borderWidth: 1.5 
-    }]; 
-    chart.update(); 
-  },
-  
-  updateVendorChart: function() { 
-    if (!app.charts.vendorChart) return;
-    const data = app.filteredData; 
-    const valueByVendor = {}; 
-    data.forEach(c => { if (c.vendor) { if (!valueByVendor[c.vendor]) valueByVendor[c.vendor] = 0; valueByVendor[c.vendor] += c.value; } }); 
-    const vendors = Object.keys(valueByVendor).map(v => ({ name: v, value: valueByVendor[v] })).sort((a, b) => b.value - a.value).slice(0, 10); // Top 10
-    const chart = app.charts.vendorChart; 
-    chart.data.labels = vendors.map(v => utils.truncateText(v.name, 18)); 
-    chart.data.datasets[0].data = vendors.map(v => v.value); 
-    chart.data.datasets[0].backgroundColor = vendors.map(v => utils.stringToColor(v.name)); 
-    chart.update(); 
-  }
-};
-    
-	const tableManager = {
-      initTableSorting: function() { 
-        document.querySelectorAll('th[data-sort]').forEach(h => { 
-            h.addEventListener('click', function() { 
-                const table = this.closest('table');
-                if (!table) return;
-                const tbody = table.querySelector('tbody');
-                if (!tbody) return;
-                const rowsArray = Array.from(tbody.querySelectorAll('tr'));
-                const sortField = this.getAttribute('data-sort'); 
-                let sortDirection = 'asc'; 
-                if (this.classList.contains('sort-asc')) { sortDirection = 'desc'; } 
-                else if (this.classList.contains('sort-desc')) { sortDirection = 'asc'; }
-                
-                table.querySelectorAll('th').forEach(th => th.classList.remove('sort-asc', 'sort-desc')); 
-                this.classList.add(`sort-${sortDirection}`); 
-                
-                const compareFn = (a, b) => { 
-                    const cellA = a.querySelector(`td:nth-child(${Array.from(this.parentNode.children).indexOf(this) + 1})`);
-                    const cellB = b.querySelector(`td:nth-child(${Array.from(this.parentNode.children).indexOf(this) + 1})`);
-                    if (!cellA || !cellB) return 0;
-                    let valA = cellA.textContent.trim(), valB = cellB.textContent.trim(); 
-                    
-                    if (sortField === 'value' || sortField === 'contracts') { 
-                        valA = utils.parseMoney(valA); valB = utils.parseMoney(valB); 
-                    } else if (sortField === 'date') { 
-                        valA = utils.parseDate(valA)?.getTime() || 0; valB = utils.parseDate(valB)?.getTime() || 0; 
-                    } else { 
-                        valA = valA.toLowerCase(); valB = valB.toLowerCase();
-                    }
-                    if (valA < valB) return sortDirection === 'asc' ? -1 : 1; 
-                    if (valA > valB) return sortDirection === 'asc' ? 1 : -1; 
-                    return 0; 
-                }; 
-                rowsArray.sort(compareFn).forEach(r => tbody.appendChild(r)); 
-            }); 
-        }); 
-      },
-      updateContractsTable: function() { 
-        if (!elements.contractsTable) return;
-        const data = app.filteredData, tbody = elements.contractsTable; tbody.innerHTML = ''; 
-        [...data].sort((a, b) => (b.parsedDate?.getTime() || 0) - (a.parsedDate?.getTime() || 0)).slice(0, 15).forEach(c => this.addContractRow(c, tbody)); 
-      },
-      updateLargestContractsTable: function() { 
-        if (!elements.largestContractsTable) return;
-        const data = app.filteredData, tbody = elements.largestContractsTable; tbody.innerHTML = ''; 
-        [...data].sort((a, b) => b.value - a.value).slice(0, 15).forEach(c => this.addContractRow(c, tbody)); 
-      },
-      addContractRow: function(contract, tbody) { 
-        const row = document.createElement('tr'); 
-        const agencyInitials = utils.getInitials(contract.agency), agencyColor = utils.stringToColor(contract.agency);
-        const officeInitials = utils.getInitials(contract.office), officeColor = utils.stringToColor(contract.office);
-        const vendorInitials = utils.getInitials(contract.vendor), vendorColor = utils.stringToColor(contract.vendor); 
-        row.innerHTML = `
-            <td class="table-date-cell">${utils.formatDate(contract.date)}</td>
-            <td>${utils.truncateText(contract.id, 15)}</td>
-            <td><div class="agency-badge" title="${contract.agency}"><div class="agency-icon" style="background-color:${agencyColor}">${agencyInitials}</div> ${utils.truncateText(contract.agency,15)}</div></td>
-            <td><div class="office-badge" title="${contract.office}"><div class="office-icon" style="background-color:${officeColor}">${officeInitials}</div> ${utils.truncateText(contract.office,15)}</div></td>
-            <td><div class="vendor-badge" title="${contract.vendor}"><div class="vendor-icon" style="background-color:${vendorColor}">${vendorInitials}</div> ${utils.truncateText(contract.vendor,15)}</div></td>
-            <td title="${contract.description}">${utils.truncateText(contract.description,30)}</td>
-            <td class="money">${utils.formatMoney(contract.value)}</td>
-            <td><button class="btn btn-sm btn-primary view-contract" data-id="${contract.id}"><span class="btn-text">Details</span></button></td>`; 
-        tbody.appendChild(row); 
-        const viewButton = row.querySelector('.view-contract');
-        if(viewButton) viewButton.addEventListener('click', function() { tableManager.showContractDetails(this.getAttribute('data-id')); }); 
-      },
-      updateOfficesTable: function() { 
-        if (!elements.officesTable) return;
-        const data = app.filteredData, tbody = elements.officesTable; tbody.innerHTML = ''; 
-        const officeData = {}; 
-        data.forEach(c => { 
-            if (c.office) { 
-                if (!officeData[c.office]) officeData[c.office] = { name: c.office, agency: c.agency, count: 0, value: 0, naicsCodes: {}, vendors: {} }; 
-                officeData[c.office].count++; officeData[c.office].value += c.value; 
-                if (c.naics) { 
-                    if (!officeData[c.office].naicsCodes[c.naics]) officeData[c.office].naicsCodes[c.naics] = { code: c.naics, description: c.naicsDescription, count: 0, value: 0 }; 
-                    officeData[c.office].naicsCodes[c.naics].count++; officeData[c.office].naicsCodes[c.naics].value += c.value; 
-                } 
-                if (c.vendor) { 
-                    if (!officeData[c.office].vendors[c.vendor]) officeData[c.office].vendors[c.vendor] = { name: c.vendor, count: 0, value: 0 }; 
-                    officeData[c.office].vendors[c.vendor].count++; officeData[c.office].vendors[c.vendor].value += c.value; 
-                } 
-            } 
-        }); 
-        Object.values(officeData).sort((a, b) => b.value - a.value).slice(0, 10).forEach(office => { 
-            const topNaics = Object.values(office.naicsCodes).sort((a, b) => b.value - a.value)[0] || { code: 'N/A', description: 'N/A' }; 
-            const topVendor = Object.values(office.vendors).sort((a, b) => b.value - a.value)[0] || { name: 'N/A' }; 
-            const agencyInitials = utils.getInitials(office.agency), agencyColor = utils.stringToColor(office.agency);
-            const officeInitials = utils.getInitials(office.name), officeColor = utils.stringToColor(office.name);
-            const vendorInitials = utils.getInitials(topVendor.name), vendorColor = utils.stringToColor(topVendor.name); 
-            const row = document.createElement('tr'); 
-            row.innerHTML = `
-                <td><div class="agency-badge" title="${office.agency}"><div class="agency-icon" style="background-color:${agencyColor}">${agencyInitials}</div> ${utils.truncateText(office.agency,15)}</div></td>
-                <td><div class="office-badge" title="${office.name}"><div class="office-icon" style="background-color:${officeColor}">${officeInitials}</div> ${utils.truncateText(office.name,15)}</div></td>
-                <td>${office.count.toLocaleString()}</td>
-                <td class="money">${utils.formatMoney(office.value)}</td>
-                <td><span class="badge badge-primary" title="${topNaics.description}">${topNaics.code}</span></td>
-                <td><div class="vendor-badge" title="${topVendor.name}"><div class="vendor-icon" style="background-color:${vendorColor}">${vendorInitials}</div> ${utils.truncateText(topVendor.name,15)}</div></td>`; 
-            tbody.appendChild(row); 
-            row.addEventListener('click', function() { filterManager.applySelectionFilter('office', office.name, null); if(elements.officeFilter) elements.officeFilter.value = office.name; }); 
-        }); 
-      },
-      showContractDetails: function(contractId) { 
-        const contract = app.data.find(c => c.id === contractId); if (!contract) { console.error('Contract not found:', contractId); return; } 
-        const agencyInitials = utils.getInitials(contract.agency), agencyColor = utils.stringToColor(contract.agency);
-        const officeInitials = utils.getInitials(contract.office), officeColor = utils.stringToColor(contract.office);
-        const vendorInitials = utils.getInitials(contract.vendor), vendorColor = utils.stringToColor(contract.vendor); 
-        elements.contractModalBody.innerHTML = `
-            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:1.5rem;">
-                <div>
-                    <h4 style="margin-bottom:0.75rem;font-size:1.1rem;color:var(--primary);">Contract Information</h4>
-                    <p><strong>Contract ID:</strong> ${contract.id}</p>
-                    <p><strong>Reference IDV:</strong> ${contract.reference||'N/A'}</p>
-                    <p><strong>Date Signed:</strong> ${utils.formatDate(contract.date)}</p>
-                    <p><strong>Contract Type:</strong> ${contract.type||'N/A'}</p>
-                    <p><strong>Value:</strong> <span class="money">${utils.formatMoney(contract.value)}</span></p>
-                </div>
-                <div>
-                    <h4 style="margin-bottom:0.75rem;font-size:1.1rem;color:var(--primary);">Parties Involved</h4>
-                    <p style="display:flex;align-items:center;margin-bottom:0.5rem;"><div class="agency-icon" style="background-color:${agencyColor};margin-right:0.5rem;">${agencyInitials}</div><strong>Agency:</strong> ${contract.agency}</p>
-                    <p style="display:flex;align-items:center;margin-bottom:0.5rem;"><div class="office-icon" style="background-color:${officeColor};margin-right:0.5rem;">${officeInitials}</div><strong>Office:</strong> ${contract.office||'N/A'}</p>
-                    <p style="display:flex;align-items:center;margin-bottom:0.5rem;"><div class="vendor-icon" style="background-color:${vendorColor};margin-right:0.5rem;">${vendorInitials}</div><strong>Vendor:</strong> ${contract.vendor}</p>
-                    <p><strong>Parent Company:</strong> ${contract.parentVendor||'N/A'}</p>
-                </div>
-            <div style="margin-top:1.5rem;">
-                <h4 style="margin-bottom:0.75rem;font-size:1.1rem;color:var(--primary);">Description & Codes</h4>
-                <p><strong>Description:</strong> ${contract.description||'No description available.'}</p>
-                <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:1rem;margin-top:1rem;">
-                    <div><p><strong>NAICS:</strong> ${contract.naics||'N/A'}</p><p style="font-size:var(--font-xs);color:var(--text-secondary);">${contract.naicsDescription||''}</p></div>
-                    <div><p><strong>PSC:</strong> ${contract.psc||'N/A'}</p><p style="font-size:var(--font-xs);color:var(--text-secondary);">${contract.pscDescription||''}</p></div>
-                </div>
-            </div>
-            <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center;">
-                <button id="modalFilterByAgency" class="btn btn-sm btn-secondary"><i class="fas fa-filter"></i> <span class="btn-text">Filter by Agency</span></button>
-                <button id="modalFilterByOffice" class="btn btn-sm btn-secondary"><i class="fas fa-filter"></i> <span class="btn-text">Filter by Office</span></button>
-                <button id="modalFilterByVendor" class="btn btn-sm btn-secondary"><i class="fas fa-filter"></i> <span class="btn-text">Filter by Vendor</span></button>
-            </div>`; 
-        elements.contractModal.classList.add('active'); 
-        document.getElementById('modalFilterByAgency')?.addEventListener('click', () => { filterManager.applySelectionFilter('agency', contract.agency, elements.agencyChartContainer); if(elements.agencyFilter) elements.agencyFilter.value = contract.agency; this.hideContractDetails(); }); 
-        document.getElementById('modalFilterByOffice')?.addEventListener('click', () => { filterManager.applySelectionFilter('office', contract.office, null); if(elements.officeFilter) elements.officeFilter.value = contract.office; this.hideContractDetails(); }); 
-        document.getElementById('modalFilterByVendor')?.addEventListener('click', () => { filterManager.applySelectionFilter('vendor', contract.vendor, elements.vendorChartContainer); if(elements.vendorFilter) elements.vendorFilter.value = contract.vendor; this.hideContractDetails(); }); 
-      },
-      hideContractDetails: function() { elements.contractModal.classList.remove('active'); },
-      updateTables: function() { this.updateContractsTable(); this.updateLargestContractsTable(); this.updateOfficesTable(); }
-    };
-    
-    const dashboardManager = {
-      initDashboard: function() { 
-        if (!elements.loadingIndicator || !elements.errorMessage || !elements.noDataMessage || !elements.dashboard || !elements.statusBox) {
-            console.error("One or more critical dashboard elements are missing from the DOM.");
-            return;
-        }
-        elements.loadingIndicator.style.display = 'none'; 
-        elements.errorMessage.style.display = 'none'; 
-        elements.noDataMessage.style.display = 'none'; 
-        elements.dashboard.style.display = 'flex'; 
-        elements.statusBox.style.display = 'flex'; 
-        chartManager.initCharts(); 
-        tableManager.initTableSorting(); 
-        this.refreshDashboard(); 
-      },
-      refreshDashboard: function() { 
-        this.updateStats(); chartManager.updateCharts(); tableManager.updateTables(); filterManager.updateFilterTags(); 
-      },
-      updateStats: function() { 
-        const d = app.filteredData; 
-        if(elements.totalContracts) elements.totalContracts.textContent = d.length.toLocaleString(); 
-        if(elements.totalValue) elements.totalValue.textContent = utils.formatMoney(d.reduce((s, c) => s + c.value, 0)); 
-        if(elements.avgValue) elements.avgValue.textContent = utils.formatMoney(d.length > 0 ? d.reduce((s, c) => s + c.value, 0) / d.length : 0); 
-        if(elements.uniqueVendors) elements.uniqueVendors.textContent = new Set(d.map(c => c.vendor).filter(Boolean)).size.toLocaleString(); 
-      }
-    };
-
-    // Data Generator for sample data
-    const sampleDataGenerator = {
-      agencies: [
-        "Department of Defense", "Department of Veterans Affairs", "Department of Homeland Security", 
-        "Department of Health and Human Services", "Department of Energy", "NASA", 
-        "General Services Administration", "Department of Justice", "Department of State", 
-        "Department of Agriculture"
-      ],
-      offices: {
-        "Department of Defense": ["Pentagon Contracting Office", "Army Contracting Command", "Naval Supply Systems Command", "Air Force Materiel Command"],
-        "Department of Veterans Affairs": ["VA National Acquisition Center", "VA Technology Acquisition Center", "Veterans Health Administration Procurement"],
-        "Department of Homeland Security": ["DHS Office of Procurement Operations", "FEMA Acquisition Management Division", "CBP Procurement Directorate"],
-        "Department of Health and Human Services": ["CMS Office of Acquisition and Grants", "NIH Office of Acquisition Management", "CDC Procurement and Grants Office"],
-        "Department of Energy": ["DOE Office of Acquisition Management", "National Nuclear Security Administration", "Office of Environmental Management"],
-        "NASA": ["NASA Shared Services Center", "Johnson Space Center Procurement", "Goddard Space Flight Center Procurement"],
-        "General Services Administration": ["Federal Acquisition Service", "Public Buildings Service", "GSA IT Acquisition Operations"],
-        "Department of Justice": ["FBI Procurement Section", "DEA Office of Acquisition", "Office of Justice Programs"],
-        "Department of State": ["Office of Acquisition Management", "Overseas Buildings Operations", "Bureau of Diplomatic Security"],
-        "Department of Agriculture": ["Agricultural Research Service", "Forest Service Acquisition Management", "Farm Service Agency"]
-      },
-      vendors: [
-        "Lockheed Martin Corporation", "Boeing Company", "Raytheon Technologies", "General Dynamics Corporation", 
-        "Northrop Grumman", "McKesson Corporation", "Leidos Holdings", "Booz Allen Hamilton", 
-        "CACI International", "Science Applications International Corporation", "Humana Inc.", 
-        "Microsoft Corporation", "Amazon Web Services", "Dell Technologies", "IBM Corporation",
-        "Accenture Federal Services", "Deloitte Consulting", "ManTech International", "CGI Federal",
-        "L3Harris Technologies"
-      ],
-      naicsCodes: [
-        {code: "541330", description: "Engineering Services"},
-        {code: "541512", description: "Computer Systems Design Services"},
-        {code: "541519", description: "Other Computer Related Services"},
-        {code: "541611", description: "Administrative Management Consulting Services"},
-        {code: "541990", description: "All Other Professional and Technical Services"},
-        {code: "334511", description: "Search, Detection & Navigation Instruments"},
-        {code: "336411", description: "Aircraft Manufacturing"},
-        {code: "336414", description: "Guided Missile and Space Vehicle Manufacturing"},
-        {code: "541712", description: "Research and Development in Physical Sciences"},
-        {code: "561210", description: "Facilities Support Services"}
-      ],
-      pscCodes: [
-        {code: "R425", description: "Engineering and Technical Services"},
-        {code: "D302", description: "IT and Telecom- Systems Development"},
-        {code: "7030", description: "ADP Software"},
-        {code: "6625", description: "Electrical and Electronic Properties Testing Instruments"},
-        {code: "5895", description: "Miscellaneous Communication Equipment"},
-        {code: "R408", description: "Program Management/Support Services"},
-        {code: "AC65", description: "Medical- Hospital Equipment and Supplies"},
-        {code: "M1GC", description: "Operation of Government-Owned Facilities"},
-        {code: "4310", description: "Compressors and Vacuum Pumps"},
-        {code: "8415", description: "Clothing, Special Purpose"}
-      ],
-      generateRandomContract: function(index) {
-        const agency = this.agencies[Math.floor(Math.random() * this.agencies.length)];
-        const office = this.offices[agency][Math.floor(Math.random() * this.offices[agency].length)];
-        const vendor = this.vendors[Math.floor(Math.random() * this.vendors.length)];
-        const naics = this.naicsCodes[Math.floor(Math.random() * this.naicsCodes.length)];
-        const psc = this.pscCodes[Math.floor(Math.random() * this.pscCodes.length)];
-        
-        // Generate a date within the last 3 years
-        const today = new Date();
-        const threeYearsAgo = new Date();
-        threeYearsAgo.setFullYear(today.getFullYear() - 3);
-        const randomTimestamp = threeYearsAgo.getTime() + Math.random() * (today.getTime() - threeYearsAgo.getTime());
-        const randomDate = new Date(randomTimestamp);
-        
-        // Format date as "DD-MMM-YY"
-        const day = randomDate.getDate().toString().padStart(2, '0');
-        const month = randomDate.toLocaleString('en-US', { month: 'short' });
-        const year = randomDate.getFullYear().toString().slice(-2);
-        const formattedDate = `${day}-${month}-${year}`;
-        
-        // Generate random contract value between $10K and $50M
-        const value = Math.floor(Math.random() * 50000000) + 10000;
-        
-        return {
-          id: `CONTRACT${index.toString().padStart(8, '0')}`,
-          reference: `IDV${Math.floor(Math.random() * 10000000)}`,
-          modification: `MOD${Math.floor(Math.random() * 100)}`,
-          date: formattedDate,
-          parsedDate: randomDate,
-          type: Math.random() > 0.5 ? 'Award' : 'IDV',
-          value: value,
-          agency: agency,
-          office: office,
-          psc: psc.code,
-          pscDescription: psc.description,
-          naics: naics.code,
-          naicsDescription: naics.description,
-          vendor: vendor,
-          parentVendor: Math.random() > 0.7 ? `Parent of ${vendor}` : vendor,
-          description: `${psc.description} - ${naics.description}`
-        };
-      },
-      generateSampleData: function(count) {
-        const contracts = [];
-        for (let i = 0; i < count; i++) {
-          contracts.push(this.generateRandomContract(i + 1));
-        }
-        return contracts;
-      },
-      getCsvText: function(contracts) {
-        // Create headers
-        const headers = ["Contract ID", "Reference IDV", "Modification Number", "Date Signed", 
-                        "Award/IDV Type", "Action Obligation ($)", "Contracting Agency", 
-                        "Contracting Office Name", "PSC", "PSC Description", "NAICS", 
-                        "NAICS Description", "Legal Business Name", "Ultimate Parent Legal Business Name"];
-        
-        let csvText = headers.join(",") + "\n";
-        
-        // Add rows
-        contracts.forEach(contract => {
-          const row = [
-            contract.id,
-            contract.reference,
-            contract.modification,
-            contract.date,
-            contract.type,
-            contract.value,
-            contract.agency,
-            contract.office,
-            contract.psc,
-            `"${contract.pscDescription}"`, // Adding quotes to handle commas in description
-            contract.naics,
-            `"${contract.naicsDescription}"`, // Adding quotes to handle commas in description
-            `"${contract.vendor}"`, // Adding quotes to handle commas in vendor names
-            `"${contract.parentVendor}"` // Adding quotes to handle commas in parent vendor names
-          ];
-          csvText += row.join(",") + "\n";
-        });
-        
-        return csvText;
-      }
-    };
-
-    const fileHandler = {
-      processAndDisplayCsv: function(csvText, fileNameForDisplay = "Uploaded Data") {
-        try {
-          filterManager.resetFilters(); 
-          const csvData = utils.parseCSV(csvText);
-          const processedData = dataProcessor.processData(csvData);
-          app.data = processedData; 
-          app.filteredData = [...processedData]; 
-          const analysis = dataProcessor.analyzeData(processedData);
-          app.agencies = analysis.agencies; app.offices = analysis.offices; app.vendors = analysis.vendors;
-          app.naicsCodes = analysis.naicsCodes; app.pscCodes = analysis.pscCodes;
-          this.populateFilterDropdowns();
-          dashboardManager.initDashboard(); 
-          const uploadBtnTextSpan = elements.uploadBtn.querySelector('.btn-text');
-          if(uploadBtnTextSpan) uploadBtnTextSpan.textContent = 'Upload CSV'; 
-          if(elements.csvFile) elements.csvFile.value = ''; 
-        } catch (error) {
-          console.error(`Error processing ${fileNameForDisplay}:`, error);
-          this.showError(`Error processing ${fileNameForDisplay}: ${error.message}. Please check CSV format and required columns.`);
-          if(app.data.length === 0 && elements.dashboard && elements.noDataMessage && elements.statusBox) {
-            elements.dashboard.style.display = 'none';
-            if (elements.statusBox) elements.statusBox.style.display = 'flex'; 
-            elements.noDataMessage.style.display = 'flex';
-          }
-        } finally {
-          if(elements.loadingIndicator) elements.loadingIndicator.style.display = 'none';
-        }
-      },
-      loadSampleData: function(dataType) {
-        if (!elements.loadingIndicator || !elements.errorMessage || !elements.noDataMessage || !elements.dashboard || !elements.statusBox) return;
-        elements.loadingIndicator.style.display = 'flex';
-        elements.errorMessage.style.display = 'none';
-        elements.noDataMessage.style.display = 'none'; 
-        elements.dashboard.style.display = 'none'; 
-        if (elements.statusBox) elements.statusBox.style.display = 'none'; 
-        
-        try {
-          let numContracts = 100; // Default to 100 contracts
-          
-          if (dataType === 'ytd') {
-            numContracts = 150; // More recent contracts for YTD
-          } else if (dataType === 'saas') {
-            numContracts = 75; // Fewer but larger contracts for SaaS 3YR
-          }
-          
-          const sampleContracts = sampleDataGenerator.generateSampleData(numContracts);
-          const csvText = sampleDataGenerator.getCsvText(sampleContracts);
-          
-          this.processAndDisplayCsv(csvText, `${dataType.toUpperCase()} Sample Data`);
-        } catch (error) {
-          console.error(`Error generating sample data:`, error);
-          this.showError(`Failed to generate sample data: ${error.message}.`);
-          if(elements.loadingIndicator) elements.loadingIndicator.style.display = 'none';
-          if(app.data.length === 0 && elements.noDataMessage && elements.statusBox) {
-            elements.noDataMessage.style.display = 'flex';
-            if (elements.statusBox) elements.statusBox.style.display = 'flex';
-          } else if (elements.dashboard && elements.statusBox) {
-            elements.dashboard.style.display = 'flex'; 
-            if (elements.statusBox) elements.statusBox.style.display = 'flex';
-          }
-        }
-      },
-      handleFileUpload: function() {
-        if (!elements.csvFile || !elements.loadingIndicator || !elements.errorMessage || !elements.noDataMessage || !elements.dashboard || !elements.statusBox) return;
-        const file = elements.csvFile.files[0];
-        if (!file) return; 
-
-        const fileName = file.name.toLowerCase();
-        const isValidExtension = fileName.endsWith('.csv') || fileName.endsWith('.xls'); 
-        if (!isValidExtension) { 
-            this.showError('Please upload a valid CSV file (or .xls if from iOS).'); 
-            elements.csvFile.value = ''; 
-            return; 
-        }
-        elements.loadingIndicator.style.display = 'flex';
-        elements.errorMessage.style.display = 'none';
-        elements.noDataMessage.style.display = 'none';
-        elements.dashboard.style.display = 'none';
-        if (elements.statusBox) elements.statusBox.style.display = 'none';
-        
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          this.processAndDisplayCsv(event.target.result, file.name);
-          const uploadBtnTextSpan = elements.uploadBtn.querySelector('.btn-text');
-          if(uploadBtnTextSpan) uploadBtnTextSpan.textContent = ` ${utils.truncateText(file.name,10)}`;
-        };
-        reader.onerror = () => {
-          this.showError('Error reading the file.');
-          if(elements.loadingIndicator) elements.loadingIndicator.style.display = 'none';
-           if(app.data.length === 0 && elements.noDataMessage && elements.statusBox) {
-                elements.noDataMessage.style.display = 'flex';
-                if (elements.statusBox) elements.statusBox.style.display = 'flex';
-           } else if (elements.dashboard && elements.statusBox) {
-                elements.dashboard.style.display = 'flex';
-                if (elements.statusBox) elements.statusBox.style.display = 'flex';
-           }
-        };
-        reader.readAsText(file);
-      },
-      showError: function(message) { 
-          if(elements.errorMessage) {
-            elements.errorMessage.textContent = message; 
-            elements.errorMessage.style.display = 'block'; 
-          }
-      },
-      populateFilterDropdowns: function() {
-        const populate = (el, items, valueField, labelFn, defaultOptionText) => { 
-            if (!el) return;
-            const currentVal = el.value;
-            el.innerHTML = `<option value="">${defaultOptionText}</option>`; 
-            Object.values(items) 
-                .sort((a, b) => (b.value || 0) - (a.value || 0)) 
-                .slice(0, 200) 
-                .forEach(item => { 
-                    const option = document.createElement('option'); 
-                    option.value = item[valueField]; 
-                    option.textContent = labelFn(item); 
-                    el.appendChild(option); 
-                });
-            if (currentVal && Array.from(el.options).some(opt => opt.value === currentVal)) {
-                el.value = currentVal;
-            }
-        };
-        populate(elements.agencyFilter, app.agencies, 'name', i => `${utils.truncateText(i.name, 35)} (${i.count.toLocaleString()})`, 'All Agencies');
-        populate(elements.officeFilter, app.offices, 'name', i => `${utils.truncateText(i.name, 35)} (${i.count.toLocaleString()})`, 'Any Office');
-        populate(elements.naicsFilter, app.naicsCodes, 'code', i => `${i.code} - ${utils.truncateText(i.description, 30)} (${i.count.toLocaleString()})`, 'Any NAICS');
-        populate(elements.pscFilter, app.pscCodes, 'code', i => `${i.code} - ${utils.truncateText(i.description, 30)} (${i.count.toLocaleString()})`, 'Any PSC');
-        populate(elements.vendorFilter, app.vendors, 'name', i => `${utils.truncateText(i.name, 35)} (${i.count.toLocaleString()})`, 'All Vendors');
-      }
-    };
-
-    function updateExampleButtonActiveState(activeButton) {
-      const exampleButtons = [elements.loadExample1Btn, elements.loadExample2Btn ]; 
-      exampleButtons.forEach(button => {
-        if (button) {
-          if (button === activeButton) {
-            button.classList.remove('btn-secondary'); button.classList.add('btn-primary');
-          } else {
-            button.classList.remove('btn-primary'); button.classList.add('btn-secondary');
-          }
-        }
-      });
-    }
-
-    function setupEventListeners() {
-      if(elements.csvFile) elements.csvFile.addEventListener('change', () => fileHandler.handleFileUpload());
-      if(elements.loadExample1Btn) elements.loadExample1Btn.addEventListener('click', () => { fileHandler.loadSampleData('ytd'); updateExampleButtonActiveState(elements.loadExample1Btn); });
-      if(elements.loadExample2Btn) elements.loadExample2Btn.addEventListener('click', () => { fileHandler.loadSampleData('saas'); updateExampleButtonActiveState(elements.loadExample2Btn); });
-
-      let searchTimeout;
-      if(elements.searchInput) elements.searchInput.addEventListener('input', () => { 
-          clearTimeout(searchTimeout); 
-          searchTimeout = setTimeout(() => { 
-              app.filters.search = elements.searchInput.value; 
-              filterManager.applyFilters(); 
-              dashboardManager.refreshDashboard(); 
-          }, 400); 
-      });
-
-      const addFilterListener = (el, filterKey, chartContainerForSelection = null) => {
-        if (el) {
-            el.addEventListener('change', () => {
-                const value = el.value;
-                if (value) app.filters[filterKey] = value;
-                else delete app.filters[filterKey];
-                
-                if (['agency', 'vendor', 'naics', 'psc', 'office'].includes(filterKey)) {
-                     filterManager.applySelectionFilter(filterKey, value, chartContainerForSelection);
-                } else { 
-                    filterManager.applyFilters();
-                    dashboardManager.refreshDashboard();
-                }
-            });
-        }
-      };
-
-      addFilterListener(elements.agencyFilter, 'agency', elements.agencyChartContainer);
-      addFilterListener(elements.vendorFilter, 'vendor', elements.vendorChartContainer);
-      addFilterListener(elements.pscFilter, 'psc', null); 
-      addFilterListener(elements.valueFilter, 'valueRange');
-      addFilterListener(elements.startDate, 'startDate');
-      addFilterListener(elements.endDate, 'endDate');
-      addFilterListener(elements.officeFilter, 'office', null); 
-      addFilterListener(elements.naicsFilter, 'naics', elements.naicsBubbleChartContainer); 
-
-      if(elements.moreFiltersBtn) elements.moreFiltersBtn.addEventListener('click', () => elements.advancedFiltersPanel.classList.toggle('active'));
-      if(elements.closeFilters) elements.closeFilters.addEventListener('click', () => elements.advancedFiltersPanel.classList.remove('active'));
-      if(elements.mobileFilterBtn) elements.mobileFilterBtn.addEventListener('click', () => {
-        if (elements.advancedFiltersPanel) {
-            elements.advancedFiltersPanel.classList.toggle('active');
-            if (elements.advancedFiltersPanel.classList.contains('active')) {
-                elements.advancedFiltersPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-        } else if (elements.appHeader) {
-             elements.appHeader.scrollIntoView({behavior: 'smooth'}); 
-        }
-      });
-      if(elements.resetFilters) elements.resetFilters.addEventListener('click', () => { filterManager.resetFilters(); if(elements.advancedFiltersPanel) elements.advancedFiltersPanel.classList.remove('active'); });
-      
-      if(elements.themeToggle) elements.themeToggle.addEventListener('click', () => toggleTheme());
-      
-      elements.tabButtons.forEach(btn => {
-  btn.addEventListener('click', function() {
-    // Remove active class from all buttons and tab contents
-    elements.tabButtons.forEach(b => b.classList.remove('active'));
-    elements.tabContents.forEach(c => c.classList.remove('active'));
-    
-    // Add active class to clicked button
-    this.classList.add('active');
-    
-    // Show corresponding tab content
-    const tabId = this.getAttribute('data-tab') + 'Tab';
-    const tabContent = document.getElementById(tabId);
-    if (tabContent) {
-      tabContent.classList.add('active');
-    }
+      } 
+    } 
   });
-});
+},
 
-      if(elements.closeModal) elements.closeModal.addEventListener('click', () => tableManager.hideContractDetails());
-      if(elements.closeModalBtn) elements.closeModalBtn.addEventListener('click', () => tableManager.hideContractDetails());
-      if(elements.contractModal) elements.contractModal.addEventListener('click', e => { if (e.target === elements.contractModal) tableManager.hideContractDetails(); });
-      
-      let resizeTimer;
-      window.addEventListener('resize', () => { 
-          clearTimeout(resizeTimer); 
-          resizeTimer = setTimeout(() => { 
-              if (elements.dashboard && elements.dashboard.style.display !== 'none') { 
-                  chartManager.updateSankeyChart(); 
-                  Object.values(app.charts).forEach(c => { if (c instanceof Chart) c.resize(); }); 
+initAgencyChart: function() {
+  app.charts.agencyChart = new Chart(elements.agencyChart, { 
+    type: 'bar', 
+    data: { 
+      labels: [], 
+      datasets: [{ 
+        label: 'Contract Value', 
+        data: [], 
+        backgroundColor: [], 
+        borderWidth: 0, 
+        borderRadius: 4, 
+        barThickness: 'flex', 
+        maxBarThickness: 15 
+      }] 
+    }, 
+    options: { 
+      responsive: true, 
+      maintainAspectRatio: false, 
+      indexAxis: 'y', 
+      plugins: { 
+        legend: { display: false }, 
+        tooltip: { callbacks: { label: c => utils.formatMoney(c.raw) } } 
+      }, 
+      scales: { 
+        x: { 
+          beginAtZero: true,
+          grid: { display: false }, 
+          ticks: { callback: v => utils.formatMoney(v), font: { size: 10 } } 
+        }, 
+        y: { 
+          grid: { display: false }, 
+          ticks: { font: { size: 10 } } 
+        } 
+      } 
+    } 
+  });
+},
+
+initNaicsBubbleChart: function(cssVars) {
+  if (!elements.naicsBubbleChart) return;
+  app.charts.naicsBubbleChart = new Chart(elements.naicsBubbleChart, { 
+      type: 'bubble', 
+      data: { datasets: [] }, 
+      options: { 
+          responsive: true, 
+          maintainAspectRatio: false, 
+          plugins: { 
+              legend: { display: false }, 
+              tooltip: { 
+                  callbacks: { 
+                      label: function(c) { 
+                          const d = c.dataset.data[c.dataIndex]; 
+                          return [
+                              utils.truncateText(d.label, 40) || '', 
+                              `Contracts: ${d.x.toLocaleString()}`, 
+                              `Value: ${utils.formatMoney(d.y)}`
+                          ]; 
+                      } 
+                  } 
               } 
-          }, 250); 
-      });
-    }
-function initThemeToggle() {
-  const darkmodeToggle = document.getElementById('darkmode-toggle');
-  
-  // Set initial state based on current theme
-  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-  darkmodeToggle.checked = currentTheme === 'dark';
-  
-  darkmodeToggle.addEventListener('change', function() {
-    // Toggle theme
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    
-    // Update chart themes if needed
-    if (app.charts && Object.keys(app.charts).length > 0 && typeof Chart !== 'undefined') {
-      Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
-      Chart.defaults.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
-      Chart.defaults.plugins.tooltip.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-primary').trim();
-      Chart.defaults.plugins.tooltip.titleColor = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim();
-      Chart.defaults.plugins.tooltip.bodyColor = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
-      Chart.defaults.plugins.tooltip.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
-
-      Object.values(app.charts).forEach(chartInstance => {
-        if (chartInstance instanceof Chart) {
-          // Update scales
-          if (chartInstance.options.scales) {
-            Object.values(chartInstance.options.scales).forEach(scale => {
-              if (scale.ticks) scale.ticks.color = Chart.defaults.color;
-              if (scale.grid) scale.grid.color = Chart.defaults.borderColor + '80'; // Softer grid
-              if (scale.title && scale.title.display) scale.title.color = Chart.defaults.color;
-            });
+          }, 
+          scales: { 
+              x: { 
+                  type: 'logarithmic',
+                  position: 'bottom', 
+                  title: { display: true, text: 'Number of Contracts (Log Scale)', font: { size: 11 } }, 
+                  grid: { display: false },
+                  min: 1,
+                  max: 10000,
+                  ticks: { 
+                      font: { size: 10 },
+                      maxTicksLimit: 6,
+                      callback: function(value, index, values) {
+                          if (value === 1 || value === 10 || value === 100 || value === 1000 || value === 10000) {
+                              return value.toLocaleString();
+                          }
+                          return null;
+                      }
+                  } 
+              }, 
+              y: { 
+                  type: 'logarithmic',
+                  title: { display: true, text: 'Total Contract Value (Log Scale)', font: { size: 11 } }, 
+                  grid: { display: false },
+                  min: 1000,
+                  max: 100000000000,
+                  ticks: { 
+                      maxTicksLimit: 6,
+                      callback: function(v) {
+                          if (v >= 1000000000) return '$' + (v/1000000000).toFixed(0) + 'B';
+                          if (v >= 1000000) return '$' + (v/1000000).toFixed(0) + 'M';
+                          if (v >= 1000) return '$' + (v/1000).toFixed(0) + 'K';
+                          return '$' + v.toFixed(0);
+                      }, 
+                      font: { size: 10 } 
+                  } 
+              } 
+          },
+          layout: {
+              padding: {
+                  top: 10,
+                  right: 20,
+                  bottom: 10,
+                  left: 10
+              }
           }
-          // Update line chart dataset colors
-          if (chartInstance.config.type === 'line' && chartInstance.data.datasets.length > 0) {
-            chartInstance.data.datasets[0].borderColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
-            chartInstance.data.datasets[0].backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() + '26';
-            chartInstance.data.datasets[0].pointBackgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
-            chartInstance.data.datasets[0].pointBorderColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-primary').trim();
-          }
-          chartInstance.update('none'); // 'none' for no animation during theme change
-        }
-      });
-      
-      if (elements.dashboard && elements.dashboard.style.display !== 'none') {
-        setTimeout(() => chartManager.updateSankeyChart(), 50); // Delay Sankey update slightly for styles to apply
-      }
-    }
+      } 
   });
+},
+
+initVendorChart: function() {
+  app.charts.vendorChart = new Chart(elements.vendorChart, { 
+    type: 'bar', 
+    data: { 
+      labels: [], 
+      datasets: [{ 
+        label: 'Contract Value', 
+        data: [], 
+        backgroundColor: [], 
+        borderWidth: 0, 
+        borderRadius: 4, 
+        barThickness: 'flex', 
+        maxBarThickness: 15 
+      }] 
+    }, 
+    options: { 
+      responsive: true, 
+      maintainAspectRatio: false, 
+      indexAxis: 'y', 
+      plugins: { 
+        legend: { display: false }, 
+        tooltip: { callbacks: { label: c => utils.formatMoney(c.raw) } } 
+      }, 
+      scales: { 
+        x: { 
+          beginAtZero: true,
+          grid: { display: false }, 
+          ticks: { callback: v => utils.formatMoney(v), font: { size: 10 } } 
+        }, 
+        y: { 
+          grid: { display: false }, 
+          ticks: { font: { size: 10 } } 
+        } 
+      } 
+    } 
+  });
+},
+
+ initSankeyChart: function() {
+   const c = elements.sankeyChartContainer; 
+   if (c) c.querySelector('svg')?.remove();
+   elements.sankeyTop10.addEventListener('click', () => { 
+     app.sankeyDisplayLimit = 10; 
+     elements.sankeyTop10.className = 'btn btn-sm btn-primary'; 
+     elements.sankeyTop25.className = 'btn btn-sm btn-secondary'; 
+     elements.sankeyAll.className = 'btn btn-sm btn-secondary'; 
+     this.updateSankeyChart(); 
+   });
+   elements.sankeyTop25.addEventListener('click', () => { 
+     app.sankeyDisplayLimit = 25; 
+     elements.sankeyTop10.className = 'btn btn-sm btn-secondary'; 
+     elements.sankeyTop25.className = 'btn btn-sm btn-primary'; 
+     elements.sankeyAll.className = 'btn btn-sm btn-secondary'; 
+     this.updateSankeyChart(); 
+   });
+   elements.sankeyAll.addEventListener('click', () => { 
+     app.sankeyDisplayLimit = 0; 
+     elements.sankeyTop10.className = 'btn btn-sm btn-secondary'; 
+     elements.sankeyTop25.className = 'btn btn-sm btn-secondary'; 
+     elements.sankeyAll.className = 'btn btn-sm btn-primary'; 
+     this.updateSankeyChart(); 
+   });
+ },
+updateSankeyChart: function() {
+   const data = app.filteredData; 
+   if (!data || data.length === 0) return;
+   const sankeyData = dataProcessor.generateSankeyData(data, app.sankeyDisplayLimit);
+   const container = elements.sankeyChartContainer; 
+   container.querySelector('svg')?.remove();
+   const width = container.clientWidth, height = container.clientHeight;
+   if (width <= 0 || height <= 0) return;
+   
+   const svg = d3.select(container).append('svg').attr('width', width).attr('height', height);
+   const sankey = d3.sankey().nodeWidth(18).nodePadding(10).extent([[20, 10], [width - 40, height - 30]]).nodeSort((a,b) => d3.descending(a.value, b.value));
+   
+   try {
+     const { nodes, links } = sankey({ nodes: sankeyData.nodes.map(d => Object.assign({}, d)), links: sankeyData.links.map(d => Object.assign({}, d)) });
+     
+     nodes.forEach(n => n.color = utils.stringToColor(n.name + n.type)); 
+     
+     // Create gradients for links
+     const defs = svg.append("defs");
+     links.forEach(l => {
+       l.gradientId = `gradient-${l.source.index}-${l.target.index}`;
+       const sourceColor = nodes[l.source.index].color;
+       const targetColor = nodes[l.target.index].color;
+     
+       const gradient = defs.append("linearGradient")
+         .attr("id", l.gradientId)
+         .attr("gradientUnits", "userSpaceOnUse") 
+         .attr("x1", nodes[l.source.index].x1) 
+         .attr("x2", nodes[l.target.index].x0);
+
+       gradient.append("stop").attr("offset", "0%").attr("stop-color", sourceColor).attr("stop-opacity", 0.7);
+       gradient.append("stop").attr("offset", "100%").attr("stop-color", targetColor).attr("stop-opacity", 0.7);
+     });
+
+     const link = svg.append('g').attr('fill', 'none').attr('stroke-opacity', 0.55)
+       .selectAll('path').data(links).join('path')
+       .attr('d', d3.sankeyLinkHorizontal())
+       .attr('stroke', d => `url(#${d.gradientId})`)
+       .attr('stroke-width', d => Math.max(1.5, d.width))
+       .on('mouseover', function(ev, d) { 
+         d3.select(this).attr('stroke-opacity', 0.85); 
+         const tt = elements.sankeyTooltip; 
+         tt.style.opacity = 1; 
+         tt.style.left = (ev.pageX + 15) + 'px'; 
+         tt.style.top = (ev.pageY - 15) + 'px'; 
+         tt.innerHTML = `<div style="font-weight:600;">${utils.truncateText(nodes[d.source.index].name, 25)} → ${utils.truncateText(nodes[d.target.index].name, 25)}</div><div>Value: ${utils.formatMoney(d.value)}</div>`; 
+       })
+       .on('mouseout', function() { 
+         d3.select(this).attr('stroke-opacity', 0.55); 
+         elements.sankeyTooltip.style.opacity = 0; 
+       })
+       .on('click', function(ev, d) { 
+         const sn = nodes[d.source.index], tn = nodes[d.target.index]; 
+         if (sn.type === 'agency' && tn.type === 'office') { 
+           filterManager.applySelectionFilter('agency', sn.name, null); 
+           elements.agencyFilter.value = sn.name; 
+         } else if (sn.type === 'office' && tn.type === 'vendor') { 
+           filterManager.applySelectionFilter('office', sn.name, null); 
+           elements.officeFilter.value = sn.name; 
+         } 
+       });
+       
+     const node = svg.append('g').attr('stroke', 'none')
+       .selectAll('rect').data(nodes).join('rect')
+       .attr('x', d => d.x0)
+       .attr('y', d => d.y0)
+       .attr('height', d => Math.max(1, d.y1 - d.y0))
+       .attr('width', d => d.x1 - d.x0)
+       .attr('fill', d => d.color)
+       .attr('rx', 4)
+       .attr('ry', 4)
+       .on('mouseover', function(ev, d) { 
+         d3.select(this).attr('fill', d3.color(d.color).darker(0.3));
+         link.attr('stroke-opacity', l => l.source.index === d.index || l.target.index === d.index ? 0.85 : 0.1); 
+         const tt = elements.sankeyTooltip; 
+         tt.style.opacity = 1; 
+         tt.style.left = (ev.pageX + 15) + 'px'; 
+         tt.style.top = (ev.pageY - 15) + 'px'; 
+         tt.innerHTML = `<div style="font-weight:600;">${utils.truncateText(d.name, 30)}</div><div style="font-size:12px;">Type: ${d.type.charAt(0).toUpperCase() + d.type.slice(1)}</div><div style="font-size:12px;">Total Flow: ${utils.formatMoney(d.value)}</div>`; 
+       })
+       .on('mouseout', function(ev, d) { 
+         d3.select(this).attr('fill', d.color);
+         link.attr('stroke-opacity', 0.55); 
+         elements.sankeyTooltip.style.opacity = 0; 
+       })
+       .on('click', function(ev, d) { 
+         if (d.type === 'agency') { 
+           filterManager.applySelectionFilter('agency', d.name, null); 
+           elements.agencyFilter.value = d.name; 
+         } else if (d.type === 'office') { 
+           filterManager.applySelectionFilter('office', d.name, null); 
+           elements.officeFilter.value = d.name; 
+         } else if (d.type === 'vendor') { 
+           filterManager.applySelectionFilter('vendor', d.name, null); 
+           elements.vendorFilter.value = d.name; 
+         } 
+       });
+       
+     svg.append('g').attr('font-family', 'var(--font-sans)').attr('font-size', 11).attr('font-weight', 500)
+       .selectAll('text').data(nodes).join('text')
+       .attr('x', d => d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
+       .attr('y', d => (d.y1 + d.y0) / 2)
+       .attr('dy', '0.35em')
+       .attr('text-anchor', d => d.x0 < width / 2 ? 'start' : 'end')
+       .attr('fill', getComputedStyle(document.documentElement).getPropertyValue('--text-primary'))
+       .text(d => utils.truncateText(d.name, (d.x1 - d.x0 > 60) ? 30 : 20));
+   
+   } catch (sankeyError) {
+     console.error("Error rendering Sankey chart:", sankeyError);
+     container.innerHTML = '<p style="text-align:center; padding-top:var(--space-6); color:var(--text-secondary);">Error rendering Sankey chart.</p>';
+   }
+ },
+ addChartClickEvents: function() {
+   elements.valueTimeChartContainer.addEventListener('click', function(ev) { 
+     const chart = app.charts.valueTimeChart;
+     const ap = chart.getElementsAtEventForMode(ev, 'nearest', { intersect: true }, false); 
+     if (ap.length > 0) { 
+       const label = chart.data.labels[ap[0].index];
+       const match = label.match(/(\w+)\s*'?(\d+)?/); 
+       if (match) { 
+         const mn = match[1];
+         const ys = match[2] || new Date().getFullYear().toString().substr(2);
+         const mMap = { 'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5, 'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11 }; 
+         if (mMap[mn] !== undefined) { 
+           const fullYear = parseInt('20' + ys);
+           const startDate = new Date(fullYear, mMap[mn], 1);
+           const endDate = new Date(fullYear, mMap[mn] + 1, 0);
+           const startDateStr = startDate.toISOString().split('T')[0];
+           const endDateStr = endDate.toISOString().split('T')[0]; 
+           elements.startDate.value = startDateStr; 
+           elements.endDate.value = endDateStr; 
+           app.filters.startDate = startDateStr; 
+           app.filters.endDate = endDateStr; 
+           if (app.selection.type) { 
+             delete app.filters[app.selection.type]; 
+             app.selection = { type: null, value: null, container: null }; 
+             document.querySelectorAll('.selection-indicator').forEach(i => i.style.display = 'none'); 
+           } 
+           filterManager.applyFilters(); 
+           filterManager.updateFilterTags(); 
+           dashboardManager.refreshDashboard(); 
+         } 
+       } 
+     } 
+   });
+   
+   elements.agencyChartContainer.addEventListener('click', function(ev) { 
+     const chart = app.charts.agencyChart;
+     const ap = chart.getElementsAtEventForMode(ev, 'nearest', { intersect: true }, false); 
+     if (ap.length > 0) { 
+       const label = chart.data.labels[ap[0].index];
+       const agencyName = Object.keys(app.agencies).find(name => name === label || label.includes(name)); 
+       if (agencyName) { 
+         filterManager.applySelectionFilter('agency', agencyName, elements.agencyChartContainer); 
+         elements.agencyFilter.value = agencyName; 
+       } 
+     } 
+   });
+   
+   elements.naicsBubbleChartContainer.addEventListener('click', function(ev) { 
+     const chart = app.charts.naicsBubbleChart;
+     const ap = chart.getElementsAtEventForMode(ev, 'nearest', { intersect: true }, false); 
+     if (ap.length > 0) { 
+         const dataPoint = chart.data.datasets[ap[0].datasetIndex].data[ap[0].index];
+         const fullLabel = dataPoint.label;
+         const naicsCodeMatch = fullLabel.match(/^(\d[\d\w.-]*)/); 
+         if (naicsCodeMatch && naicsCodeMatch[1]) {
+             const naicsCode = naicsCodeMatch[1];
+             filterManager.applySelectionFilter('naics', naicsCode, elements.naicsBubbleChartContainer); 
+             elements.naicsFilter.value = naicsCode;
+         }
+     } 
+   });
+   
+   elements.vendorChartContainer.addEventListener('click', function(ev) { 
+     const chart = app.charts.vendorChart;
+     const ap = chart.getElementsAtEventForMode(ev, 'nearest', { intersect: true }, false); 
+     if (ap.length > 0) { 
+       const label = chart.data.labels[ap[0].index];
+       const vendorName = Object.keys(app.vendors).find(name => name === label || label.includes(name) || name.includes(label)); 
+       if (vendorName) { 
+         filterManager.applySelectionFilter('vendor', vendorName, elements.vendorChartContainer); 
+         elements.vendorFilter.value = vendorName; 
+       } 
+     } 
+   });
+ },
+ 
+ resizeAllCharts: function() {
+   Object.values(app.charts).forEach(chartInstance => { 
+     if (chartInstance instanceof Chart) {
+       chartInstance.resize();
+       chartInstance.update('none');
+     }
+   });
+   this.updateSankeyChart();
+ },
+ 
+ updateCharts: function() { 
+   this.updateValueTimeChart(); 
+   this.updateAgencyChart(); 
+   this.updateNaicsBubbleChart(); 
+   this.updateVendorChart(); 
+   this.updateSankeyChart(); 
+ },
+ 
+ updateValueTimeChart: function() { 
+   const data = app.filteredData; 
+   if (!data || data.length === 0) return; 
+   const valueByMonth = {}; 
+   data.forEach(c => { 
+     if (c.parsedDate) { 
+       const monthYear = `${c.parsedDate.getFullYear()}-${(c.parsedDate.getMonth() + 1).toString().padStart(2, '0')}`; 
+       if (!valueByMonth[monthYear]) valueByMonth[monthYear] = 0; 
+       valueByMonth[monthYear] += c.value; 
+     } 
+   }); 
+   const sortedMonths = Object.keys(valueByMonth).sort();
+   const labels = [], values = []; 
+   sortedMonths.forEach(m => { 
+     const [year, monthNum] = m.split('-');
+     const date = new Date(parseInt(year), parseInt(monthNum) - 1, 1); 
+     labels.push(date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })); 
+     values.push(valueByMonth[m]); 
+   }); 
+   const chart = app.charts.valueTimeChart; 
+   chart.data.labels = labels; 
+   chart.data.datasets[0].data = values; 
+   chart.update(); 
+ },
+ 
+ updateAgencyChart: function() { 
+   const data = app.filteredData; 
+   if (!data || data.length === 0) return; 
+   const valueByAgency = {}; 
+   data.forEach(c => { 
+     if (c.agency) { 
+       if (!valueByAgency[c.agency]) valueByAgency[c.agency] = 0; 
+       valueByAgency[c.agency] += c.value; 
+     } 
+   }); 
+   const agencies = Object.keys(valueByAgency).map(a => ({ name: a, value: valueByAgency[a] })).sort((a, b) => b.value - a.value).slice(0, 8);
+   const chart = app.charts.agencyChart; 
+   chart.data.labels = agencies.map(a => utils.truncateText(a.name, 15)); 
+   chart.data.datasets[0].data = agencies.map(a => a.value); 
+   chart.data.datasets[0].backgroundColor = agencies.map(a => utils.stringToColor(a.name)); 
+   chart.update(); 
+ },
+updateNaicsBubbleChart: function() { 
+  if (!app.charts.naicsBubbleChart) return;
+  const data = app.filteredData; 
+  const naicsData = {}; 
+  data.forEach(c => { 
+      if (c.naics) { 
+          if (!naicsData[c.naics]) naicsData[c.naics] = { code: c.naics, description: c.naicsDescription || c.naics, count: 0, value: 0 }; 
+          naicsData[c.naics].count++; 
+          naicsData[c.naics].value += c.value; 
+      } 
+  }); 
+  const topNaics = Object.values(naicsData).filter(n => n.count > 0 && n.value > 0).sort((a, b) => b.value - a.value).slice(0, 25); 
+  
+  if (topNaics.length === 0) return;
+  
+  const values = topNaics.map(n => n.value);
+  const counts = topNaics.map(n => n.count);
+  const maxValue = Math.max(...values, 1);
+  const maxCount = Math.max(...counts, 1);
+  const minValue = Math.min(...values, 1000);
+  const minCount = Math.min(...counts, 1);
+  
+  // Dynamic radius scaling based on actual data range
+  const radiusScale = d3.scaleSqrt().domain([minValue, maxValue]).range([6, 25]);
+
+  const chart = app.charts.naicsBubbleChart; 
+  
+  // Update scale limits based on actual data
+  chart.options.scales.x.min = Math.max(1, minCount * 0.5);
+  chart.options.scales.x.max = Math.min(100000, maxCount * 2);
+  chart.options.scales.y.min = Math.max(1000, minValue * 0.1);
+  chart.options.scales.y.max = Math.min(1000000000000, maxValue * 10);
+  
+  chart.data.datasets = [{ 
+      label: topNaics.map(n => `${n.code} - ${utils.truncateText(n.description, 30)}`),
+      data: topNaics.map(n => ({ 
+          x: n.count, 
+          y: n.value, 
+          r: radiusScale(n.value),
+          label: `${n.code} - ${n.description}`
+      })), 
+      backgroundColor: topNaics.map(n => utils.stringToColor(n.code) + 'B3'), 
+      borderColor: topNaics.map(n => utils.stringToColor(n.code)), 
+      borderWidth: 1.5 
+  }]; 
+  chart.update(); 
+},
+ updateVendorChart: function() { 
+   const data = app.filteredData; 
+   if (!data || data.length === 0) return; 
+   const valueByVendor = {}; 
+   data.forEach(c => { 
+     if (c.vendor) { 
+       if (!valueByVendor[c.vendor]) valueByVendor[c.vendor] = 0; 
+       valueByVendor[c.vendor] += c.value; 
+     } 
+   }); 
+   const vendors = Object.keys(valueByVendor).map(v => ({ name: v, value: valueByVendor[v] })).sort((a, b) => b.value - a.value).slice(0, 8);
+   const chart = app.charts.vendorChart; 
+   chart.data.labels = vendors.map(v => utils.truncateText(v.name, 12)); 
+   chart.data.datasets[0].data = vendors.map(v => v.value); 
+   chart.data.datasets[0].backgroundColor = vendors.map(v => utils.stringToColor(v.name)); 
+   chart.update(); 
+ }
+};
+
+const tableManager = {
+ initTableSorting: function() { 
+   document.querySelectorAll('th[data-sort]').forEach(h => { 
+     h.addEventListener('click', function() { 
+       const table = this.closest('table');
+       if (!table) return;
+       const tbody = table.querySelector('tbody');
+       if (!tbody) return;
+       const rowsArray = Array.from(tbody.querySelectorAll('tr'));
+       const sortField = this.getAttribute('data-sort'); 
+       let sortDirection = 'asc'; 
+       if (this.classList.contains('sort-asc')) { sortDirection = 'desc'; } 
+       else if (this.classList.contains('sort-desc')) { sortDirection = 'asc'; }
+       
+       table.querySelectorAll('th').forEach(th => th.classList.remove('sort-asc', 'sort-desc')); 
+       this.classList.add(`sort-${sortDirection}`); 
+       
+       const compareFn = function(a, b) { 
+         const cellA = a.querySelector(`td:nth-child(${Array.from(this.parentNode.children).indexOf(this) + 1})`);
+         const cellB = b.querySelector(`td:nth-child(${Array.from(this.parentNode.children).indexOf(this) + 1})`);
+         if (!cellA || !cellB) return 0;
+         let valA = cellA.textContent.trim(), valB = cellB.textContent.trim(); 
+         
+         if (sortField === 'value' || sortField === 'contracts') { 
+           valA = utils.parseMoney(valA); valB = utils.parseMoney(valB); 
+         } else if (sortField === 'date') { 
+           valA = utils.parseDate(valA)?.getTime() || 0; valB = utils.parseDate(valB)?.getTime() || 0; 
+         } else { 
+           valA = valA.toLowerCase(); valB = valB.toLowerCase();
+         }
+         if (valA < valB) return sortDirection === 'asc' ? -1 : 1; 
+         if (valA > valB) return sortDirection === 'asc' ? 1 : -1; 
+         return 0; 
+       }.bind(this); 
+       rowsArray.sort(compareFn).forEach(r => tbody.appendChild(r)); 
+     }); 
+   }); 
+ },
+ 
+ updateContractsTable: function() { 
+   if (!elements.contractsTable) return;
+   const data = app.filteredData, tbody = elements.contractsTable; tbody.innerHTML = ''; 
+   [...data].sort((a, b) => (b.parsedDate?.getTime() || 0) - (a.parsedDate?.getTime() || 0)).slice(0, 15).forEach(c => this.addContractRow(c, tbody)); 
+ },
+ 
+ updateLargestContractsTable: function() { 
+   if (!elements.largestContractsTable) return;
+   const data = app.filteredData, tbody = elements.largestContractsTable; tbody.innerHTML = ''; 
+   [...data].sort((a, b) => b.value - a.value).slice(0, 15).forEach(c => this.addContractRow(c, tbody)); 
+ },
+ 
+ addContractRow: function(contract, tbody) { 
+  const row = document.createElement('tr'); 
+  const agencyInitials = utils.getInitials(contract.agency), agencyColor = utils.stringToColor(contract.agency);
+  const officeInitials = utils.getInitials(contract.office), officeColor = utils.stringToColor(contract.office);
+  const vendorInitials = utils.getInitials(contract.vendor), vendorColor = utils.stringToColor(contract.vendor); 
+  row.innerHTML = `
+      <td class="table-date-cell">${utils.formatDate(contract.date)}</td>
+      <td class="table-contract-id">${utils.truncateText(contract.id, 15)}</td>
+      <td><div class="agency-badge" title="${contract.agency}"><div class="agency-icon" style="background-color:${agencyColor}">${agencyInitials}</div> ${utils.truncateText(contract.agency,15)}</div></td>
+      <td><div class="office-badge" title="${contract.office}"><div class="office-icon" style="background-color:${officeColor}">${officeInitials}</div> ${utils.truncateText(contract.office,15)}</div></td>
+      <td><div class="vendor-badge" title="${contract.vendor}"><div class="vendor-icon" style="background-color:${vendorColor}">${vendorInitials}</div> ${utils.truncateText(contract.vendor,15)}</div></td>
+      <td title="${contract.description}">${utils.truncateText(contract.description,30)}</td>
+      <td class="money table-value-cell">${utils.formatMoney(contract.value)}</td>
+      <td class="table-actions-cell"><button class="btn btn-sm btn-primary view-contract" data-id="${contract.id}"><span class="btn-text">Details</span></button></td>`; 
+  tbody.appendChild(row); 
+  const viewButton = row.querySelector('.view-contract');
+  if(viewButton) viewButton.addEventListener('click', function() { tableManager.showContractDetails(this.getAttribute('data-id')); }); 
+},
+ 
+ updateOfficesTable: function() { 
+   if (!elements.officesTable) return;
+   const data = app.filteredData, tbody = elements.officesTable; tbody.innerHTML = ''; 
+   const officeData = {}; 
+   data.forEach(c => { 
+       if (c.office) { 
+           if (!officeData[c.office]) officeData[c.office] = { name: c.office, agency: c.agency, count: 0, value: 0, naicsCodes: {}, vendors: {} }; 
+           officeData[c.office].count++; officeData[c.office].value += c.value; 
+           if (c.naics) { 
+               if (!officeData[c.office].naicsCodes[c.naics]) officeData[c.office].naicsCodes[c.naics] = { code: c.naics, description: c.naicsDescription, count: 0, value: 0 }; 
+               officeData[c.office].naicsCodes[c.naics].count++; officeData[c.office].naicsCodes[c.naics].value += c.value; 
+           } 
+           if (c.vendor) { 
+               if (!officeData[c.office].vendors[c.vendor]) officeData[c.office].vendors[c.vendor] = { name: c.vendor, count: 0, value: 0 }; 
+               officeData[c.office].vendors[c.vendor].count++; officeData[c.office].vendors[c.vendor].value += c.value; 
+           } 
+       } 
+   }); 
+   Object.values(officeData).sort((a, b) => b.value - a.value).slice(0, 10).forEach(office => { 
+       const topNaics = Object.values(office.naicsCodes).sort((a, b) => b.value - a.value)[0] || { code: 'N/A', description: 'N/A' }; 
+       const topVendor = Object.values(office.vendors).sort((a, b) => b.value - a.value)[0] || { name: 'N/A' }; 
+       const agencyInitials = utils.getInitials(office.agency), agencyColor = utils.stringToColor(office.agency);
+       const officeInitials = utils.getInitials(office.name), officeColor = utils.stringToColor(office.name);
+       const vendorInitials = utils.getInitials(topVendor.name), vendorColor = utils.stringToColor(topVendor.name); 
+       const row = document.createElement('tr'); 
+       row.innerHTML = `
+           <td><div class="agency-badge" title="${office.agency}"><div class="agency-icon" style="background-color:${agencyColor}">${agencyInitials}</div> ${utils.truncateText(office.agency,15)}</div></td>
+           <td><div class="office-badge" title="${office.name}"><div class="office-icon" style="background-color:${officeColor}">${officeInitials}</div> ${utils.truncateText(office.name,15)}</div></td>
+           <td>${office.count.toLocaleString()}</td>
+           <td class="money">${utils.formatMoney(office.value)}</td>
+           <td><span class="badge badge-primary" title="${topNaics.description}">${topNaics.code}</span></td>
+           <td><div class="vendor-badge" title="${topVendor.name}"><div class="vendor-icon" style="background-color:${vendorColor}">${vendorInitials}</div> ${utils.truncateText(topVendor.name,15)}</div></td>`; 
+       tbody.appendChild(row); 
+       row.addEventListener('click', function() { filterManager.applySelectionFilter('office', office.name, null); if(elements.officeFilter) elements.officeFilter.value = office.name; }); 
+   }); 
+ },
+ 
+ showContractDetails: function(contractId) { 
+   const contract = app.data.find(c => c.id === contractId); if (!contract) { console.error('Contract not found:', contractId); return; } 
+   const agencyInitials = utils.getInitials(contract.agency), agencyColor = utils.stringToColor(contract.agency);
+   const officeInitials = utils.getInitials(contract.office), officeColor = utils.stringToColor(contract.office);
+   const vendorInitials = utils.getInitials(contract.vendor), vendorColor = utils.stringToColor(contract.vendor); 
+   elements.contractModalBody.innerHTML = `
+       <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:1.5rem;">
+           <div>
+               <h4 style="margin-bottom:0.75rem;font-size:1.1rem;color:var(--primary);">Contract Information</h4>
+               <p><strong>Contract ID:</strong> ${contract.id}</p>
+               <p><strong>Reference IDV:</strong> ${contract.reference||'N/A'}</p>
+               <p><strong>Date Signed:</strong> ${utils.formatDate(contract.date)}</p>
+               <p><strong>Contract Type:</strong> ${contract.type||'N/A'}</p>
+               <p><strong>Value:</strong> <span class="money">${utils.formatMoney(contract.value)}</span></p>
+           </div>
+           <div>
+               <h4 style="margin-bottom:0.75rem;font-size:1.1rem;color:var(--primary);">Parties Involved</h4>
+               <p style="display:flex;align-items:center;margin-bottom:0.5rem;"><div class="agency-icon" style="background-color:${agencyColor};margin-right:0.5rem;">${agencyInitials}</div><strong>Agency:</strong> ${contract.agency}</p>
+               <p style="display:flex;align-items:center;margin-bottom:0.5rem;"><div class="office-icon" style="background-color:${officeColor};margin-right:0.5rem;">${officeInitials}</div><strong>Office:</strong> ${contract.office||'N/A'}</p>
+               <p style="display:flex;align-items:center;margin-bottom:0.5rem;"><div class="vendor-icon" style="background-color:${vendorColor};margin-right:0.5rem;">${vendorInitials}</div><strong>Vendor:</strong> ${contract.vendor}</p>
+               <p><strong>Parent Company:</strong> ${contract.parentVendor||'N/A'}</p>
+           </div>
+       </div>
+       <div style="margin-top:1.5rem;">
+           <h4 style="margin-bottom:0.75rem;font-size:1.1rem;color:var(--primary);">Description & Codes</h4>
+           <p><strong>Description:</strong> ${contract.description||'No description available.'}</p>
+           <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:1rem;margin-top:1rem;">
+               <div><p><strong>NAICS:</strong> ${contract.naics||'N/A'}</p><p style="font-size:var(--font-xs);color:var(--text-secondary);">${contract.naicsDescription||''}</p></div>
+               <div><p><strong>PSC:</strong> ${contract.psc||'N/A'}</p><p style="font-size:var(--font-xs);color:var(--text-secondary);">${contract.pscDescription||''}</p></div>
+           </div>
+       </div>
+       <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center;">
+           <button id="modalFilterByAgency" class="btn btn-sm btn-secondary"><i class="fas fa-filter"></i> <span class="btn-text">Filter by Agency</span></button>
+           <button id="modalFilterByOffice" class="btn btn-sm btn-secondary"><i class="fas fa-filter"></i> <span class="btn-text">Filter by Office</span></button>
+           <button id="modalFilterByVendor" class="btn btn-sm btn-secondary"><i class="fas fa-filter"></i> <span class="btn-text">Filter by Vendor</span></button>
+       </div>`; 
+   elements.contractModal.classList.add('active'); 
+   document.getElementById('modalFilterByAgency')?.addEventListener('click', () => { filterManager.applySelectionFilter('agency', contract.agency, elements.agencyChartContainer); if(elements.agencyFilter) elements.agencyFilter.value = contract.agency; this.hideContractDetails(); }); 
+   document.getElementById('modalFilterByOffice')?.addEventListener('click', () => { filterManager.applySelectionFilter('office', contract.office, null); if(elements.officeFilter) elements.officeFilter.value = contract.office; this.hideContractDetails(); }); 
+   document.getElementById('modalFilterByVendor')?.addEventListener('click', () => { filterManager.applySelectionFilter('vendor', contract.vendor, elements.vendorChartContainer); if(elements.vendorFilter) elements.vendorFilter.value = contract.vendor; this.hideContractDetails(); }); 
+ },
+ 
+ hideContractDetails: function() { elements.contractModal.classList.remove('active'); },
+ 
+ updateTables: function() { this.updateContractsTable(); this.updateLargestContractsTable(); this.updateOfficesTable(); }
+};
+
+const dashboardManager = {
+ initDashboard: function() { 
+   if (!elements.loadingIndicator || !elements.errorMessage || !elements.noDataMessage || !elements.dashboard || !elements.statusBox) {
+       console.error("One or more critical dashboard elements are missing from the DOM.");
+       return;
+   }
+   elements.loadingIndicator.style.display = 'none'; 
+   elements.errorMessage.style.display = 'none'; 
+   elements.noDataMessage.style.display = 'none'; 
+   elements.dashboard.style.display = 'flex'; 
+   elements.statusBox.style.display = 'flex'; 
+   chartManager.initCharts(); 
+   tableManager.initTableSorting(); 
+   this.refreshDashboard(); 
+ },
+ 
+ refreshDashboard: function() { 
+   this.updateStats(); chartManager.updateCharts(); tableManager.updateTables(); filterManager.updateFilterTags(); 
+ },
+ 
+ updateStats: function() { 
+   const d = app.filteredData; 
+   if(elements.totalContracts) elements.totalContracts.textContent = d.length.toLocaleString(); 
+   if(elements.totalValue) elements.totalValue.textContent = utils.formatMoney(d.reduce((s, c) => s + c.value, 0)); 
+   if(elements.avgValue) elements.avgValue.textContent = utils.formatMoney(d.length > 0 ? d.reduce((s, c) => s + c.value, 0) / d.length : 0); 
+   if(elements.uniqueVendors) elements.uniqueVendors.textContent = new Set(d.map(c => c.vendor).filter(Boolean)).size.toLocaleString(); 
+ }
+};
+
+const fileHandler = {
+ processAndDisplayCsv: function(csvText, fileNameForDisplay = "Uploaded Data") {
+   try {
+     filterManager.resetFilters(); 
+     const csvData = utils.parseCSV(csvText);
+     const processedData = dataProcessor.processData(csvData);
+     app.data = processedData; 
+     app.filteredData = [...processedData]; 
+     const analysis = dataProcessor.analyzeData(processedData);
+     app.agencies = analysis.agencies; app.offices = analysis.offices; app.vendors = analysis.vendors;
+     app.naicsCodes = analysis.naicsCodes; app.pscCodes = analysis.pscCodes;
+     this.populateFilterDropdowns();
+     dashboardManager.initDashboard(); 
+     const uploadBtnTextSpan = elements.uploadBtn.querySelector('.btn-text');
+     if(uploadBtnTextSpan) uploadBtnTextSpan.textContent = 'Upload';
+     elements.csvFile.value = ''; 
+   } catch (error) {
+     console.error('Error processing CSV data:', error);
+     this.showError(`Error processing ${fileNameForDisplay}: ${error.message}`);
+     if(app.data.length === 0) {
+       elements.dashboard.style.display = 'none';
+       elements.statusBox.style.display = 'none'; 
+       elements.noDataMessage.style.display = 'flex';
+     }
+   } finally {
+     elements.loadingIndicator.style.display = 'none';
+   }
+ },
+ 
+ loadCsvFromUrl: async function(csvUrl, fileNameForDisplay) {
+   elements.loadingIndicator.style.display = 'flex';
+   elements.errorMessage.style.display = 'none';
+   elements.noDataMessage.style.display = 'none'; 
+   elements.dashboard.style.display = 'none'; 
+   elements.statusBox.style.display = 'none'; 
+   try {
+     const response = await fetch(csvUrl);
+     if (!response.ok) {
+       throw new Error(`Network response was not ok: ${response.status} ${response.statusText} for ${fileNameForDisplay}`);
+     }
+     const csvText = await response.text();
+     this.processAndDisplayCsv(csvText, fileNameForDisplay);
+   } catch (error) {
+     console.error(`Error fetching CSV from ${csvUrl}:`, error);
+     this.showError(`Failed to load ${fileNameForDisplay}: ${error.message}. Check S3 CORS policy and file path.`);
+     elements.loadingIndicator.style.display = 'none';
+     if(app.data.length === 0) {
+       elements.noDataMessage.style.display = 'flex';
+     } else {
+       elements.dashboard.style.display = 'flex';
+       elements.statusBox.style.display = 'flex';
+     }
+   }
+ },
+ 
+ handleFileUpload: function() {
+   const file = elements.csvFile.files[0];
+   if (!file) return;
+
+   const fileName = file.name.toLowerCase();
+   const isValidExtension = fileName.endsWith('.csv') || fileName.endsWith('.xls');
+
+   if (!isValidExtension) {
+     this.showError('Please upload a valid CSV file (or .xls if from iOS).');
+     elements.csvFile.value = '';
+     return;
+   }
+
+   elements.loadingIndicator.style.display = 'flex';
+   elements.errorMessage.style.display = 'none';
+   elements.noDataMessage.style.display = 'none';
+   elements.dashboard.style.display = 'none';
+   elements.statusBox.style.display = 'none';
+
+   const reader = new FileReader();
+   reader.onload = (event) => {
+     this.processAndDisplayCsv(event.target.result, file.name);
+     const uploadBtnTextSpan = elements.uploadBtn.querySelector('.btn-text');
+     if (uploadBtnTextSpan) {
+       uploadBtnTextSpan.textContent = ` ${utils.truncateText(file.name, 10)}`;
+     }
+   };
+   reader.onerror = () => {
+     this.showError('Error reading the file.');
+     elements.loadingIndicator.style.display = 'none';
+     if (app.data.length === 0) {
+       elements.noDataMessage.style.display = 'flex';
+     } else {
+       elements.dashboard.style.display = 'flex';
+       elements.statusBox.style.display = 'flex';
+     }
+   };
+   reader.readAsText(file);
+ },
+ 
+ showError: function(message) { elements.errorMessage.textContent = message; elements.errorMessage.style.display = 'block'; },
+ 
+ populateFilterDropdowns: function() {
+   const pop = function(el, it, vf, lf) { 
+     while (el.options.length > 1) el.remove(1); 
+     [...it].sort((a, b) => b.count - a.count).slice(0, 100).forEach(i => { 
+       const o = document.createElement('option'); 
+       o.value = i[vf]; 
+       o.textContent = lf(i); 
+       el.appendChild(o); 
+     }); 
+   };
+   pop(elements.agencyFilter, Object.values(app.agencies), 'name', i => `${utils.truncateText(i.name, 30)} (${i.count})`);
+   pop(elements.officeFilter, Object.values(app.offices), 'name', i => `${utils.truncateText(i.name, 30)} (${i.count})`);
+   pop(elements.naicsFilter, Object.values(app.naicsCodes), 'code', i => `${i.code} - ${utils.truncateText(i.description, 25)} (${i.count})`);
+   pop(elements.pscFilter, Object.values(app.pscCodes), 'code', i => `${i.code} - ${utils.truncateText(i.description, 25)} (${i.count})`);
+   pop(elements.vendorFilter, Object.values(app.vendors), 'name', i => `${utils.truncateText(i.name, 30)} (${i.count})`);
+ }
+};
+
+function setupEventListeners() {
+ if(elements.csvFile) elements.csvFile.addEventListener('change', () => fileHandler.handleFileUpload());
+ 
+ if(elements.loadExample1Btn) elements.loadExample1Btn.addEventListener('click', () => { 
+   fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'ytd.csv', 'YTD Data'); 
+   updateExampleButtonActiveState(elements.loadExample1Btn); 
+ });
+ 
+ if(elements.loadExample2Btn) elements.loadExample2Btn.addEventListener('click', () => { 
+   fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'da10.csv', 'SaaS 3YR Data (da10.csv)'); 
+   updateExampleButtonActiveState(elements.loadExample2Btn); 
+ });
+
+ let searchTimeout;
+ if(elements.searchInput) elements.searchInput.addEventListener('input', () => { 
+     clearTimeout(searchTimeout); 
+     searchTimeout = setTimeout(() => { 
+         app.filters.search = elements.searchInput.value; 
+         filterManager.applyFilters(); 
+         dashboardManager.refreshDashboard(); 
+     }, 400); 
+ });
+
+ const addFilterListener = function(el, filterKey, chartContainerForSelection) {
+   if (el) {
+       el.addEventListener('change', () => {
+           const value = el.value;
+           if (value) app.filters[filterKey] = value;
+           else delete app.filters[filterKey];
+           
+           if (['agency', 'vendor', 'naics', 'psc', 'office'].includes(filterKey)) {
+                filterManager.applySelectionFilter(filterKey, value, chartContainerForSelection);
+           } else { 
+               filterManager.applyFilters();
+               dashboardManager.refreshDashboard();
+           }
+       });
+   }
+ };
+
+ addFilterListener(elements.agencyFilter, 'agency', elements.agencyChartContainer);
+ addFilterListener(elements.vendorFilter, 'vendor', elements.vendorChartContainer);
+ addFilterListener(elements.pscFilter, 'psc', null); 
+ 
+ if(elements.valueFilter) elements.valueFilter.addEventListener('change', () => { 
+   const r = elements.valueFilter.value; 
+   if (r) { 
+     const v = utils.parseValueRange(r); 
+     if (v) app.filters.valueRange = v; 
+     else delete app.filters.valueRange; 
+   } else delete app.filters.valueRange; 
+   filterManager.applyFilters(); 
+   dashboardManager.refreshDashboard(); 
+ });
+ 
+ if(elements.startDate) elements.startDate.addEventListener('change', () => { 
+   app.filters.startDate = elements.startDate.value; 
+   filterManager.applyFilters(); 
+   dashboardManager.refreshDashboard(); 
+ });
+ 
+ if(elements.endDate) elements.endDate.addEventListener('change', () => { 
+   app.filters.endDate = elements.endDate.value; 
+   filterManager.applyFilters(); 
+   dashboardManager.refreshDashboard(); 
+ });
+ 
+ addFilterListener(elements.officeFilter, 'office', null); 
+ addFilterListener(elements.naicsFilter, 'naics', elements.naicsBubbleChartContainer); 
+
+ if(elements.moreFiltersBtn) elements.moreFiltersBtn.addEventListener('click', () => elements.advancedFiltersPanel.classList.toggle('active'));
+ if(elements.closeFilters) elements.closeFilters.addEventListener('click', () => elements.advancedFiltersPanel.classList.remove('active'));
+ if(elements.mobileFilterBtn) elements.mobileFilterBtn.addEventListener('click', () => {
+   if (elements.advancedFiltersPanel) {
+       elements.advancedFiltersPanel.classList.toggle('active');
+       if (elements.advancedFiltersPanel.classList.contains('active')) {
+           elements.advancedFiltersPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+       }
+   } else if (elements.appHeader) {
+        elements.appHeader.scrollIntoView({behavior: 'smooth'}); 
+   }
+ });
+ 
+ if(elements.resetFilters) elements.resetFilters.addEventListener('click', () => { 
+   filterManager.resetFilters(); 
+   if(elements.advancedFiltersPanel) elements.advancedFiltersPanel.classList.remove('active'); 
+ });
+ 
+ elements.tabButtons.forEach(btn => {
+   btn.addEventListener('click', function() {
+     elements.tabButtons.forEach(b => b.classList.remove('active'));
+     elements.tabContents.forEach(c => c.classList.remove('active'));
+     this.classList.add('active');
+     const tabId = this.getAttribute('data-tab') + 'Tab';
+     const tabContent = document.getElementById(tabId);
+     if (tabContent) {
+       tabContent.classList.add('active');
+     }
+   });
+ });
+
+ if(elements.closeModal) elements.closeModal.addEventListener('click', () => tableManager.hideContractDetails());
+ if(elements.closeModalBtn) elements.closeModalBtn.addEventListener('click', () => tableManager.hideContractDetails());
+ if(elements.contractModal) elements.contractModal.addEventListener('click', e => { if (e.target === elements.contractModal) tableManager.hideContractDetails(); });
+ 
+ let resizeTimer;
+ window.addEventListener('resize', () => { 
+     clearTimeout(resizeTimer); 
+     resizeTimer = setTimeout(() => { 
+         if (elements.dashboard && elements.dashboard.style.display !== 'none') { 
+             chartManager.resizeAllCharts();
+         } 
+     }, 150); 
+ });
+ 
+ window.addEventListener('orientationchange', () => {
+   setTimeout(() => {
+     if (elements.dashboard && elements.dashboard.style.display !== 'none') { 
+       chartManager.resizeAllCharts();
+     }
+   }, 300);
+ });
 }
+
+function initThemeToggle() {
+ const themeToggle = document.getElementById('color-scheme');
+ 
+ const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+ themeToggle.checked = currentTheme === 'dark';
+ 
+ themeToggle.addEventListener('change', function() {
+   const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+   const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+   document.documentElement.setAttribute('data-theme', newTheme);
+   localStorage.setItem('theme', newTheme);
+   
+   if (app.charts && Object.keys(app.charts).length > 0 && typeof Chart !== 'undefined') {
+     Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
+     Chart.defaults.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
+
+     Object.values(app.charts).forEach(chartInstance => {
+       if (chartInstance instanceof Chart) {
+         if (chartInstance.options.scales) {
+           Object.values(chartInstance.options.scales).forEach(scale => {
+             if (scale.ticks) scale.ticks.color = Chart.defaults.color;
+             if (scale.grid) scale.grid.color = Chart.defaults.borderColor + '80';
+             if (scale.title && scale.title.display) scale.title.color = Chart.defaults.color;
+           });
+         }
+         if (chartInstance.config.type === 'line' && chartInstance.data.datasets.length > 0) {
+           chartInstance.data.datasets[0].borderColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+           chartInstance.data.datasets[0].backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() + '26';
+           chartInstance.data.datasets[0].pointBackgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+           chartInstance.data.datasets[0].pointBorderColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-primary').trim();
+         }
+         chartInstance.update('none');
+       }
+     });
+     
+     if (elements.dashboard && elements.dashboard.style.display !== 'none') {
+       setTimeout(() => chartManager.updateSankeyChart(), 50);
+     }
+   }
+ });
+}
+
 function loadSavedTheme() {
-  const savedTheme = localStorage.getItem('theme');
-  let effectiveTheme = document.documentElement.getAttribute('data-theme') || 
-                      (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  
-  if (savedTheme) { 
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    effectiveTheme = savedTheme;
-  } else {
-    document.documentElement.setAttribute('data-theme', effectiveTheme); 
-  }
-  
-  // Set initial toggle state based on theme
-  const darkmodeToggle = document.getElementById('darkmode-toggle');
-  if (darkmodeToggle) {
-    darkmodeToggle.checked = effectiveTheme === 'dark';
-  }
+ const savedTheme = localStorage.getItem('theme');
+ let effectiveTheme = document.documentElement.getAttribute('data-theme') || 
+                     (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+ 
+ if (savedTheme) { 
+   document.documentElement.setAttribute('data-theme', savedTheme);
+   effectiveTheme = savedTheme;
+ } else {
+   document.documentElement.setAttribute('data-theme', effectiveTheme); 
+ }
+ 
+ const themeToggle = document.getElementById('color-scheme');
+ if (themeToggle) {
+   themeToggle.checked = effectiveTheme === 'dark';
+ }
+}
+
+function updateExampleButtonActiveState(activeButton) {
+ const exampleButtons = [elements.loadExample1Btn, elements.loadExample2Btn];
+ exampleButtons.forEach(button => {
+   if (button) {
+     if (button === activeButton) {
+       button.classList.remove('btn-secondary');
+       button.classList.add('btn-primary');
+     } else {
+       button.classList.remove('btn-primary');
+       button.classList.add('btn-secondary');
+     }
+   }
+ });
 }
 
 function init() {
-  loadSavedTheme();
-  initThemeToggle(); // Call the new function instead of your previous theme setup
-  setupEventListeners();
-  if(elements.loadExample1Btn) {
-      updateExampleButtonActiveState(elements.loadExample1Btn);
-      fileHandler.loadSampleData('ytd');
-  } else { 
-      fileHandler.loadSampleData('ytd');
-  }
+ loadSavedTheme();
+ initThemeToggle();
+ setupEventListeners();
+ fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'ytd.csv', 'YTD Data (Initially Loaded)');
 }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init(); 
-    }
-  </script>
+if (document.readyState === 'loading') {
+   document.addEventListener('DOMContentLoaded', init);
+} else {
+   init(); 
+}
+</script>
 </body>
 </html>
