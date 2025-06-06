@@ -1527,7 +1527,7 @@ main#dashboard {
         <div class="header-content">
             <div class="data-load-controls example-csv-loader">
                 <div class="example-csv-buttons">
-                    <button id="loadExample1" class="btn btn-primary"><span class="btn-text">YTD > $500K</span></button>
+                    <button id="loadExample1" class="btn btn-primary"><span class="btn-text">YTD > $125K</span></button>
                     <button id="loadExample2" class="btn btn-secondary"><span class="btn-text">SaaS 3YR</span></button>
                     <input type="file" id="csvFile" accept=".csv,.xls" class="file-input" style="display: none;">
                     <label for="csvFile" class="btn btn-secondary"><i class="fas fa-upload mr-2"></i>
@@ -2199,7 +2199,7 @@ const dataProcessor = {
       date:row['Date Signed']||'', parsedDate:utils.parseDate(row['Date Signed']), type:row['Award/IDV Type']||'',
       value:utils.parseMoney(row['Action Obligation ($)']), agency:row['Contracting Agency']||'', office:row['Contracting Office Name']||'',
       psc:row['PSC']||'', pscDescription:row['PSC Description']||'', naics:row['NAICS']||'', naicsDescription:row['NAICS Description']||'',
-      vendor:row['Legal Business Name']||'', parentVendor:row['Ultimate Parent Legal Business Name']||'', description:row['PSC Description']||''
+      vendor:row['Legal Business Name']||'', description:row['PSC Description']||''
     }));
   },
   analyzeData: function(data) {
@@ -2221,7 +2221,7 @@ const dataProcessor = {
         }
       }
       if(contract.vendor){
-        if(!vendors[contract.vendor]) vendors[contract.vendor]={name:contract.vendor,parent:contract.parentVendor,count:0,value:0,agencies:new Set(),naicsCodes:{}};
+        if(!vendors[contract.vendor]) vendors[contract.vendor] = {name: contract.vendor,count: 0,value:0,agencies:new Set(),naicsCodes:{}};
         vendors[contract.vendor].count++; vendors[contract.vendor].value+=contract.value;
         if(contract.agency) vendors[contract.vendor].agencies.add(contract.agency);
         if(contract.naics){
@@ -2242,82 +2242,217 @@ const dataProcessor = {
     return {agencies,offices,vendors,naicsCodes,pscCodes};
   },
   
-  // New function to detect and remove circular links
-  removeSankeyCircularLinks: function(nodes, links) {
-    // Create a directed graph to detect cycles
-    const graph = {};
-    nodes.forEach(node => {
-      graph[node.name] = [];
-    });
-    
-    links.forEach(link => {
-      const sourceName = typeof link.source === 'object' ? link.source.name : nodes[link.source].name;
-      const targetName = typeof link.target === 'object' ? link.target.name : nodes[link.target].name;
-      graph[sourceName].push(targetName);
-    });
-    
-    // Check if adding this link would create a cycle
-    const hasCycle = (from, to, visited = new Set()) => {
-      if (from === to) return true;
-      if (visited.has(from)) return false;
-      
-      visited.add(from);
-      for (const next of graph[from]) {
-        if (hasCycle(next, to, visited)) return true;
-      }
-      return false;
-    };
-    
-    // Filter out links that would create cycles
-    const nonCircularLinks = links.filter(link => {
-      const sourceName = typeof link.source === 'object' ? link.source.name : nodes[link.source].name;
-      const targetName = typeof link.target === 'object' ? link.target.name : nodes[link.target].name;
-      
-      // Temporarily remove this edge to avoid false positives
-      const sourceEdges = [...graph[sourceName]];
-      graph[sourceName] = graph[sourceName].filter(t => t !== targetName);
-      
-      // Check if adding this edge back would create a cycle
-      const wouldCreateCycle = hasCycle(targetName, sourceName);
-      
-      // Restore the original edges
-      graph[sourceName] = sourceEdges;
-      
-      return !wouldCreateCycle;
-    });
-    
-    return nonCircularLinks;
-  },
+removeSankeyCircularLinks: function(nodes, links) {
+  // The current implementation isn't completely resolving circular dependencies
+  // Let's implement a more robust solution
   
-  // Updated generateSankeyData function
-  generateSankeyData: function(data, limit=10) {
-    const agencyOfficeFlows={}, officeVendorFlows={}, nodeMap=new Map();
-    data.forEach(c => {
-      if(c.agency&&c.office&&c.vendor&&c.value>0){
-        const aok=`${c.agency}|${c.office}`; if(!agencyOfficeFlows[aok]) agencyOfficeFlows[aok]={source:c.agency,target:c.office,value:0}; agencyOfficeFlows[aok].value+=c.value;
-        const ovk=`${c.office}|${c.vendor}`; if(!officeVendorFlows[ovk]) officeVendorFlows[ovk]={source:c.office,target:c.vendor,value:0}; officeVendorFlows[ovk].value+=c.value;
-      }
-    });
-    Object.values(agencyOfficeFlows).forEach(f => { if(!nodeMap.has(f.source)) nodeMap.set(f.source,{name:f.source,type:'agency'}); if(!nodeMap.has(f.target)) nodeMap.set(f.target,{name:f.target,type:'office'}); });
-    Object.values(officeVendorFlows).forEach(f => { if(!nodeMap.has(f.target)) nodeMap.set(f.target,{name:f.target,type:'vendor'}); });
-    const nodesArray = Array.from(nodeMap.values()); nodesArray.forEach((n,i)=>n.id=i);
-    const nodeIndexMap = new Map(); nodesArray.forEach((n,i)=>nodeIndexMap.set(n.name,i));
-    const agencyOfficeLinks=Object.values(agencyOfficeFlows).map(f=>({source:nodeIndexMap.get(f.source),target:nodeIndexMap.get(f.target),value:f.value,type:'agency-office'}));
-    const officeVendorLinks=Object.values(officeVendorFlows).map(f=>({source:nodeIndexMap.get(f.source),target:nodeIndexMap.get(f.target),value:f.value,type:'office-vendor'}));
-    let linksArray=[...agencyOfficeLinks,...officeVendorLinks].sort((a,b)=>b.value-a.value);
+  // Step 1: Create a graph representation
+  const graph = {};
+  nodes.forEach(node => {
+    graph[node.id] = {
+      id: node.id,
+      name: node.name,
+      type: node.type,
+      outgoing: [],
+      incoming: []
+    };
+  });
+  
+  // Step 2: Populate the graph with links
+  links.forEach((link, index) => {
+    const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+    const targetId = typeof link.target === 'object' ? link.target.id : link.target;
     
-    // When displaying all links, check for and remove circular references
-    if (limit === 0) {
-      linksArray = this.removeSankeyCircularLinks(nodesArray, linksArray);
+    // Store link indices instead of the links themselves
+    if (graph[sourceId]) graph[sourceId].outgoing.push({ target: targetId, linkIndex: index });
+    if (graph[targetId]) graph[targetId].incoming.push({ source: sourceId, linkIndex: index });
+  });
+  
+  // Step 3: Identify and break cycles
+  const visited = {};
+  const stack = {};
+  const linksToRemove = new Set();
+  
+  function dfs(nodeId) {
+    // Already completely visited this node
+    if (visited[nodeId] === 2) return false;
+    
+    // Found a cycle (node is in current path)
+    if (visited[nodeId] === 1) return true;
+    
+    visited[nodeId] = 1; // Mark as being in current path
+    stack[nodeId] = true;
+    
+    // Check all outgoing links
+    const node = graph[nodeId];
+    if (node && node.outgoing) {
+      for (const edge of node.outgoing) {
+        if (stack[edge.target] || dfs(edge.target)) {
+          // We found a cycle, mark this link for removal
+          linksToRemove.add(edge.linkIndex);
+          return true;
+        }
+      }
     }
     
-    const topLinks=[], includedNodes=new Set(), maxLinks = limit===0?linksArray.length:Math.min(limit,linksArray.length);
-    for(let i=0;i<maxLinks;i++){ topLinks.push(linksArray[i]); includedNodes.add(linksArray[i].source); includedNodes.add(linksArray[i].target); }
-    const finalNodes=nodesArray.filter((n,i)=>includedNodes.has(i)).map(n=>({...n}));
-    const finalNodeIndexMap=new Map(); finalNodes.forEach((n,i)=>finalNodeIndexMap.set(n.name,i));
-    const finalLinks=topLinks.map(l=>({source:finalNodeIndexMap.get(nodesArray[l.source].name),target:finalNodeIndexMap.get(nodesArray[l.target].name),value:l.value,type:l.type}));
-    return {nodes:finalNodes,links:finalLinks};
+    delete stack[nodeId]; // Remove from current path
+    visited[nodeId] = 2; // Mark as completely visited
+    return false;
   }
+  
+  // Run DFS from each node
+  nodes.forEach(node => {
+    if (!visited[node.id]) {
+      dfs(node.id);
+    }
+  });
+  
+  // Alternative strategy: If removing links by cycle detection doesn't work well,
+  // we enforce a hierarchical structure based on node types
+  if (linksToRemove.size === 0) {
+    // Group nodes by type
+    const nodesByType = {};
+    nodes.forEach(node => {
+      if (!nodesByType[node.type]) nodesByType[node.type] = [];
+      nodesByType[node.type].push(node.id);
+    });
+    
+    // Check for type-based circular dependencies
+    // For example, ensuring vendor -> office or office -> agency links don't exist
+    links.forEach((link, index) => {
+      const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+      const targetId = typeof link.target === 'object' ? link.target.id : link.target;
+      const sourceType = nodes[sourceId]?.type;
+      const targetType = nodes[targetId]?.type;
+      
+      // Define hierarchy: agency -> office -> vendor
+      if ((sourceType === 'vendor' && targetType === 'office') ||
+          (sourceType === 'vendor' && targetType === 'agency') ||
+          (sourceType === 'office' && targetType === 'agency')) {
+        linksToRemove.add(index);
+      }
+    });
+  }
+  
+  // Step 4: Return filtered links
+  return links.filter((_, index) => !linksToRemove.has(index));
+},
+
+// Improved generateSankeyData function that better handles circular references
+generateSankeyData: function(data, limit=10) {
+  // Step 1: Create the initial flow mappings
+  const agencyOfficeFlows = {}, officeVendorFlows = {}, nodeMap = new Map();
+  
+  data.forEach(c => {
+    if (c.agency && c.office && c.vendor && c.value > 0) {
+      const aok = `${c.agency}|${c.office}`;
+      if (!agencyOfficeFlows[aok]) agencyOfficeFlows[aok] = {source: c.agency, target: c.office, value: 0};
+      agencyOfficeFlows[aok].value += c.value;
+      
+      const ovk = `${c.office}|${c.vendor}`;
+      if (!officeVendorFlows[ovk]) officeVendorFlows[ovk] = {source: c.office, target: c.vendor, value: 0};
+      officeVendorFlows[ovk].value += c.value;
+    }
+  });
+  
+  // Step 2: Create nodes with specific types to ensure proper hierarchy
+  Object.values(agencyOfficeFlows).forEach(f => {
+    if (!nodeMap.has(f.source)) nodeMap.set(f.source, {name: f.source, type: 'agency'});
+    if (!nodeMap.has(f.target)) nodeMap.set(f.target, {name: f.target, type: 'office'});
+  });
+  
+  Object.values(officeVendorFlows).forEach(f => {
+    // Ensure we don't override existing nodes' types
+    if (!nodeMap.has(f.source)) nodeMap.set(f.source, {name: f.source, type: 'office'});
+    if (!nodeMap.has(f.target)) nodeMap.set(f.target, {name: f.target, type: 'vendor'});
+  });
+  
+  // Step 3: Create arrays of nodes and assign IDs
+  const nodesArray = Array.from(nodeMap.values());
+  nodesArray.forEach((n, i) => n.id = i);
+  
+  // Create a mapping from node name to index
+  const nodeIndexMap = new Map();
+  nodesArray.forEach((n, i) => nodeIndexMap.set(n.name, i));
+  
+  // Step 4: Create links with proper source/target indices
+  const agencyOfficeLinks = Object.values(agencyOfficeFlows).map(f => ({
+    source: nodeIndexMap.get(f.source),
+    target: nodeIndexMap.get(f.target),
+    value: f.value,
+    type: 'agency-office'
+  }));
+  
+  const officeVendorLinks = Object.values(officeVendorFlows).map(f => ({
+    source: nodeIndexMap.get(f.source),
+    target: nodeIndexMap.get(f.target),
+    value: f.value,
+    type: 'office-vendor'
+  }));
+  
+  // Step 5: Remove circular links
+  let linksArray = [...agencyOfficeLinks, ...officeVendorLinks];
+  
+  // First, ensure hierarchy is maintained
+  linksArray = linksArray.filter(link => {
+    const sourceNode = nodesArray[link.source];
+    const targetNode = nodesArray[link.target];
+    
+    // Only allow agency->office and office->vendor flows
+    // This enforces a strict hierarchy and prevents cycles
+    if (sourceNode.type === 'agency' && targetNode.type === 'office') return true;
+    if (sourceNode.type === 'office' && targetNode.type === 'vendor') return true;
+    return false;
+  });
+  
+  // Then remove any remaining circular links
+  linksArray = this.removeSankeyCircularLinks(nodesArray, linksArray);
+  
+  // Step 6: Sort by value and limit if needed
+  linksArray.sort((a, b) => b.value - a.value);
+  
+  // Adjust limit to available links
+  const effectiveLimit = limit === 0 ? linksArray.length : Math.min(limit, linksArray.length);
+  
+  const topLinks = [];
+  const includedNodes = new Set();
+  
+  // Add links up to the effective limit
+  for (let i = 0; i < effectiveLimit && i < linksArray.length; i++) {
+    topLinks.push(linksArray[i]);
+    includedNodes.add(linksArray[i].source);
+    includedNodes.add(linksArray[i].target);
+  }
+  
+  // Ensure we have at least one link if possible
+  if (topLinks.length === 0 && linksArray.length > 0) {
+    topLinks.push(linksArray[0]);
+    includedNodes.add(linksArray[0].source);
+    includedNodes.add(linksArray[0].target);
+  }
+  
+  // Step 7: Create the final nodes list from included nodes
+  const finalNodes = [];
+  const nodeIdMap = new Map(); // Map old indices to new indices
+  
+  // Add nodes that are actually used in the links
+  nodesArray.forEach((node, oldIndex) => {
+    if (includedNodes.has(oldIndex)) {
+      nodeIdMap.set(oldIndex, finalNodes.length);
+      finalNodes.push({...node, id: finalNodes.length});
+    }
+  });
+  
+  // Step 8: Remap link indices to the new node indices
+  const finalLinks = topLinks.map(link => ({
+    source: nodeIdMap.get(link.source),
+    target: nodeIdMap.get(link.target),
+    value: link.value,
+    type: link.type
+  }));
+  
+  return {nodes: finalNodes, links: finalLinks};
+}
 };
 const filterManager = {
   applyFilters: function() {
@@ -2422,7 +2557,8 @@ const filterManager = {
     app.filteredData = [...app.data];
     this.updateFilterTags(); dashboardManager.refreshDashboard();
   }
-};
+}; 
+
 const chartManager = {
   initCharts: function() {
     Object.values(app.charts).forEach(c => { if (c instanceof Chart) c.destroy(); });
@@ -2706,10 +2842,22 @@ const chartManager = {
     });
   },
 
-  updateSankeyChart: function() {
-    const data = app.filteredData; 
-    if (!data || data.length === 0) return;
+updateSankeyChart: function() {
+  const data = app.filteredData; 
+  if (!data || data.length === 0) {
+    elements.sankeyChartContainer.innerHTML = '<p style="text-align:center; padding-top:var(--space-6); color:var(--text-secondary);">No data available for Sankey chart.</p>';
+    return;
+  }
+  
+  try {
     const sankeyData = dataProcessor.generateSankeyData(data, app.sankeyDisplayLimit);
+    
+    // Check if we have enough data to display
+    if (!sankeyData.links || sankeyData.links.length === 0 || !sankeyData.nodes || sankeyData.nodes.length < 2) {
+      elements.sankeyChartContainer.innerHTML = '<p style="text-align:center; padding-top:var(--space-6); color:var(--text-secondary);">Not enough data to display Sankey diagram.</p>';
+      return;
+    }
+    elements.sankeyChartContainer.innerHTML = '';
     const container = elements.sankeyChartContainer; 
     container.querySelector('svg')?.remove();
     const width = container.clientWidth, height = container.clientHeight;
@@ -2727,115 +2875,142 @@ const chartManager = {
     // Apply scaling for high resolution
     svg.attr('viewBox', `0 0 ${width} ${height}`);
     
-    const sankey = d3.sankey().nodeWidth(18).nodePadding(10).extent([[20, 10], [width - 40, height - 30]]).nodeSort((a,b) => d3.descending(a.value, b.value));
+    const sankey = d3.sankey()
+      .nodeWidth(18)
+      .nodePadding(10)
+      .extent([[20, 10], [width - 40, height - 30]])
+      .nodeSort((a, b) => d3.descending(a.value, b.value));
     
+    let graph;
     try {
-      const { nodes, links } = sankey({ nodes: sankeyData.nodes.map(d => Object.assign({}, d)), links: sankeyData.links.map(d => Object.assign({}, d)) });
-      
-      nodes.forEach(n => n.color = utils.getEntityColor(n.name, n.type)); 
-      
-      const defs = svg.append("defs");
-      links.forEach(l => {
-        l.gradientId = `gradient-${l.source.index}-${l.target.index}`;
-        const sourceColor = nodes[l.source.index].color;
-        const targetColor = nodes[l.target.index].color;
-      
-        const gradient = defs.append("linearGradient")
-          .attr("id", l.gradientId)
-          .attr("gradientUnits", "userSpaceOnUse") 
-          .attr("x1", nodes[l.source.index].x1) 
-          .attr("x2", nodes[l.target.index].x0);
-
-        gradient.append("stop").attr("offset", "0%").attr("stop-color", sourceColor).attr("stop-opacity", 0.7);
-        gradient.append("stop").attr("offset", "100%").attr("stop-color", targetColor).attr("stop-opacity", 0.7);
+      graph = sankey({
+        nodes: sankeyData.nodes.map(d => Object.assign({}, d)),
+        links: sankeyData.links.map(d => Object.assign({}, d))
       });
-
-      const link = svg.append('g').attr('fill', 'none').attr('stroke-opacity', 0.55)
-        .selectAll('path').data(links).join('path')
-        .attr('d', d3.sankeyLinkHorizontal())
-        .attr('stroke', d => `url(#${d.gradientId})`)
-        .attr('stroke-width', d => Math.max(1.5, d.width))
-        .on('mouseover', function(ev, d) { 
-          d3.select(this).attr('stroke-opacity', 0.85); 
-          const tt = elements.sankeyTooltip; 
-          tt.style.opacity = 1; 
-          tt.style.left = (ev.pageX + 15) + 'px'; 
-          tt.style.top = (ev.pageY - 15) + 'px'; 
-          tt.innerHTML = `<div style="font-weight:600;">${utils.truncateText(nodes[d.source.index].name, 25)} → ${utils.truncateText(nodes[d.target.index].name, 25)}</div><div>Value: ${utils.formatMoney(d.value)}</div>`; 
-        })
-        .on('mouseout', function() { 
-          d3.select(this).attr('stroke-opacity', 0.55); 
-          elements.sankeyTooltip.style.opacity = 0; 
-        })
-        .on('click', function(ev, d) { 
-          const sn = nodes[d.source.index], tn = nodes[d.target.index]; 
-          if (sn.type === 'agency' && tn.type === 'office') { 
-            filterManager.applySelectionFilter('agency', sn.name, null); 
-            elements.agencyFilter.value = sn.name; 
-          } else if (sn.type === 'office' && tn.type === 'vendor') { 
-            filterManager.applySelectionFilter('office', sn.name, null); 
-            elements.officeFilter.value = sn.name; 
-          } 
-        });
-        
-      const node = svg.append('g').attr('stroke', 'none')
-        .selectAll('rect').data(nodes).join('rect')
-        .attr('x', d => d.x0)
-        .attr('y', d => d.y0)
-        .attr('height', d => Math.max(1, d.y1 - d.y0))
-        .attr('width', d => d.x1 - d.x0)
-        .attr('fill', d => d.color)
-        .attr('rx', 4)
-        .attr('ry', 4)
-        .on('mouseover', function(ev, d) { 
-          d3.select(this).attr('fill', d3.color(d.color).darker(0.3));
-          link.attr('stroke-opacity', l => l.source.index === d.index || l.target.index === d.index ? 0.85 : 0.1); 
-          const tt = elements.sankeyTooltip; 
-          tt.style.opacity = 1; 
-          tt.style.left = (ev.pageX + 15) + 'px'; 
-          tt.style.top = (ev.pageY - 15) + 'px'; 
-          tt.innerHTML = `<div style="font-weight:600;">${utils.truncateText(d.name, 30)}</div><div style="font-size:12px;">Type: ${d.type.charAt(0).toUpperCase() + d.type.slice(1)}</div><div style="font-size:12px;">Total Flow: ${utils.formatMoney(d.value)}</div>`; 
-        })
-        .on('mouseout', function(ev, d) { 
-          d3.select(this).attr('fill', d.color);
-          link.attr('stroke-opacity', 0.55); 
-          elements.sankeyTooltip.style.opacity = 0; 
-        })
-        .on('click', function(ev, d) { 
-          if (d.type === 'agency') { 
-            filterManager.applySelectionFilter('agency', d.name, null); 
-            elements.agencyFilter.value = d.name; 
-          } else if (d.type === 'office') { 
-            filterManager.applySelectionFilter('office', d.name, null); 
-            elements.officeFilter.value = d.name; 
-          } else if (d.type === 'vendor') { 
-            filterManager.applySelectionFilter('vendor', d.name, null); 
-            elements.vendorFilter.value = d.name; 
-          } 
-        });
-        
-      // Sharper text rendering
-      svg.append('g')
-        .attr('font-family', 'var(--font-sans)')
-        .attr('font-size', 11)
-        .attr('font-weight', 500)
-        .attr('text-rendering', 'geometricPrecision') // Improve text sharpness
-        .selectAll('text')
-        .data(nodes)
-        .join('text')
-        .attr('x', d => d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
-        .attr('y', d => (d.y1 + d.y0) / 2)
-        .attr('dy', '0.35em')
-        .attr('text-anchor', d => d.x0 < width / 2 ? 'start' : 'end')
-        .attr('fill', getComputedStyle(document.documentElement).getPropertyValue('--text-primary'))
-        .text(d => utils.truncateText(d.name, (d.x1 - d.x0 > 60) ? 30 : 12));
-    
-    } catch (sankeyError) {
-      console.error("Error rendering Sankey chart:", sankeyError);
-      container.innerHTML = '<p style="text-align:center; padding-top:var(--space-6); color:var(--text-secondary);">Error rendering Sankey chart.</p>';
+    } catch (sankeyLayoutError) {
+      console.error("Error in Sankey layout:", sankeyLayoutError);
+      elements.sankeyChartContainer.innerHTML = '<p style="text-align:center; padding-top:var(--space-6); color:var(--text-secondary);">Unable to create Sankey diagram with current data.</p>';
+      return;
     }
-  },
+    
+    const { nodes, links } = graph;
+    
+    nodes.forEach(n => n.color = utils.getEntityColor(n.name, n.type)); 
+    
+    const defs = svg.append("defs");
+    links.forEach(l => {
+      l.gradientId = `gradient-${l.source.index}-${l.target.index}`;
+      const sourceColor = nodes[l.source.index].color;
+      const targetColor = nodes[l.target.index].color;
+    
+      const gradient = defs.append("linearGradient")
+        .attr("id", l.gradientId)
+        .attr("gradientUnits", "userSpaceOnUse") 
+        .attr("x1", nodes[l.source.index].x1) 
+        .attr("x2", nodes[l.target.index].x0);
 
+      gradient.append("stop").attr("offset", "0%").attr("stop-color", sourceColor).attr("stop-opacity", 0.7);
+      gradient.append("stop").attr("offset", "100%").attr("stop-color", targetColor).attr("stop-opacity", 0.7);
+    });
+
+    const link = svg.append('g')
+      .attr('fill', 'none')
+      .attr('stroke-opacity', 0.55)
+      .selectAll('path')
+      .data(links)
+      .join('path')
+      .attr('d', d3.sankeyLinkHorizontal())
+      .attr('stroke', d => `url(#${d.gradientId})`)
+      .attr('stroke-width', d => Math.max(1.5, d.width))
+      .on('mouseover', function(ev, d) { 
+        d3.select(this).attr('stroke-opacity', 0.85); 
+        const tt = elements.sankeyTooltip; 
+        tt.style.display = 'block';
+        tt.style.opacity = 1; 
+        tt.style.left = (ev.pageX + 15) + 'px'; 
+        tt.style.top = (ev.pageY - 15) + 'px'; 
+        tt.innerHTML = `<div style="font-weight:600;">${utils.truncateText(nodes[d.source.index].name, 25)} → ${utils.truncateText(nodes[d.target.index].name, 25)}</div><div>Value: ${utils.formatMoney(d.value)}</div>`; 
+      })
+      .on('mouseout', function() { 
+        d3.select(this).attr('stroke-opacity', 0.55); 
+        const tt = elements.sankeyTooltip;
+        tt.style.opacity = 0; 
+        tt.style.display = 'none';
+      })
+      .on('click', function(ev, d) { 
+        const sn = nodes[d.source.index], tn = nodes[d.target.index]; 
+        if (sn.type === 'agency' && tn.type === 'office') { 
+          filterManager.applySelectionFilter('agency', sn.name, null); 
+          elements.agencyFilter.value = sn.name; 
+        } else if (sn.type === 'office' && tn.type === 'vendor') { 
+          filterManager.applySelectionFilter('office', sn.name, null); 
+          elements.officeFilter.value = sn.name; 
+        } 
+      });
+      
+    const node = svg.append('g')
+      .attr('stroke', 'none')
+      .selectAll('rect')
+      .data(nodes)
+      .join('rect')
+      .attr('x', d => d.x0)
+      .attr('y', d => d.y0)
+      .attr('height', d => Math.max(1, d.y1 - d.y0))
+      .attr('width', d => d.x1 - d.x0)
+      .attr('fill', d => d.color)
+      .attr('rx', 4)
+      .attr('ry', 4)
+      .on('mouseover', function(ev, d) { 
+        d3.select(this).attr('fill', d3.color(d.color).darker(0.3));
+        link.attr('stroke-opacity', l => l.source.index === d.index || l.target.index === d.index ? 0.85 : 0.1); 
+        const tt = elements.sankeyTooltip; 
+        tt.style.display = 'block';
+        tt.style.opacity = 1; 
+        tt.style.left = (ev.pageX + 15) + 'px'; 
+        tt.style.top = (ev.pageY - 15) + 'px'; 
+        tt.innerHTML = `<div style="font-weight:600;">${utils.truncateText(d.name, 30)}</div><div style="font-size:12px;">Type: ${d.type.charAt(0).toUpperCase() + d.type.slice(1)}</div><div style="font-size:12px;">Total Flow: ${utils.formatMoney(d.value)}</div>`; 
+      })
+      .on('mouseout', function(ev, d) { 
+        d3.select(this).attr('fill', d.color);
+        link.attr('stroke-opacity', 0.55); 
+        const tt = elements.sankeyTooltip;
+        tt.style.opacity = 0; 
+        tt.style.display = 'none';
+      })
+      .on('click', function(ev, d) { 
+        if (d.type === 'agency') { 
+          filterManager.applySelectionFilter('agency', d.name, null); 
+          elements.agencyFilter.value = d.name; 
+        } else if (d.type === 'office') { 
+          filterManager.applySelectionFilter('office', d.name, null); 
+          elements.officeFilter.value = d.name; 
+        } else if (d.type === 'vendor') { 
+          filterManager.applySelectionFilter('vendor', d.name, null); 
+          elements.vendorFilter.value = d.name; 
+        } 
+      });
+      
+    // Sharper text rendering
+    svg.append('g')
+      .attr('font-family', 'var(--font-sans)')
+      .attr('font-size', 11)
+      .attr('font-weight', 500)
+      .attr('text-rendering', 'geometricPrecision') // Improve text sharpness
+      .selectAll('text')
+      .data(nodes)
+      .join('text')
+      .attr('x', d => d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
+      .attr('y', d => (d.y1 + d.y0) / 2)
+      .attr('dy', '0.35em')
+      .attr('text-anchor', d => d.x0 < width / 2 ? 'start' : 'end')
+      .attr('fill', getComputedStyle(document.documentElement).getPropertyValue('--text-primary'))
+      .text(d => utils.truncateText(d.name, (d.x1 - d.x0 > 60) ? 30 : 12));
+  
+  } catch (sankeyError) {
+    console.error("Error rendering Sankey chart:", sankeyError);
+    elements.sankeyChartContainer.innerHTML = '<p style="text-align:center; padding-top:var(--space-6); color:var(--text-secondary);">Error rendering Sankey chart. Please try adjusting filters.</p>';
+  }
+},
   addChartClickEvents: function() {
     elements.valueTimeChartContainer.addEventListener('click', function(ev) { 
       const chart = app.charts.valueTimeChart;
@@ -3181,7 +3356,6 @@ showContractDetails: function(contractId) {
               <p style="display:flex;align-items:center;margin-bottom:0.5rem;"><div class="agency-icon" style="background-color:${agencyColor};margin-right:0.5rem;">${agencyInitials}</div><strong>Agency:</strong> ${contract.agency}</p>
               <p style="display:flex;align-items:center;margin-bottom:0.5rem;"><div class="office-icon" style="background-color:${officeColor};margin-right:0.5rem;">${officeInitials}</div><strong>Office:</strong> ${contract.office||'N/A'}</p>
               <p style="display:flex;align-items:center;margin-bottom:0.5rem;"><div class="vendor-icon" style="background-color:${vendorColor};margin-right:0.5rem;">${vendorInitials}</div><strong>Vendor:</strong> ${contract.vendor}</p>
-              <p><strong>Parent Company:</strong> ${contract.parentVendor||'N/A'}</p>
           </div>
       </div>
       <div style="margin-top:1.5rem;">
