@@ -1527,8 +1527,9 @@ main#dashboard {
         <div class="header-content">
             <div class="data-load-controls example-csv-loader">
                 <div class="example-csv-buttons">
-                    <button id="loadExample1" class="btn btn-primary"><span class="btn-text">YTD > $125K</span></button>
-                    <button id="loadExample2" class="btn btn-secondary"><span class="btn-text">SaaS 3YR</span></button>
+                    <button id="loadExample1" class="btn btn-primary"><span class="btn-text">Q225 > $100K</span></button>
+					<button id="loadExample2" class="btn btn-secondary"><span class="btn-text">SaaS 3YR</span></button>
+                    <button id="loadExample3" class="btn btn-secondary"><span class="btn-text">Q125 > $100K</span></button>
                     <input type="file" id="csvFile" accept=".csv,.xls" class="file-input" style="display: none;">
                     <label for="csvFile" class="btn btn-secondary"><i class="fas fa-upload mr-2"></i>
                         <span class="btn-text">Upload fpds.gov CSV</span>
@@ -3530,12 +3531,17 @@ function setupEventListeners() {
   if(elements.csvFile) elements.csvFile.addEventListener('change', () => fileHandler.handleFileUpload());
   
   if(elements.loadExample1Btn) elements.loadExample1Btn.addEventListener('click', () => { 
-    fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'ytd.csv', 'YTD Data'); 
+    fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q225.csv', 'YTD Data'); 
     updateExampleButtonActiveState(elements.loadExample1Btn); 
   });
   
   if(elements.loadExample2Btn) elements.loadExample2Btn.addEventListener('click', () => { 
     fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'da10.csv', 'SaaS 3YR Data (da10.csv)'); 
+    updateExampleButtonActiveState(elements.loadExample2Btn); 
+  });
+  
+  if(elements.loadExample2Btn) elements.loadExample2Btn.addEventListener('click', () => { 
+    fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q125.csv', 'Q125 > $100K  (q125.csv)'); 
     updateExampleButtonActiveState(elements.loadExample2Btn); 
   });
 
@@ -3727,7 +3733,7 @@ function init() {
  mobileHeaderManager.init();
  
  // Start with loading sample data
- fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'ytd.csv', 'YTD Data (Initially Loaded)');
+ fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q225.csv', 'YTD Data (Initially Loaded)');
 }
 
 if (document.readyState === 'loading') {
