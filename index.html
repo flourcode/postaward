@@ -1110,8 +1110,8 @@ main#dashboard {
 }
 
 #color-scheme:checked + .toggle-item {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: var(--secondary);
+  border-color: var(--secondary);
 }
 
 #color-scheme:checked + .toggle-item:before {
@@ -1125,12 +1125,12 @@ main#dashboard {
 
 /* Dark theme adjustments */
 [data-theme="dark"] .toggle-item {
-  background: var(--bg-tertiary);
+  background: var(--secondary);
   border-color: var(--border);
 }
 
 [data-theme="dark"] .toggle-item:before {
-  background: var(--text-primary);
+  background: var(--secondary);
   box-shadow: 0 2px 4px rgba(0,0,0,0.4);
 }
 
@@ -1199,6 +1199,63 @@ main#dashboard {
     min-width: 800px; /* Force horizontal scroll on small screens */
   }
 }
+/* Updated styles to fix the mobile issues */
+
+/* Hide floating action button on mobile */
+@media (max-width: 767px) {
+  .mobile-action-btn {
+    display: none !important; /* Override other display settings */
+  }
+  
+  /* Ensure subtitle is completely hidden when header is collapsed */
+  .app-header:not(.expanded) .logo-subtitle {
+    display: none !important;
+  }
+  
+  /* Fix toggle switch alignment */
+  .toggle-item {
+    vertical-align: middle;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  .toggle-item:before {
+    position: relative;
+    top: 0;
+    margin: 0;
+  }
+  
+  /* Improve header toggle button position */
+  .header-toggle-btn {
+    top: 50%;
+    transform: translateY(-50%);
+    right: var(--space-4);
+  }
+  
+  /* Ensure clean header collapse with no elements peeking through */
+  .app-header {
+    overflow: hidden;
+    height: var(--header-height-mobile);
+  }
+  
+  .app-header.expanded {
+    height: auto;
+    overflow: visible;
+  }
+  
+  /* Better padding for header row on mobile */
+  .header-main-content-row {
+    padding-right: 40px; /* Space for toggle button */
+    margin-bottom: 0;
+  }
+  
+  .logo-main-line {
+    height: var(--header-height-mobile);
+    align-items: center;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -1709,7 +1766,6 @@ const utils = {
   }
 };
 
-// Mobile Header Manager - New component to handle mobile header interactions
 const mobileHeaderManager = {
   init: function() {
     if (!elements.appHeader || !elements.headerToggleBtn || !elements.headerPlaceholder) {
@@ -1803,7 +1859,6 @@ const mobileHeaderManager = {
     }
   }
 };
-
 const dataProcessor = {
   processData: function(csvData) {
     if (!csvData || !csvData.data || csvData.data.length === 0) throw new Error('No valid data found in CSV file');
@@ -2328,7 +2383,7 @@ initValueTimeChart: function() {
         .attr('dy', '0.35em')
         .attr('text-anchor', d => d.x0 < width / 2 ? 'start' : 'end')
         .attr('fill', getComputedStyle(document.documentElement).getPropertyValue('--text-primary'))
-        .text(d => utils.truncateText(d.name, (d.x1 - d.x0 > 60) ? 30 : 12));
+        .text(d => utils.truncateText(d.name, (d.x1 - d.x0 > 60) ? 30 : 20));
     
     } catch (sankeyError) {
       console.error("Error rendering Sankey chart:", sankeyError);
@@ -2834,129 +2889,120 @@ const fileHandler = {
    pop(elements.vendorFilter, Object.values(app.vendors), 'name', i => `${utils.truncateText(i.name, 30)} (${i.count})`);
  }
 };
-
 function setupEventListeners() {
- if(elements.csvFile) elements.csvFile.addEventListener('change', () => fileHandler.handleFileUpload());
- 
- if(elements.loadExample1Btn) elements.loadExample1Btn.addEventListener('click', () => { 
-   fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'ytd.csv', 'YTD Data'); 
-   updateExampleButtonActiveState(elements.loadExample1Btn); 
- });
- 
- if(elements.loadExample2Btn) elements.loadExample2Btn.addEventListener('click', () => { 
-   fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'da10.csv', 'SaaS 3YR Data (da10.csv)'); 
-   updateExampleButtonActiveState(elements.loadExample2Btn); 
- });
+  if(elements.csvFile) elements.csvFile.addEventListener('change', () => fileHandler.handleFileUpload());
+  
+  if(elements.loadExample1Btn) elements.loadExample1Btn.addEventListener('click', () => { 
+    fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'ytd.csv', 'YTD Data'); 
+    updateExampleButtonActiveState(elements.loadExample1Btn); 
+  });
+  
+  if(elements.loadExample2Btn) elements.loadExample2Btn.addEventListener('click', () => { 
+    fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'da10.csv', 'SaaS 3YR Data (da10.csv)'); 
+    updateExampleButtonActiveState(elements.loadExample2Btn); 
+  });
 
- let searchTimeout;
- if(elements.searchInput) elements.searchInput.addEventListener('input', () => { 
-     clearTimeout(searchTimeout); 
-     searchTimeout = setTimeout(() => { 
-         app.filters.search = elements.searchInput.value; 
-         filterManager.applyFilters(); 
-         dashboardManager.refreshDashboard(); 
-     }, 400); 
- });
+  let searchTimeout;
+  if(elements.searchInput) elements.searchInput.addEventListener('input', () => { 
+      clearTimeout(searchTimeout); 
+      searchTimeout = setTimeout(() => { 
+          app.filters.search = elements.searchInput.value; 
+          filterManager.applyFilters(); 
+          dashboardManager.refreshDashboard(); 
+      }, 400); 
+  });
 
- const addFilterListener = function(el, filterKey, chartContainerForSelection) {
-   if (el) {
-       el.addEventListener('change', () => {
-           const value = el.value;
-           if (value) app.filters[filterKey] = value;
-           else delete app.filters[filterKey];
-           
-           if (['agency', 'vendor', 'naics', 'psc', 'office'].includes(filterKey)) {
-                filterManager.applySelectionFilter(filterKey, value, chartContainerForSelection);
-           } else { 
-               filterManager.applyFilters();
-               dashboardManager.refreshDashboard();
-           }
-       });
-   }
- };
+  const addFilterListener = function(el, filterKey, chartContainerForSelection) {
+    if (el) {
+        el.addEventListener('change', () => {
+            const value = el.value;
+            if (value) app.filters[filterKey] = value;
+            else delete app.filters[filterKey];
+            
+            if (['agency', 'vendor', 'naics', 'psc', 'office'].includes(filterKey)) {
+                 filterManager.applySelectionFilter(filterKey, value, chartContainerForSelection);
+            } else { 
+                filterManager.applyFilters();
+                dashboardManager.refreshDashboard();
+            }
+        });
+    }
+  };
 
- addFilterListener(elements.agencyFilter, 'agency', elements.agencyChartContainer);
- addFilterListener(elements.vendorFilter, 'vendor', elements.vendorChartContainer);
- addFilterListener(elements.pscFilter, 'psc', null); 
- 
- if(elements.valueFilter) elements.valueFilter.addEventListener('change', () => { 
-   const r = elements.valueFilter.value; 
-   if (r) { 
-     const v = utils.parseValueRange(r); 
-     if (v) app.filters.valueRange = v; 
-     else delete app.filters.valueRange; 
-   } else delete app.filters.valueRange; 
-   filterManager.applyFilters(); 
-   dashboardManager.refreshDashboard(); 
- });
- 
- if(elements.startDate) elements.startDate.addEventListener('change', () => { 
-   app.filters.startDate = elements.startDate.value; 
-   filterManager.applyFilters(); 
-   dashboardManager.refreshDashboard(); 
- });
- 
- if(elements.endDate) elements.endDate.addEventListener('change', () => { 
-   app.filters.endDate = elements.endDate.value; 
-   filterManager.applyFilters(); 
-   dashboardManager.refreshDashboard(); 
- });
- 
- addFilterListener(elements.officeFilter, 'office', null); 
- addFilterListener(elements.naicsFilter, 'naics', elements.naicsBubbleChartContainer); 
+  addFilterListener(elements.agencyFilter, 'agency', elements.agencyChartContainer);
+  addFilterListener(elements.vendorFilter, 'vendor', elements.vendorChartContainer);
+  addFilterListener(elements.pscFilter, 'psc', null); 
+  
+  if(elements.valueFilter) elements.valueFilter.addEventListener('change', () => { 
+    const r = elements.valueFilter.value; 
+    if (r) { 
+      const v = utils.parseValueRange(r); 
+      if (v) app.filters.valueRange = v; 
+      else delete app.filters.valueRange; 
+    } else delete app.filters.valueRange; 
+    filterManager.applyFilters(); 
+    dashboardManager.refreshDashboard(); 
+  });
+  
+  if(elements.startDate) elements.startDate.addEventListener('change', () => { 
+    app.filters.startDate = elements.startDate.value; 
+    filterManager.applyFilters(); 
+    dashboardManager.refreshDashboard(); 
+  });
+  
+  if(elements.endDate) elements.endDate.addEventListener('change', () => { 
+    app.filters.endDate = elements.endDate.value; 
+    filterManager.applyFilters(); 
+    dashboardManager.refreshDashboard(); 
+  });
+  
+  addFilterListener(elements.officeFilter, 'office', null); 
+  addFilterListener(elements.naicsFilter, 'naics', elements.naicsBubbleChartContainer); 
 
- if(elements.moreFiltersBtn) elements.moreFiltersBtn.addEventListener('click', () => elements.advancedFiltersPanel.classList.toggle('active'));
- if(elements.closeFilters) elements.closeFilters.addEventListener('click', () => elements.advancedFiltersPanel.classList.remove('active'));
- if(elements.mobileFilterBtn) elements.mobileFilterBtn.addEventListener('click', () => {
-   if (elements.advancedFiltersPanel) {
-       elements.advancedFiltersPanel.classList.toggle('active');
-       if (elements.advancedFiltersPanel.classList.contains('active')) {
-           elements.advancedFiltersPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-       }
-   } else if (elements.appHeader) {
-        elements.appHeader.scrollIntoView({behavior: 'smooth'}); 
-   }
- });
- 
- if(elements.resetFilters) elements.resetFilters.addEventListener('click', () => { 
-   filterManager.resetFilters(); 
-   if(elements.advancedFiltersPanel) elements.advancedFiltersPanel.classList.remove('active'); 
- });
- 
- elements.tabButtons.forEach(btn => {
-   btn.addEventListener('click', function() {
-     elements.tabButtons.forEach(b => b.classList.remove('active'));
-     elements.tabContents.forEach(c => c.classList.remove('active'));
-     this.classList.add('active');
-     const tabId = this.getAttribute('data-tab') + 'Tab';
-     const tabContent = document.getElementById(tabId);
-     if (tabContent) {
-       tabContent.classList.add('active');
-     }
-   });
- });
+  if(elements.moreFiltersBtn) elements.moreFiltersBtn.addEventListener('click', () => elements.advancedFiltersPanel.classList.toggle('active'));
+  if(elements.closeFilters) elements.closeFilters.addEventListener('click', () => elements.advancedFiltersPanel.classList.remove('active'));
+  
+  // Remove the mobile filter button event listener - we're hiding it with CSS
+  
+  if(elements.resetFilters) elements.resetFilters.addEventListener('click', () => { 
+    filterManager.resetFilters(); 
+    if(elements.advancedFiltersPanel) elements.advancedFiltersPanel.classList.remove('active'); 
+  });
+  
+  elements.tabButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+      elements.tabButtons.forEach(b => b.classList.remove('active'));
+      elements.tabContents.forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+      const tabId = this.getAttribute('data-tab') + 'Tab';
+      const tabContent = document.getElementById(tabId);
+      if (tabContent) {
+        tabContent.classList.add('active');
+      }
+    });
+  });
 
- if(elements.closeModal) elements.closeModal.addEventListener('click', () => tableManager.hideContractDetails());
- if(elements.closeModalBtn) elements.closeModalBtn.addEventListener('click', () => tableManager.hideContractDetails());
- if(elements.contractModal) elements.contractModal.addEventListener('click', e => { if (e.target === elements.contractModal) tableManager.hideContractDetails(); });
- 
- let resizeTimer;
- window.addEventListener('resize', () => { 
-     clearTimeout(resizeTimer); 
-     resizeTimer = setTimeout(() => { 
-         if (elements.dashboard && elements.dashboard.style.display !== 'none') { 
-             chartManager.resizeAllCharts();
-         } 
-     }, 150); 
- });
- 
- window.addEventListener('orientationchange', () => {
-   setTimeout(() => {
-     if (elements.dashboard && elements.dashboard.style.display !== 'none') { 
-       chartManager.resizeAllCharts();
-     }
-   }, 300);
- });
+  if(elements.closeModal) elements.closeModal.addEventListener('click', () => tableManager.hideContractDetails());
+  if(elements.closeModalBtn) elements.closeModalBtn.addEventListener('click', () => tableManager.hideContractDetails());
+  if(elements.contractModal) elements.contractModal.addEventListener('click', e => { if (e.target === elements.contractModal) tableManager.hideContractDetails(); });
+  
+  let resizeTimer;
+  window.addEventListener('resize', () => { 
+      clearTimeout(resizeTimer); 
+      resizeTimer = setTimeout(() => { 
+          if (elements.dashboard && elements.dashboard.style.display !== 'none') { 
+              chartManager.resizeAllCharts();
+          } 
+      }, 150); 
+  });
+  
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+      if (elements.dashboard && elements.dashboard.style.display !== 'none') { 
+        chartManager.resizeAllCharts();
+      }
+    }, 300);
+  });
 }
 
 function initThemeToggle() {
