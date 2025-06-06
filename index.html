@@ -3006,7 +3006,7 @@ updateSankeyChart: function() {
       .attr('dy', '0.35em')
       .attr('text-anchor', d => d.x0 < width / 2 ? 'start' : 'end')
       .attr('fill', getComputedStyle(document.documentElement).getPropertyValue('--text-primary'))
-      .text(d => utils.truncateText(d.name, (d.x1 - d.x0 > 60) ? 30 : 12));
+      .text(d => utils.truncateText(d.name, (d.x1 - d.x0 > 60) ? 30 : 20));
   
   } catch (sankeyError) {
     console.error("Error rendering Sankey chart:", sankeyError);
