@@ -1527,7 +1527,7 @@ main#dashboard {
         <div class="header-content">
             <div class="data-load-controls example-csv-loader">
                 <div class="example-csv-buttons">
-                    <button id="loadExample1" class="btn btn-primary"><span class="btn-text">YTD</span></button>
+                    <button id="loadExample1" class="btn btn-primary"><span class="btn-text">YTD > $500K</span></button>
                     <button id="loadExample2" class="btn btn-secondary"><span class="btn-text">SaaS 3YR</span></button>
                     <input type="file" id="csvFile" accept=".csv,.xls" class="file-input" style="display: none;">
                     <label for="csvFile" class="btn btn-secondary"><i class="fas fa-upload mr-2"></i>
@@ -3274,7 +3274,7 @@ const fileHandler = {
    elements.dashboard.style.display = 'none'; 
    elements.statusBox.style.display = 'none'; 
    try {
-     const response = await fetch(csvUrl);
+     const response = await fetch(noCacheUrl);
      if (!response.ok) {
        throw new Error(`Network response was not ok: ${response.status} ${response.statusText} for ${fileNameForDisplay}`);
      }
