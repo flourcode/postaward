@@ -1255,6 +1255,204 @@ main#dashboard {
     align-items: center;
   }
 }
+/* Footer Styling */
+  .app-footer {
+    background-color: var(--bg-primary);
+    border-top: 1px solid var(--border);
+    padding: var(--space-8) var(--space-4);
+    margin-top: var(--space-8);
+    width: 100%;
+  }
+  
+  .footer-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+  
+  .footer-section {
+    padding: var(--space-4);
+  }
+  
+  .footer-section h3 {
+    font-size: var(--font-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 2px solid var(--primary);
+    display: inline-block;
+  }
+  
+  .footer-section p {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-3);
+    font-size: var(--font-sm);
+    line-height: 1.6;
+  }
+  
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .footer-links li {
+    margin-bottom: var(--space-2);
+  }
+  
+  .footer-links a {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: var(--font-sm);
+    display: inline-flex;
+    align-items: center;
+    transition: var(--transition);
+  }
+  
+  .footer-links a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+  }
+  
+  .footer-links a i {
+    margin-right: var(--space-2);
+    font-size: 14px;
+  }
+  
+  .connect-card {
+    display: flex;
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+    align-items: center;
+    box-shadow: var(--shadow);
+  }
+  
+  .connect-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: var(--space-4);
+    flex-shrink: 0;
+    background-color: var(--bg-tertiary);
+    border: 2px solid var(--primary);
+  }
+  
+  .connect-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .connect-info {
+    flex: 1;
+  }
+  
+  .connect-info h4 {
+    font-size: var(--font-base);
+    font-weight: 600;
+    margin-bottom: var(--space-1);
+    color: var(--text-primary);
+  }
+  
+  .connect-info p {
+    font-size: var(--font-xs);
+    margin-bottom: var(--space-2);
+  }
+  
+  .connect-buttons {
+    display: flex;
+    gap: var(--space-2);
+  }
+  
+  .connect-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-radius: var(--radius);
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-xs);
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
+  .connect-button:hover {
+    background-color: var(--primary);
+    color: white;
+  }
+  
+  .connect-button i {
+    margin-right: var(--space-1);
+  }
+  
+  .how-to-steps {
+    counter-reset: step-counter;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .how-to-steps li {
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: var(--space-4);
+  }
+  
+  .how-to-steps li::before {
+    content: counter(step-counter);
+    counter-increment: step-counter;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 24px;
+    height: 24px;
+    background-color: var(--primary);
+    color: white;
+    font-size: var(--font-xs);
+    font-weight: 600;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .how-to-steps h4 {
+    font-size: var(--font-base);
+    font-weight: 600;
+    margin-bottom: var(--space-1);
+    color: var(--text-primary);
+  }
+  
+  .copyright {
+    text-align: center;
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+    color: var(--text-tertiary);
+    font-size: var(--font-xs);
+    margin-top: var(--space-6);
+  }
+  
+  /* Responsive adjustments */
+  @media (min-width: 768px) {
+    .footer-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .footer-container {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
 
   </style>
 </head>
@@ -1539,7 +1737,103 @@ main#dashboard {
   </div>
 </section>
 	</main> 
-
+<footer class="app-footer">
+  <div class="footer-container">
+    <!-- Connect Card Section -->
+    <div class="footer-section">
+      <h3>Let's Connect</h3>
+      <div class="connect-card">
+        <div class="connect-avatar">
+          <img src="markgs.jpg" alt="Mark's profile picture">
+        </div>
+        <div class="connect-info">
+          <h4>Hi, I'm Mark</h4>
+          <p>Federal primes with contracts over $750K must create SBA subcontracting plans. Subhoo helps you find those primes, follow the money, and unlock more opportunities.</p>
+          <div class="connect-buttons">
+            <a href="https://www.linkedin.com/in/markflournoy/" class="connect-button" target="_blank" rel="noopener">
+              <i class="fab fa-linkedin"></i> Connect
+            </a>
+            <a href="mailto:mark@subhoo.com" class="connect-button">
+              <i class="fas fa-envelope"></i> Email
+            </a>
+          </div>
+        </div>
+      </div>
+      <p>Reach out if I can help with federal contracting insights, subcontracting plans, or just to chat about government procurement opportunities.</p>
+    </div>
+    
+    <!-- How To Use Section -->
+    <div class="footer-section">
+      <h3>How To Use PostAward</h3>
+      <ul class="how-to-steps">
+        <li>
+          <h4>Find Contract Data</h4>
+          <p>Go to FPDS.gov and perform an "EZ Search" by agency, vendor, or keyword to locate federal contract awards.</p>
+        </li>
+        <li>
+          <h4>Download CSV File</h4>
+          <p>Export your search results as a CSV file to get detailed contract information.</p>
+        </li>
+        <li>
+          <h4>Upload & Analyze</h4>
+          <p>Upload the CSV to PostAward to visualize spending patterns, identify key vendors, and explore subcontracting opportunities.</p>
+        </li>
+        <li>
+          <h4>Filter & Explore</h4>
+          <p>Use our interactive filters to narrow down results and find the most promising contracting opportunities.</p>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Resources Section -->
+    <div class="footer-section">
+      <h3>Useful Resources</h3>
+      <p>Explore these government contracting resources to enhance your federal procurement knowledge.</p>
+      <ul class="footer-links">
+        <li>
+          <a href="https://www.fpds.gov" target="_blank" rel="noopener">
+            <i class="fas fa-external-link-alt"></i> Federal Procurement Data System
+          </a>
+        </li>
+        <li>
+          <a href="https://www.sba.gov" target="_blank" rel="noopener">
+            <i class="fas fa-external-link-alt"></i> Small Business Administration
+          </a>
+        </li>
+        <li>
+          <a href="https://sam.gov" target="_blank" rel="noopener">
+            <i class="fas fa-external-link-alt"></i> SAM.gov
+          </a>
+        </li>
+        <li>
+          <a href="https://www.acquisition.gov" target="_blank" rel="noopener">
+            <i class="fas fa-external-link-alt"></i> Acquisition.gov
+          </a>
+        </li>
+        <li>
+          <a href="https://www.gsa.gov" target="_blank" rel="noopener">
+            <i class="fas fa-external-link-alt"></i> General Services Administration
+          </a>
+        </li>
+        <li>
+          <a href="https://www.subhoo.com" target="_blank" rel="noopener">
+            <i class="fas fa-external-link-alt"></i> Subhoo.com
+          </a>
+        </li>
+        <li>
+          <a href="https://www.usaspending.gov" target="_blank" rel="noopener">
+            <i class="fas fa-external-link-alt"></i> USAspending.gov
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Copyright Section -->
+  <div class="copyright">
+    <p>&copy; 2025 PostAward by Subhoo. All rights reserved.</p>
+  </div>
+</footer>
   </div> 
 
   <div id="contractModal" class="modal-backdrop">
@@ -2699,48 +2993,64 @@ const tableManager = {
    }); 
  },
  
- showContractDetails: function(contractId) { 
-   const contract = app.data.find(c => c.id === contractId); if (!contract) { console.error('Contract not found:', contractId); return; } 
-   const agencyInitials = utils.getInitials(contract.agency), agencyColor = utils.stringToColor(contract.agency);
-   const officeInitials = utils.getInitials(contract.office), officeColor = utils.stringToColor(contract.office);
-   const vendorInitials = utils.getInitials(contract.vendor), vendorColor = utils.stringToColor(contract.vendor); 
-   elements.contractModalBody.innerHTML = `
-       <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:1.5rem;">
-           <div>
-               <h4 style="margin-bottom:0.75rem;font-size:1.1rem;color:var(--primary);">Contract Information</h4>
-               <p><strong>Contract ID:</strong> ${contract.id}</p>
-               <p><strong>Reference IDV:</strong> ${contract.reference||'N/A'}</p>
-               <p><strong>Date Signed:</strong> ${utils.formatDate(contract.date)}</p>
-               <p><strong>Contract Type:</strong> ${contract.type||'N/A'}</p>
-               <p><strong>Value:</strong> <span class="money">${utils.formatMoney(contract.value)}</span></p>
-           </div>
-           <div>
-               <h4 style="margin-bottom:0.75rem;font-size:1.1rem;color:var(--primary);">Parties Involved</h4>
-               <p style="display:flex;align-items:center;margin-bottom:0.5rem;"><div class="agency-icon" style="background-color:${agencyColor};margin-right:0.5rem;">${agencyInitials}</div><strong>Agency:</strong> ${contract.agency}</p>
-               <p style="display:flex;align-items:center;margin-bottom:0.5rem;"><div class="office-icon" style="background-color:${officeColor};margin-right:0.5rem;">${officeInitials}</div><strong>Office:</strong> ${contract.office||'N/A'}</p>
-               <p style="display:flex;align-items:center;margin-bottom:0.5rem;"><div class="vendor-icon" style="background-color:${vendorColor};margin-right:0.5rem;">${vendorInitials}</div><strong>Vendor:</strong> ${contract.vendor}</p>
-               <p><strong>Parent Company:</strong> ${contract.parentVendor||'N/A'}</p>
-           </div>
-       </div>
-       <div style="margin-top:1.5rem;">
-           <h4 style="margin-bottom:0.75rem;font-size:1.1rem;color:var(--primary);">Description & Codes</h4>
-           <p><strong>Description:</strong> ${contract.description||'No description available.'}</p>
-           <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:1rem;margin-top:1rem;">
-               <div><p><strong>NAICS:</strong> ${contract.naics||'N/A'}</p><p style="font-size:var(--font-xs);color:var(--text-secondary);">${contract.naicsDescription||''}</p></div>
-               <div><p><strong>PSC:</strong> ${contract.psc||'N/A'}</p><p style="font-size:var(--font-xs);color:var(--text-secondary);">${contract.pscDescription||''}</p></div>
-           </div>
-       </div>
-       <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center;">
-           <button id="modalFilterByAgency" class="btn btn-sm btn-secondary"><i class="fas fa-filter"></i> <span class="btn-text">Filter by Agency</span></button>
-           <button id="modalFilterByOffice" class="btn btn-sm btn-secondary"><i class="fas fa-filter"></i> <span class="btn-text">Filter by Office</span></button>
-           <button id="modalFilterByVendor" class="btn btn-sm btn-secondary"><i class="fas fa-filter"></i> <span class="btn-text">Filter by Vendor</span></button>
-       </div>`; 
-   elements.contractModal.classList.add('active'); 
-   document.getElementById('modalFilterByAgency')?.addEventListener('click', () => { filterManager.applySelectionFilter('agency', contract.agency, elements.agencyChartContainer); if(elements.agencyFilter) elements.agencyFilter.value = contract.agency; this.hideContractDetails(); }); 
-   document.getElementById('modalFilterByOffice')?.addEventListener('click', () => { filterManager.applySelectionFilter('office', contract.office, null); if(elements.officeFilter) elements.officeFilter.value = contract.office; this.hideContractDetails(); }); 
-   document.getElementById('modalFilterByVendor')?.addEventListener('click', () => { filterManager.applySelectionFilter('vendor', contract.vendor, elements.vendorChartContainer); if(elements.vendorFilter) elements.vendorFilter.value = contract.vendor; this.hideContractDetails(); }); 
- },
- 
+/* Update to the showContractDetails function to include FPDS.gov link */
+
+showContractDetails: function(contractId) { 
+  const contract = app.data.find(c => c.id === contractId); 
+  if (!contract) { 
+    console.error('Contract not found:', contractId);
+    return; 
+  } 
+  
+  // Create FPDS.gov URL with contract ID
+  const fpdsUrl = `https://www.fpds.gov/ezsearch/fpdsportal?q=PIID%3A%22${encodeURIComponent(contract.id)}%22&s=FPDS.GOV&templateName=1.5.3&indexName=awardfull&x=0&y=0`;
+  
+  const agencyInitials = utils.getInitials(contract.agency), agencyColor = utils.stringToColor(contract.agency);
+  const officeInitials = utils.getInitials(contract.office), officeColor = utils.stringToColor(contract.office);
+  const vendorInitials = utils.getInitials(contract.vendor), vendorColor = utils.stringToColor(contract.vendor); 
+  
+  elements.contractModalBody.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:1.5rem;">
+          <div>
+              <h4 style="margin-bottom:0.75rem;font-size:1.1rem;color:var(--primary);">Contract Information</h4>
+              <p><strong>Contract ID:</strong> ${contract.id}</p>
+              <p><strong>Reference IDV:</strong> ${contract.reference||'N/A'}</p>
+              <p><strong>Date Signed:</strong> ${utils.formatDate(contract.date)}</p>
+              <p><strong>Contract Type:</strong> ${contract.type||'N/A'}</p>
+              <p><strong>Value:</strong> <span class="money">${utils.formatMoney(contract.value)}</span></p>
+              <p style="margin-top:0.75rem;">
+                <a href="${fpdsUrl}" class="btn btn-sm btn-secondary" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+                  <i class="fas fa-external-link-alt"></i>
+                  <span class="btn-text">View on FPDS.gov</span>
+                </a>
+              </p>
+          </div>
+          <div>
+              <h4 style="margin-bottom:0.75rem;font-size:1.1rem;color:var(--primary);">Parties Involved</h4>
+              <p style="display:flex;align-items:center;margin-bottom:0.5rem;"><div class="agency-icon" style="background-color:${agencyColor};margin-right:0.5rem;">${agencyInitials}</div><strong>Agency:</strong> ${contract.agency}</p>
+              <p style="display:flex;align-items:center;margin-bottom:0.5rem;"><div class="office-icon" style="background-color:${officeColor};margin-right:0.5rem;">${officeInitials}</div><strong>Office:</strong> ${contract.office||'N/A'}</p>
+              <p style="display:flex;align-items:center;margin-bottom:0.5rem;"><div class="vendor-icon" style="background-color:${vendorColor};margin-right:0.5rem;">${vendorInitials}</div><strong>Vendor:</strong> ${contract.vendor}</p>
+              <p><strong>Parent Company:</strong> ${contract.parentVendor||'N/A'}</p>
+          </div>
+      </div>
+      <div style="margin-top:1.5rem;">
+          <h4 style="margin-bottom:0.75rem;font-size:1.1rem;color:var(--primary);">Description & Codes</h4>
+          <p><strong>Description:</strong> ${contract.description||'No description available.'}</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:1rem;margin-top:1rem;">
+              <div><p><strong>NAICS:</strong> ${contract.naics||'N/A'}</p><p style="font-size:var(--font-xs);color:var(--text-secondary);">${contract.naicsDescription||''}</p></div>
+              <div><p><strong>PSC:</strong> ${contract.psc||'N/A'}</p><p style="font-size:var(--font-xs);color:var(--text-secondary);">${contract.pscDescription||''}</p></div>
+          </div>
+      </div>
+      <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center;">
+          <button id="modalFilterByAgency" class="btn btn-sm btn-secondary"><i class="fas fa-filter"></i> <span class="btn-text">Filter by Agency</span></button>
+          <button id="modalFilterByOffice" class="btn btn-sm btn-secondary"><i class="fas fa-filter"></i> <span class="btn-text">Filter by Office</span></button>
+          <button id="modalFilterByVendor" class="btn btn-sm btn-secondary"><i class="fas fa-filter"></i> <span class="btn-text">Filter by Vendor</span></button>
+      </div>`; 
+  elements.contractModal.classList.add('active'); 
+  document.getElementById('modalFilterByAgency')?.addEventListener('click', () => { filterManager.applySelectionFilter('agency', contract.agency, elements.agencyChartContainer); if(elements.agencyFilter) elements.agencyFilter.value = contract.agency; this.hideContractDetails(); }); 
+  document.getElementById('modalFilterByOffice')?.addEventListener('click', () => { filterManager.applySelectionFilter('office', contract.office, null); if(elements.officeFilter) elements.officeFilter.value = contract.office; this.hideContractDetails(); }); 
+  document.getElementById('modalFilterByVendor')?.addEventListener('click', () => { filterManager.applySelectionFilter('vendor', contract.vendor, elements.vendorChartContainer); if(elements.vendorFilter) elements.vendorFilter.value = contract.vendor; this.hideContractDetails(); }); 
+},
  hideContractDetails: function() { elements.contractModal.classList.remove('active'); },
  
  updateTables: function() { this.updateContractsTable(); this.updateLargestContractsTable(); this.updateOfficesTable(); }
