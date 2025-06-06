@@ -3266,7 +3266,9 @@ const fileHandler = {
  },
  
  loadCsvFromUrl: async function(csvUrl, fileNameForDisplay) {
-   elements.loadingIndicator.style.display = 'flex';
+    const timestamp = new Date().getTime();
+	const noCacheUrl = `${csvUrl}?t=${timestamp}`;
+    elements.loadingIndicator.style.display = 'flex';
    elements.errorMessage.style.display = 'none';
    elements.noDataMessage.style.display = 'none'; 
    elements.dashboard.style.display = 'none'; 
