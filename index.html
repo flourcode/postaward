@@ -3541,9 +3541,9 @@ function setupEventListeners() {
   });
   
   if(elements.loadExample3Btn) elements.loadExample3Btn.addEventListener('click', () => { 
-    fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q125.csv', 'Q125 > $100K (q125.csv)'); 
-    updateExampleButtonActiveState(elements.loadExample3Btn); 
-  });
+  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q125.csv', 'Q125 > $100K Data'); 
+  updateExampleButtonActiveState(elements.loadExample3Btn); 
+});
 
   let searchTimeout;
   if(elements.searchInput) elements.searchInput.addEventListener('input', () => { 
@@ -3710,18 +3710,18 @@ function loadSavedTheme() {
 }
 
 function updateExampleButtonActiveState(activeButton) {
- const exampleButtons = [elements.loadExample1Btn, elements.loadExample2Btn];
- exampleButtons.forEach(button => {
-   if (button) {
-     if (button === activeButton) {
-       button.classList.remove('btn-secondary');
-       button.classList.add('btn-primary');
-     } else {
-       button.classList.remove('btn-primary');
-       button.classList.add('btn-secondary');
-     }
-   }
- });
+  const exampleButtons = [elements.loadExample1Btn, elements.loadExample2Btn, elements.loadExample3Btn];
+  exampleButtons.forEach(button => {
+    if (button) {
+      if (button === activeButton) {
+        button.classList.remove('btn-secondary');
+        button.classList.add('btn-primary');
+      } else {
+        button.classList.remove('btn-primary');
+        button.classList.add('btn-secondary');
+      }
+    }
+  });
 }
 
 function init() {
