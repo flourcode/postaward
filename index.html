@@ -9,6 +9,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-sankey/0.12.3/d3-sankey.min.js"></script>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YWJYQQZYFW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-YWJYQQZYFW');
+</script>
+
   <style>
     :root {
       /* Enhanced Colors - Softer, more modern feel */
@@ -2351,6 +2362,31 @@ const chartManager = {
     Chart.defaults.font.size = 11;
     Chart.defaults.color = cssVars.textSecondary;
     
+    // Add this helper function for high-resolution chart rendering
+    this.setupHighResChart = function(ctx) {
+      // Get the device pixel ratio
+      const dpr = window.devicePixelRatio || 1;
+      
+      // Get the canvas element
+      const canvas = ctx.canvas;
+      
+      // Get the parent container's dimensions
+      const rect = canvas.parentElement.getBoundingClientRect();
+      
+      // Set the canvas dimensions accounting for the device pixel ratio
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      
+      // Scale the context to match the DPR
+      ctx.scale(dpr, dpr);
+      
+      // Set the display size back to the original dimensions
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+      
+      return ctx;
+    };
+    
     this.initValueTimeChart(); 
     this.initAgencyChart(); 
     this.initNaicsBubbleChart(cssVars); 
@@ -2359,47 +2395,55 @@ const chartManager = {
     this.addChartClickEvents();
   },
 
-initValueTimeChart: function() {
-  app.charts.valueTimeChart = new Chart(elements.valueTimeChart, { 
-    type: 'line', 
-    data: { 
-      labels: [], 
-      datasets: [{ 
-        label: 'Contract Value', 
-        data: [], 
-        borderColor: FREYT_PALETTE[0], // Use global constant
-        backgroundColor: utils.getEntityColorWithOpacity('timeline', 0.1), 
-        tension: 0.4, 
-        fill: true, 
-        pointBackgroundColor: FREYT_PALETTE[0], // Use global constant
-        pointBorderColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-primary'), 
-        pointBorderWidth: 1, 
-        pointRadius: 3, 
-        borderWidth: 2 
-      }] 
-    }, 
-    options: { 
-      responsive: true, 
-      maintainAspectRatio: false, 
-      plugins: { 
-        legend: { display: false }, 
-        tooltip: { callbacks: { label: c => utils.formatMoney(c.raw) } } 
+  initValueTimeChart: function() {
+    // Setup high-resolution rendering
+    this.setupHighResChart(elements.valueTimeChart);
+    
+    app.charts.valueTimeChart = new Chart(elements.valueTimeChart, { 
+      type: 'line', 
+      data: { 
+        labels: [], 
+        datasets: [{ 
+          label: 'Contract Value', 
+          data: [], 
+          borderColor: FREYT_PALETTE[0],
+          backgroundColor: utils.getEntityColorWithOpacity('timeline', 0.1), 
+          tension: 0.4, 
+          fill: true, 
+          pointBackgroundColor: FREYT_PALETTE[0],
+          pointBorderColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-primary'), 
+          pointBorderWidth: 1, 
+          pointRadius: 3, 
+          borderWidth: 2 
+        }] 
       }, 
-      scales: { 
-        x: { 
-          grid: { display: false }, 
-          ticks: { maxRotation: 45, minRotation: 45, font: { size: 10 } } 
+      options: { 
+        devicePixelRatio: window.devicePixelRatio || 1,
+        responsive: true, 
+        maintainAspectRatio: false, 
+        plugins: { 
+          legend: { display: false }, 
+          tooltip: { callbacks: { label: c => utils.formatMoney(c.raw) } } 
         }, 
-        y: { 
-          beginAtZero: true,
-          grid: { display: false }, 
-          ticks: { callback: v => utils.formatMoney(v), font: { size: 10 } } 
+        scales: { 
+          x: { 
+            grid: { display: false }, 
+            ticks: { maxRotation: 45, minRotation: 45, font: { size: 10 } } 
+          }, 
+          y: { 
+            beginAtZero: true,
+            grid: { display: false }, 
+            ticks: { callback: v => utils.formatMoney(v), font: { size: 10 } } 
+          } 
         } 
       } 
-    } 
-  });
-},
+    });
+  },
+  
   initAgencyChart: function() {
+    // Setup high-resolution rendering
+    this.setupHighResChart(elements.agencyChart);
+    
     app.charts.agencyChart = new Chart(elements.agencyChart, { 
       type: 'bar', 
       data: { 
@@ -2415,6 +2459,7 @@ initValueTimeChart: function() {
         }] 
       }, 
       options: { 
+        devicePixelRatio: window.devicePixelRatio || 1,
         responsive: true, 
         maintainAspectRatio: false, 
         indexAxis: 'y', 
@@ -2439,10 +2484,15 @@ initValueTimeChart: function() {
 
   initNaicsBubbleChart: function(cssVars) {
     if (!elements.naicsBubbleChart) return;
+    
+    // Setup high-resolution rendering
+    this.setupHighResChart(elements.naicsBubbleChart);
+    
     app.charts.naicsBubbleChart = new Chart(elements.naicsBubbleChart, { 
         type: 'bubble', 
         data: { datasets: [] }, 
         options: { 
+            devicePixelRatio: window.devicePixelRatio || 1,
             responsive: true, 
             maintainAspectRatio: false, 
             plugins: { 
@@ -2510,6 +2560,9 @@ initValueTimeChart: function() {
   },
 
   initVendorChart: function() {
+    // Setup high-resolution rendering
+    this.setupHighResChart(elements.vendorChart);
+    
     app.charts.vendorChart = new Chart(elements.vendorChart, { 
       type: 'bar', 
       data: { 
@@ -2525,6 +2578,7 @@ initValueTimeChart: function() {
         }] 
       }, 
       options: { 
+        devicePixelRatio: window.devicePixelRatio || 1,
         responsive: true, 
         maintainAspectRatio: false, 
         indexAxis: 'y', 
@@ -2582,7 +2636,18 @@ initValueTimeChart: function() {
     const width = container.clientWidth, height = container.clientHeight;
     if (width <= 0 || height <= 0) return;
     
-    const svg = d3.select(container).append('svg').attr('width', width).attr('height', height);
+    // For Sankey chart, use a higher DPR for sharper rendering
+    const dpr = window.devicePixelRatio || 1;
+    
+    const svg = d3.select(container).append('svg')
+      .attr('width', width * dpr)
+      .attr('height', height * dpr)
+      .style('width', width + 'px')
+      .style('height', height + 'px');
+      
+    // Apply scaling for high resolution
+    svg.attr('viewBox', `0 0 ${width} ${height}`);
+    
     const sankey = d3.sankey().nodeWidth(18).nodePadding(10).extent([[20, 10], [width - 40, height - 30]]).nodeSort((a,b) => d3.descending(a.value, b.value));
     
     try {
@@ -2670,14 +2735,21 @@ initValueTimeChart: function() {
           } 
         });
         
-      svg.append('g').attr('font-family', 'var(--font-sans)').attr('font-size', 11).attr('font-weight', 500)
-        .selectAll('text').data(nodes).join('text')
+      // Sharper text rendering
+      svg.append('g')
+        .attr('font-family', 'var(--font-sans)')
+        .attr('font-size', 11)
+        .attr('font-weight', 500)
+        .attr('text-rendering', 'geometricPrecision') // Improve text sharpness
+        .selectAll('text')
+        .data(nodes)
+        .join('text')
         .attr('x', d => d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
         .attr('y', d => (d.y1 + d.y0) / 2)
         .attr('dy', '0.35em')
         .attr('text-anchor', d => d.x0 < width / 2 ? 'start' : 'end')
         .attr('fill', getComputedStyle(document.documentElement).getPropertyValue('--text-primary'))
-        .text(d => utils.truncateText(d.name, (d.x1 - d.x0 > 60) ? 30 : 20));
+        .text(d => utils.truncateText(d.name, (d.x1 - d.x0 > 60) ? 30 : 12));
     
     } catch (sankeyError) {
       console.error("Error rendering Sankey chart:", sankeyError);
