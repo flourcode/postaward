@@ -2216,6 +2216,55 @@ const dataProcessor = {
     });
     return {agencies,offices,vendors,naicsCodes,pscCodes};
   },
+  
+  // New function to detect and remove circular links
+  removeSankeyCircularLinks: function(nodes, links) {
+    // Create a directed graph to detect cycles
+    const graph = {};
+    nodes.forEach(node => {
+      graph[node.name] = [];
+    });
+    
+    links.forEach(link => {
+      const sourceName = typeof link.source === 'object' ? link.source.name : nodes[link.source].name;
+      const targetName = typeof link.target === 'object' ? link.target.name : nodes[link.target].name;
+      graph[sourceName].push(targetName);
+    });
+    
+    // Check if adding this link would create a cycle
+    const hasCycle = (from, to, visited = new Set()) => {
+      if (from === to) return true;
+      if (visited.has(from)) return false;
+      
+      visited.add(from);
+      for (const next of graph[from]) {
+        if (hasCycle(next, to, visited)) return true;
+      }
+      return false;
+    };
+    
+    // Filter out links that would create cycles
+    const nonCircularLinks = links.filter(link => {
+      const sourceName = typeof link.source === 'object' ? link.source.name : nodes[link.source].name;
+      const targetName = typeof link.target === 'object' ? link.target.name : nodes[link.target].name;
+      
+      // Temporarily remove this edge to avoid false positives
+      const sourceEdges = [...graph[sourceName]];
+      graph[sourceName] = graph[sourceName].filter(t => t !== targetName);
+      
+      // Check if adding this edge back would create a cycle
+      const wouldCreateCycle = hasCycle(targetName, sourceName);
+      
+      // Restore the original edges
+      graph[sourceName] = sourceEdges;
+      
+      return !wouldCreateCycle;
+    });
+    
+    return nonCircularLinks;
+  },
+  
+  // Updated generateSankeyData function
   generateSankeyData: function(data, limit=10) {
     const agencyOfficeFlows={}, officeVendorFlows={}, nodeMap=new Map();
     data.forEach(c => {
@@ -2230,7 +2279,13 @@ const dataProcessor = {
     const nodeIndexMap = new Map(); nodesArray.forEach((n,i)=>nodeIndexMap.set(n.name,i));
     const agencyOfficeLinks=Object.values(agencyOfficeFlows).map(f=>({source:nodeIndexMap.get(f.source),target:nodeIndexMap.get(f.target),value:f.value,type:'agency-office'}));
     const officeVendorLinks=Object.values(officeVendorFlows).map(f=>({source:nodeIndexMap.get(f.source),target:nodeIndexMap.get(f.target),value:f.value,type:'office-vendor'}));
-    const linksArray=[...agencyOfficeLinks,...officeVendorLinks].sort((a,b)=>b.value-a.value);
+    let linksArray=[...agencyOfficeLinks,...officeVendorLinks].sort((a,b)=>b.value-a.value);
+    
+    // When displaying all links, check for and remove circular references
+    if (limit === 0) {
+      linksArray = this.removeSankeyCircularLinks(nodesArray, linksArray);
+    }
+    
     const topLinks=[], includedNodes=new Set(), maxLinks = limit===0?linksArray.length:Math.min(limit,linksArray.length);
     for(let i=0;i<maxLinks;i++){ topLinks.push(linksArray[i]); includedNodes.add(linksArray[i].source); includedNodes.add(linksArray[i].target); }
     const finalNodes=nodesArray.filter((n,i)=>includedNodes.has(i)).map(n=>({...n}));
@@ -2239,7 +2294,6 @@ const dataProcessor = {
     return {nodes:finalNodes,links:finalLinks};
   }
 };
-
 const filterManager = {
   applyFilters: function() {
     const filters = app.filters;
