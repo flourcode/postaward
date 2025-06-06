@@ -3540,7 +3540,7 @@ function setupEventListeners() {
     updateExampleButtonActiveState(elements.loadExample2Btn); 
   });
   
-  if(elements.loadExample3Btn) elements.loadExample2Btn.addEventListener('click', () => { 
+  if(elements.loadExample3Btn) elements.loadExample3Btn.addEventListener('click', () => { 
     fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q125.csv', 'Q125 > $100K (q125.csv)'); 
     updateExampleButtonActiveState(elements.loadExample3Btn); 
   });
