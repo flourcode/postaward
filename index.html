@@ -64,27 +64,32 @@
       --shadow-lg: 0 10px 20px -5px rgba(0, 0, 0, 0.06), 0 4px 10px -4px rgba(0,0,0,0.05);
       
       --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      /* Header Height */
+      --header-height-mobile: 60px; /* Compact header height for mobile */
+      --header-height-desktop: 80px; /* Standard header height for desktop */
     }
-/* Theme-specific overrides */
-[data-theme="light"] {
-  --primary: #007AFF;
-  --primary-dark: #0056b3;
-  --primary-light: #58a6ff;
-  --secondary: #8A8A8E;
-  --success: #34C759;
-  --warning: #FF9500;
-  --danger: #FF3B30;
 
-  --text-primary: #1d1d1f;
-  --text-secondary: #6e6e73;
-  --text-tertiary: #86868b;
-  
-  --bg-primary: #ffffff; /* Main background for light mode */
-  --bg-secondary: #f2f2f7; /* Slightly off-white for secondary elements */
-  --bg-tertiary: #e5e5ea;
-  --border: #d1d1d6;
-  --app-bg: #f2f2f7;
-}
+    /* Theme-specific overrides */
+    [data-theme="light"] {
+      --primary: #007AFF;
+      --primary-dark: #0056b3;
+      --primary-light: #58a6ff;
+      --secondary: #8A8A8E;
+      --success: #34C759;
+      --warning: #FF9500;
+      --danger: #FF3B30;
+
+      --text-primary: #1d1d1f;
+      --text-secondary: #6e6e73;
+      --text-tertiary: #86868b;
+      
+      --bg-primary: #ffffff; /* Main background for light mode */
+      --bg-secondary: #f2f2f7; /* Slightly off-white for secondary elements */
+      --bg-tertiary: #e5e5ea;
+      --border: #d1d1d6;
+      --app-bg: #f2f2f7;
+    }
     [data-theme="dark"] {
       --primary: #0A84FF; /* Apple's Blue (Dark Mode) */
       --primary-dark: #005ecb;
@@ -134,17 +139,37 @@
       padding: 0; 
     }
 
-    /* Header Section */
+    /* Header Section - Modified for mobile toggle */
     .app-header {
       background-color: var(--bg-primary);
       box-shadow: var(--shadow-md); /* Softer shadow */
       padding: var(--space-4) var(--space-6); 
-      position: sticky;
-      top: 0;
       z-index: 100; /* Higher z-index */
       display: flex;
       flex-direction: column;
       gap: var(--space-4); 
+      position: relative; /* Change to relative for mobile */
+      transition: transform 0.3s ease;
+    }
+    
+    /* Sticky Header on Mobile - Collapsed State */
+    @media (max-width: 767px) {
+      .app-header {
+        height: var(--header-height-mobile); /* Fixed compact height */
+        overflow: hidden; /* Hide overflow when collapsed */
+        padding: var(--space-2) var(--space-3);
+      }
+      
+      .app-header.expanded {
+        height: auto; /* Expand when needed */
+        overflow: visible;
+        box-shadow: var(--shadow-lg);
+      }
+      
+      /* Only show the main header row when collapsed */
+      .app-header:not(.expanded) .header-content {
+        display: none;
+      }
     }
 
     .header-main-content-row {
@@ -154,6 +179,35 @@
       gap: var(--space-4); 
       position: relative; 
     }
+    
+    /* Header toggle button for mobile */
+    .header-toggle-btn {
+      display: none; /* Hidden by default, shown on mobile */
+      position: absolute;
+      right: var(--space-3);
+      font-size: var(--font-lg);
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      padding: var(--space-2);
+      cursor: pointer;
+      z-index: 101; /* Above header */
+    }
+    
+    @media (max-width: 767px) {
+      .header-toggle-btn {
+        display: block;
+        top: calc(var(--header-height-mobile) / 2 - 16px); /* Center vertically */
+      }
+    }
+    
+    .header-content {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      transition: opacity 0.3s ease;
+    }
+    
     .header-main-content-row .logo-container { flex-grow: 1; }
     .logo-main-line { display: flex; align-items: center; gap: var(--space-2); }
     .logo-main-line > i { font-size: var(--font-3xl); color: var(--text-primary); } /* Primary color for icon */
@@ -174,8 +228,8 @@
       gap: var(--space-3);
       align-items: center;
     }
-     .data-load-controls .example-csv-buttons .btn {
-        font-weight: 500;
+    .data-load-controls .example-csv-buttons .btn {
+      font-weight: 500;
     }
 
     /* Status and Active Filters */
@@ -481,7 +535,6 @@
       justify-content: flex-end;
     }
 
-
     /* Mobile FAB - Keep as is, generally a good UX pattern */
     .mobile-action-btn {
       position: fixed; bottom: var(--space-6); right: var(--space-6); width: 60px; height: 60px; /* Slightly larger */
@@ -636,18 +689,52 @@
       100% { transform: rotate(360deg); }
     }
 
+    /* Header Placeholder for Mobile */
+    .header-placeholder {
+      display: none;
+      height: var(--header-height-mobile);
+    }
 
     /* RESPONSIVE ADJUSTMENTS */
     @media (max-width: 767px) { 
-      .app-header { padding: var(--space-4) var(--space-3); gap: var(--space-3); }
-      .header-main-content-row .header-actions { position: absolute; top: calc(var(--space-4) - var(--space-1)); right: var(--space-3); }
+      /* Add placeholder when header is fixed */
+      .header-placeholder.visible {
+        display: block;
+      }
+      
+      /* Fixed header option for scroll */
+      .app-header.fixed {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 200;
+      }
+      
+      /* Adjust padding and spacing */
+      .app-header { 
+        padding: var(--space-3) var(--space-3); 
+        gap: var(--space-2);
+      }
+      
+      .header-main-content-row .header-actions { 
+        position: absolute; 
+        top: calc(var(--space-3) - var(--space-1)); 
+        right: var(--space-3); 
+      }
+      
       .header-main-content-row .logo-container { padding-right: 50px; } 
+      
       .logo-subtitle {
-        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-        overflow: hidden; text-overflow: ellipsis;
+        display: -webkit-box; 
+        -webkit-line-clamp: 2; 
+        -webkit-box-orient: vertical;
+        overflow: hidden; 
+        text-overflow: ellipsis;
         font-size: 0.65rem; 
         margin-top: var(--space-1);
       }
+      
       .logo-main-line > i { font-size: var(--font-2xl); }
       .logo-main-line > span { font-size: var(--font-2xl); }
       .status-and-active-filters .status-title { font-size: var(--font-xl); }
@@ -659,7 +746,11 @@
       .filter-actions { justify-content: center; }
       .filter-actions .btn { flex-grow: 1; max-width: 180px;}
 
-      main#dashboard { padding: var(--space-4) var(--space-3); gap: var(--space-4); }
+      main#dashboard { 
+        padding: var(--space-4) var(--space-3); 
+        gap: var(--space-4); 
+      }
+      
       .stats-row { gap: var(--space-3); }
       .stat-card { padding: var(--space-3); }
       .stat-value { font-size: var(--font-2xl); }
@@ -675,8 +766,11 @@
     @media (min-width: 768px) { 
       .app-header {
         padding: var(--space-4) var(--space-6); 
-        gap: var(--space-4); 
+        gap: var(--space-4);
+        position: sticky; /* Sticky header on desktop */
+        top: 0;
       }
+      
       .header-main-content-row .header-actions { 
         position: static;
         padding-top: 0; 
@@ -1109,7 +1203,15 @@ main#dashboard {
 </head>
 <body>
   <div class="app-container">
+    <!-- Placeholder for header height when header is fixed -->
+    <div class="header-placeholder"></div>
+    
     <header class="app-header">
+        <!-- Mobile header toggle button -->
+        <button class="header-toggle-btn" id="headerToggleBtn">
+            <i class="fas fa-caret-down"></i>
+        </button>
+        
         <div class="header-main-content-row">
             <!-- Logo on the left -->
             <div class="logo-container">
@@ -1131,98 +1233,100 @@ main#dashboard {
         </div>
 
         <!-- Rest of the header content -->
-        <div class="data-load-controls example-csv-loader">
-            <div class="example-csv-buttons">
-                <button id="loadExample1" class="btn btn-primary"><span class="btn-text">YTD</span></button>
-                <button id="loadExample2" class="btn btn-secondary"><span class="btn-text">SaaS 3YR</span></button>
-                <input type="file" id="csvFile" accept=".csv,.xls" class="file-input" style="display: none;">
-                <label for="csvFile" class="btn btn-secondary"><i class="fas fa-upload mr-2"></i>
-                    <span class="btn-text">Upload CSV</span>
-                </label>
+        <div class="header-content">
+            <div class="data-load-controls example-csv-loader">
+                <div class="example-csv-buttons">
+                    <button id="loadExample1" class="btn btn-primary"><span class="btn-text">YTD</span></button>
+                    <button id="loadExample2" class="btn btn-secondary"><span class="btn-text">SaaS 3YR</span></button>
+                    <input type="file" id="csvFile" accept=".csv,.xls" class="file-input" style="display: none;">
+                    <label for="csvFile" class="btn btn-secondary"><i class="fas fa-upload mr-2"></i>
+                        <span class="btn-text">Upload CSV</span>
+                    </label>
+                </div>
             </div>
-        </div>
-        
-        <div class="status-and-active-filters" id="statusBox">
-            <div class="status-title">No data loaded</div>
-            <div id="activeFilters" class="active-filters">
+            
+            <div class="status-and-active-filters" id="statusBox">
+                <div class="status-title">No data loaded</div>
+                <div id="activeFilters" class="active-filters">
+                </div>
             </div>
-        </div>
 
-        <div class="primary-controls-area">
-            <div class="main-filter-inputs">
-                <div class="search-bar">
-                    <input type="text" id="searchInput" placeholder="Search contracts, agencies, vendors..." class="search-input">
-                </div>
-                <div class="filter-group">
-                    <select id="agencyFilter" class="filter-select" aria-label="Filter by agency">
-                        <option value="">All Agencies</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <select id="vendorFilter" class="filter-select" aria-label="Filter by vendor">
-                        <option value="">All Vendors</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <select id="pscFilter" class="filter-select" aria-label="Filter by PSC">
-                        <option value="">Any PSC</option>
-                    </select>
-                </div>
-            </div>
-            <div class="filter-actions">
-                <button id="resetFilters" class="btn btn-secondary">
-                    <i class="fas fa-undo"></i>
-                    <span class="btn-text">Reset</span>
-                </button>
-                <button id="moreFiltersBtn" class="btn btn-secondary">
-                    <i class="fas fa-sliders-h"></i>
-                    <span class="btn-text">More Filters</span>
-                </button>
-            </div>
-        </div>
-
-        <section id="advancedFiltersPanel" class="filters-panel">
-            <div class="panel-header">
-                <h3></h3>
-                <button id="closeFilters" class="btn-icon" aria-label="Close advanced filters">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="filters-grid">
-                <div class="filter-group">
-                    <label for="startDate" class="filter-label"></label> 
-                    <div class="date-range-picker" id="dateRangeLabel">
-                        <input type="date" id="startDate" class="filter-date" aria-label="Start date">
-                        <span class="date-separator">to</span>
-                        <input type="date" id="endDate" class="filter-date" aria-label="End date">
+            <div class="primary-controls-area">
+                <div class="main-filter-inputs">
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" placeholder="Search contracts, agencies, vendors..." class="search-input">
+                    </div>
+                    <div class="filter-group">
+                        <select id="agencyFilter" class="filter-select" aria-label="Filter by agency">
+                            <option value="">All Agencies</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <select id="vendorFilter" class="filter-select" aria-label="Filter by vendor">
+                            <option value="">All Vendors</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <select id="pscFilter" class="filter-select" aria-label="Filter by PSC">
+                            <option value="">Any PSC</option>
+                        </select>
                     </div>
                 </div>
-                <div class="filter-group">
-                    <label for="officeFilter" class="filter-label"></label> 
-                    <select id="officeFilter" class="filter-select" aria-label="Filter by contracting office">
-                        <option value="">Any Office</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="naicsFilter" class="filter-label"></label> 
-                    <select id="naicsFilter" class="filter-select" aria-label="Filter by NAICS code">
-                        <option value="">Any NAICS</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="valueFilter" class="filter-label"></label> 
-                    <select id="valueFilter" class="filter-select" aria-label="Filter by action obligation value">
-                        <option value="">Any Value</option>
-                        <option value="0-100000">Under $100K</option>
-                        <option value="100000-500000">$100K - $500K</option>
-                        <option value="500000-1000000">$500K - $1M</option>
-                        <option value="1000000-5000000">$1M - $5M</option>
-                        <option value="5000000-10000000">$5M - $10M</option>
-                        <option value="10000000-999999999999">Over $10M</option>
-                    </select>
+                <div class="filter-actions">
+                    <button id="resetFilters" class="btn btn-secondary">
+                        <i class="fas fa-undo"></i>
+                        <span class="btn-text">Reset</span>
+                    </button>
+                    <button id="moreFiltersBtn" class="btn btn-secondary">
+                        <i class="fas fa-sliders-h"></i>
+                        <span class="btn-text">More Filters</span>
+                    </button>
                 </div>
             </div>
-        </section>
+
+            <section id="advancedFiltersPanel" class="filters-panel">
+                <div class="panel-header">
+                    <h3>Advanced Filters</h3>
+                    <button id="closeFilters" class="btn-icon" aria-label="Close advanced filters">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label for="startDate" class="filter-label">Date Range</label> 
+                        <div class="date-range-picker" id="dateRangeLabel">
+                            <input type="date" id="startDate" class="filter-date" aria-label="Start date">
+                            <span class="date-separator">to</span>
+                            <input type="date" id="endDate" class="filter-date" aria-label="End date">
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label for="officeFilter" class="filter-label">Office</label> 
+                        <select id="officeFilter" class="filter-select" aria-label="Filter by contracting office">
+                            <option value="">Any Office</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="naicsFilter" class="filter-label">NAICS Code</label> 
+                        <select id="naicsFilter" class="filter-select" aria-label="Filter by NAICS code">
+                            <option value="">Any NAICS</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="valueFilter" class="filter-label">Value Range</label> 
+                        <select id="valueFilter" class="filter-select" aria-label="Filter by action obligation value">
+                            <option value="">Any Value</option>
+                            <option value="0-100000">Under $100K</option>
+                            <option value="100000-500000">$100K - $500K</option>
+                            <option value="500000-1000000">$500K - $1M</option>
+                            <option value="1000000-5000000">$1M - $5M</option>
+                            <option value="5000000-10000000">$5M - $10M</option>
+                            <option value="10000000-999999999999">Over $10M</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+        </div>
     </header> 
 
     <div id="loadingIndicator" class="loading-state" style="display: none;">
@@ -1329,7 +1433,7 @@ main#dashboard {
               <th data-sort="id">Contract ID</th>
               <th data-sort="agency">Agency</th>
               <th data-sort="office">Office</th>
-              <th data-sort="vendor">Vendor</th>
+			  <th data-sort="vendor">Vendor</th>
               <th data-sort="description">Description</th>
               <th data-sort="value">Value</th>
               <th>Actions</th>
@@ -1411,7 +1515,12 @@ const app = {
   filters: {},
   selection: { type: null, value: null, container: null },
   sankeyDisplayLimit: 10,
-  s3BaseUrl: "https://subhoodata.s3.us-east-1.amazonaws.com/data/"
+  s3BaseUrl: "https://subhoodata.s3.us-east-1.amazonaws.com/data/",
+  mobileHeaderState: {
+    expanded: false,
+    fixed: false,
+    lastScrollY: 0
+  }
 };
 
 const elements = {
@@ -1465,7 +1574,11 @@ const elements = {
   contractModal: document.getElementById('contractModal'),
   closeModal: document.getElementById('closeModal'),
   closeModalBtn: document.getElementById('closeModalBtn'),
-  contractModalBody: document.getElementById('contractModalBody')
+  contractModalBody: document.getElementById('contractModalBody'),
+  // New mobile header elements
+  appHeader: document.querySelector('.app-header'),
+  headerToggleBtn: document.getElementById('headerToggleBtn'),
+  headerPlaceholder: document.querySelector('.header-placeholder')
 };
 
 // Define the palette globally before the utils object
@@ -1595,6 +1708,102 @@ const utils = {
     return parts.length !== 2 ? null : {min:parseFloat(parts[0]),max:parseFloat(parts[1])};
   }
 };
+
+// Mobile Header Manager - New component to handle mobile header interactions
+const mobileHeaderManager = {
+  init: function() {
+    if (!elements.appHeader || !elements.headerToggleBtn || !elements.headerPlaceholder) {
+      console.error("Mobile header elements missing");
+      return;
+    }
+    
+    // Start with header collapsed on mobile
+    if (window.innerWidth < 768) {
+      this.collapseHeader();
+    }
+    
+    // Set up event listeners
+    elements.headerToggleBtn.addEventListener('click', this.toggleHeader.bind(this));
+    
+    // Handle scroll events
+    window.addEventListener('scroll', this.handleScroll.bind(this));
+    
+    // Handle resize events
+    window.addEventListener('resize', this.handleResize.bind(this));
+  },
+  
+  toggleHeader: function() {
+    if (app.mobileHeaderState.expanded) {
+      this.collapseHeader();
+    } else {
+      this.expandHeader();
+    }
+  },
+  
+  expandHeader: function() {
+    elements.appHeader.classList.add('expanded');
+    elements.headerToggleBtn.innerHTML = '<i class="fas fa-caret-up"></i>';
+    app.mobileHeaderState.expanded = true;
+  },
+  
+  collapseHeader: function() {
+    elements.appHeader.classList.remove('expanded');
+    elements.headerToggleBtn.innerHTML = '<i class="fas fa-caret-down"></i>';
+    app.mobileHeaderState.expanded = false;
+  },
+  
+  handleScroll: function() {
+    if (window.innerWidth >= 768) return; // Only apply on mobile
+    
+    const currentScrollY = window.scrollY;
+    const scrollDelta = currentScrollY - app.mobileHeaderState.lastScrollY;
+    
+    // If scrolling down more than 10px, fix header
+    if (scrollDelta > 10 && currentScrollY > 50) {
+      this.fixHeader();
+    } 
+    // If scrolling up more than 10px, unfix header
+    else if (scrollDelta < -10) {
+      this.unfixHeader();
+    }
+    
+    app.mobileHeaderState.lastScrollY = currentScrollY;
+  },
+  
+  fixHeader: function() {
+    if (!app.mobileHeaderState.fixed) {
+      elements.appHeader.classList.add('fixed');
+      elements.headerPlaceholder.classList.add('visible');
+      app.mobileHeaderState.fixed = true;
+      this.collapseHeader(); // Ensure it's collapsed when fixed
+    }
+  },
+  
+  unfixHeader: function() {
+    if (app.mobileHeaderState.fixed) {
+      elements.appHeader.classList.remove('fixed');
+      elements.headerPlaceholder.classList.remove('visible');
+      app.mobileHeaderState.fixed = false;
+    }
+  },
+  
+  handleResize: function() {
+    if (window.innerWidth >= 768) {
+      // On desktop, ensure header is expanded and not fixed
+      elements.appHeader.classList.remove('fixed');
+      elements.headerPlaceholder.classList.remove('visible');
+      elements.appHeader.classList.remove('expanded');
+      app.mobileHeaderState.fixed = false;
+      app.mobileHeaderState.expanded = false;
+    } else {
+      // On mobile, start with header collapsed
+      if (!app.mobileHeaderState.expanded) {
+        this.collapseHeader();
+      }
+    }
+  }
+};
+
 const dataProcessor = {
   processData: function(csvData) {
     if (!csvData || !csvData.data || csvData.data.length === 0) throw new Error('No valid data found in CSV file');
@@ -2777,6 +2986,7 @@ function initThemeToggle() {
          }
          if (chartInstance.config.type === 'line' && chartInstance.data.datasets.length > 0) {
            chartInstance.data.datasets[0].borderColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+           chartInstance.data.datasets[0].borderColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
            chartInstance.data.datasets[0].backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() + '26';
            chartInstance.data.datasets[0].pointBackgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
            chartInstance.data.datasets[0].pointBorderColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-primary').trim();
@@ -2829,6 +3039,11 @@ function init() {
  loadSavedTheme();
  initThemeToggle();
  setupEventListeners();
+ 
+ // Initialize mobile header manager
+ mobileHeaderManager.init();
+ 
+ // Start with loading sample data
  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'ytd.csv', 'YTD Data (Initially Loaded)');
 }
 
