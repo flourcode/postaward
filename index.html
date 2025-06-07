@@ -1465,6 +1465,60 @@ main#dashboard {
     height: 220px;
   }
 }
+@media (max-width: 767px) {
+  .search-bar-container {
+    position: fixed;
+    top: var(--header-height-mobile);
+    left: 0;
+    right: 0;
+    z-index: 95;
+    background-color: var(--bg-secondary);
+    padding: var(--space-2) var(--space-3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: var(--transition);
+    display: flex;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  .search-bar-container .search-bar {
+    width: 100%;
+    position: relative;
+  }
+  .search-bar-container .search-input {
+    width: 100%;
+    border-radius: var(--radius-md);
+    background-color: var(--bg-primary);
+    padding: var(--space-3) var(--space-4) var(--space-3) var(--space-8);
+    padding-right: 40px;
+    font-size: var(--font-sm);
+    height: 40px;
+    border: 1px solid var(--border);
+  }
+  .search-bar-container .search-button {
+    position: absolute;
+    right: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--primary);
+    padding: var(--space-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: var(--font-lg);
+  }
+  .app-header .search-bar {
+    display: none !important;
+  }
+  main#dashboard {
+    padding-top: calc(var(--space-4) + 44px);
+  }
+  .search-bar-container.hidden {
+    transform: translateY(-100%);
+  }
+}
   </style>
 </head>
 <body>
@@ -1600,6 +1654,15 @@ main#dashboard {
         <p>Upload a CSV file from an FPDS.gov Search Result.</p>
     </div>
     <main id="dashboard" style="display: none;">
+	<!-- Mobile Persistent Search Bar -->
+<div class="search-bar-container">
+  <div class="search-bar" style="position: relative; width: 100%;">
+    <input type="text" id="mobileSearchInput" placeholder="Search contracts, agencies, vendors..." class="search-input">
+    <button type="button" class="search-button" id="mobileSearchButton">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+</div>
       <!-- First row: Sankey (2/3) and Value by Month (1/3) -->
       <section class="primary-viz-row">
         <div class="dashboard-section-header" style="display:flex; justify-content: space-between; align-items:center;">
@@ -3523,19 +3586,93 @@ function updateExampleButtonActiveState(activeButton) {
   });
 }
 function init() {
- loadSavedTheme();
- initThemeToggle();
- setupEventListeners();
- // Initialize mobile header manager
- mobileHeaderManager.init();
- // Start with loading sample data
- fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q225.csv', 'YTD Data (Initially Loaded)');
+  loadSavedTheme();
+  initThemeToggle();
+  setupEventListeners();
+  mobileHeaderManager.init();
+  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q225.csv', 'YTD Data (Initially Loaded)');
+  setTimeout(setupMobileSearch, 500);
 }
 if (document.readyState === 'loading') {
-   document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', init);
 } else {
-   init(); 
+  init();
 }
+function setupMobileSearch() {
+  if (window.innerWidth > 767) return;
+  let searchBarContainer = document.querySelector('.search-bar-container');
+  if (!searchBarContainer) {
+    searchBarContainer = document.createElement('div');
+    searchBarContainer.className = 'search-bar-container';
+    searchBarContainer.innerHTML = `
+      <div class="search-bar" style="position: relative; width: 100%;">
+        <input type="text" id="mobileSearchInput" placeholder="Search contracts, agencies, vendors..." class="search-input">
+        <button type="button" class="search-button" id="mobileSearchButton">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    `;
+    const dashboard = document.getElementById('dashboard');
+    if (dashboard && dashboard.firstChild) {
+      dashboard.insertBefore(searchBarContainer, dashboard.firstChild);
+    } else if (dashboard) {
+      dashboard.appendChild(searchBarContainer);
+    }
+  }
+  const mobileSearchInput = document.getElementById('mobileSearchInput');
+  const mobileSearchButton = document.getElementById('mobileSearchButton');
+  if (!mobileSearchInput || !mobileSearchButton) return;
+  function executeSearch() {
+    app.filters.search = mobileSearchInput.value;
+    filterManager.applyFilters();
+    dashboardManager.refreshDashboard();
+    mobileSearchInput.blur();
+  }
+  mobileSearchInput.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      executeSearch();
+    }
+  });
+  mobileSearchButton.addEventListener('click', function(event) {
+    event.preventDefault();
+    executeSearch();
+  });
+  if (elements.searchInput) {
+    elements.searchInput.addEventListener('input', function() {
+      mobileSearchInput.value = elements.searchInput.value;
+    });
+    mobileSearchInput.addEventListener('input', function() {
+      elements.searchInput.value = mobileSearchInput.value;
+    });
+    if (app.filters.search) {
+      mobileSearchInput.value = app.filters.search;
+    }
+  }
+  let lastScrollY = window.scrollY;
+  let scrollingDown = false;
+  window.addEventListener('scroll', function() {
+    const currentScrollY = window.scrollY;
+    if (currentScrollY > lastScrollY) {
+      if (!scrollingDown && currentScrollY > 100) {
+        searchBarContainer.classList.add('hidden');
+        scrollingDown = true;
+      }
+    } else {
+      if (scrollingDown) {
+        searchBarContainer.classList.remove('hidden');
+        scrollingDown = false;
+      }
+    }
+    lastScrollY = currentScrollY;
+  });
+}
+window.addEventListener('resize', function() {
+  clearTimeout(window.resizeTimer);
+  window.resizeTimer = setTimeout(function() {
+    setupMobileSearch();
+  }, 250);
+});
 </script>
 </body>
 </html>
