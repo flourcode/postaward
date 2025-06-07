@@ -1593,8 +1593,8 @@ main#dashboard {
             <div class="data-load-controls example-csv-loader">
                 <div class="example-csv-buttons">
                     <button id="loadExample3" class="btn btn-secondary"><span class="btn-text">Q125 > $100K</span></button>
-                    <button id="loadExample1" class="btn btn-primary"><span class="btn-text">Q225 > $100K</span></button>
-					 <button id="loadExample4" class="btn btn-secondary"><span class="btn-text">SpaceX</span></button>
+                    <button id="loadExample1" class="btn btn-secondary"><span class="btn-text">Q225 > $100K</span></button>
+					 <button id="loadExample4" class="btn btn-primary"><span class="btn-text">SpaceX</span></button>
                     <button id="loadExample2" class="btn btn-secondary"><span class="btn-text">SaaS 3YR</span></button>
                     <input type="file" id="csvFile" accept=".csv,.xls" class="file-input" style="display: none;">
                     <label for="csvFile" class="btn btn-secondary"><i class="fas fa-upload mr-2"></i>
@@ -3634,7 +3634,7 @@ function init() {
   initThemeToggle();
   setupEventListeners();
   mobileHeaderManager.init();
-  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q225.csv', 'YTD Data (Initially Loaded)');
+  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'spacex.csv', 'YTD Data (Initially Loaded)');
   setTimeout(setupMobileSearch, 500);
 }
 if (document.readyState === 'loading') {
