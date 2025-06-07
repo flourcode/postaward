@@ -1594,6 +1594,7 @@ main#dashboard {
                 <div class="example-csv-buttons">
                     <button id="loadExample3" class="btn btn-secondary"><span class="btn-text">Q125 > $100K</span></button>
                     <button id="loadExample1" class="btn btn-primary"><span class="btn-text">Q225 > $100K</span></button>
+					 <button id="loadExample4" class="btn btn-secondary"><span class="btn-text">SpaceX</span></button>
                     <button id="loadExample2" class="btn btn-secondary"><span class="btn-text">SaaS 3YR</span></button>
                     <input type="file" id="csvFile" accept=".csv,.xls" class="file-input" style="display: none;">
                     <label for="csvFile" class="btn btn-secondary"><i class="fas fa-upload mr-2"></i>
@@ -1980,6 +1981,7 @@ const elements = {
   loadExample1Btn: document.getElementById('loadExample1'),
   loadExample2Btn: document.getElementById('loadExample2'),
   loadExample3Btn: document.getElementById('loadExample3'),
+  loadExample4Btn: document.getElementById('loadExample4'),
   statusBox: document.getElementById('statusBox'), 
   activeFilters: document.getElementById('activeFilters'),
   searchInput: document.getElementById('searchInput'),
@@ -3468,6 +3470,11 @@ if(elements.loadExample3Btn) elements.loadExample3Btn.addEventListener('click', 
   fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q125.csv', 'Q125 > $100K (q125.csv)'); 
   updateExampleButtonActiveState(elements.loadExample3Btn); 
 });
+// Example 4 button (not working - fixed version)
+if(elements.loadExample4Btn) elements.loadExample4Btn.addEventListener('click', () => { 
+  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'spacex.csv', 'SpaceX (spacex.csv)'); 
+  updateExampleButtonActiveState(elements.loadExample4Btn); 
+});
   let searchTimeout;
   if(elements.searchInput) elements.searchInput.addEventListener('input', () => { 
       clearTimeout(searchTimeout); 
@@ -3609,7 +3616,7 @@ function loadSavedTheme() {
  }
 }
 function updateExampleButtonActiveState(activeButton) {
-  const exampleButtons = [elements.loadExample1Btn, elements.loadExample2Btn, elements.loadExample3Btn];
+  const exampleButtons = [elements.loadExample1Btn, elements.loadExample2Btn, elements.loadExample3Btn, elements.loadExample4Btn];
   exampleButtons.forEach(button => {
     if (button) {
       if (button === activeButton) {
