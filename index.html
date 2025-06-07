@@ -1479,6 +1479,9 @@ main#dashboard {
     display: flex;
     max-width: 1600px;
     margin: 0 auto;
+    box-sizing: border-box;
+    width: 100%;
+    transform: translateX(0);
   }
   .search-bar-container .search-bar {
     width: 100%;
@@ -1488,35 +1491,72 @@ main#dashboard {
     width: 100%;
     border-radius: var(--radius-md);
     background-color: var(--bg-primary);
-    padding: var(--space-3) var(--space-4) var(--space-3) var(--space-8);
-    padding-right: 40px;
+    padding: var(--space-3) var(--space-4);
     font-size: var(--font-sm);
     height: 40px;
     border: 1px solid var(--border);
+    box-sizing: border-box;
   }
-  .search-bar-container .search-button {
-    position: absolute;
-    right: var(--space-3);
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    color: var(--primary);
-    padding: var(--space-2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: var(--font-lg);
-  }
+  /* Hide the original search bar in header */
   .app-header .search-bar {
     display: none !important;
   }
+  /* Add padding to dashboard to account for sticky search */
   main#dashboard {
     padding-top: calc(var(--space-4) + 44px);
   }
+  /* Handle scrolling behavior - hide on scroll down, show on scroll up */
   .search-bar-container.hidden {
     transform: translateY(-100%);
+  }
+  /* Fix for the right-shift issue */
+  .app-container,
+  .app-header,
+  main#dashboard,
+  .search-bar-container,
+  .header-main-content-row,
+  .header-content,
+  .primary-viz-row,
+  .charts-grid-container,
+  .tables-section-container,
+  .content-wrapper {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-left: 0;
+    margin-right: 0;
+    transform: translateX(0);
+  }
+}
+/* Fix for double search bars on desktop */
+@media (min-width: 768px) {
+  /* Completely hide mobile search on desktop */
+  .search-bar-container {
+    display: none !important;
+  }
+}
+/* Keep the mobile search only on mobile */
+@media (max-width: 767px) {
+  .search-bar-container {
+    display: flex;
+    position: fixed;
+    top: var(--header-height-mobile);
+    left: 0;
+    right: 0;
+    z-index: 95;
+    background-color: var(--bg-secondary);
+    padding: var(--space-2) var(--space-3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: var(--transition);
+    max-width: 1600px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    width: 100%;
+    transform: translateX(0);
+  }
+  /* Hide the original search bar in header */
+  .app-header .search-bar {
+    display: none !important;
   }
 }
   </style>
@@ -1607,7 +1647,7 @@ main#dashboard {
                 </div>
                 <div class="filters-grid">
                     <div class="filter-group">
-                        <label for="startDate" class="filter-label">Date Range</label> 
+                        <label for="startDate" class="filter-label"></label> 
                         <div class="date-range-picker" id="dateRangeLabel">
                             <input type="date" id="startDate" class="filter-date" aria-label="Start date">
                             <span class="date-separator">to</span>
@@ -1615,19 +1655,19 @@ main#dashboard {
                         </div>
                     </div>
                     <div class="filter-group">
-                        <label for="officeFilter" class="filter-label">Office</label> 
+                        <label for="officeFilter" class="filter-label"></label> 
                         <select id="officeFilter" class="filter-select" aria-label="Filter by contracting office">
                             <option value="">Any Office</option>
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label for="naicsFilter" class="filter-label">NAICS Code</label> 
+                        <label for="naicsFilter" class="filter-label"></label> 
                         <select id="naicsFilter" class="filter-select" aria-label="Filter by NAICS code">
                             <option value="">Any NAICS</option>
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label for="valueFilter" class="filter-label">Value Range</label> 
+                        <label for="valueFilter" class="filter-label"></label> 
                         <select id="valueFilter" class="filter-select" aria-label="Filter by action obligation value">
                             <option value="">Any Value</option>
                             <option value="0-100000">Under $100K</option>
@@ -1658,9 +1698,6 @@ main#dashboard {
 <div class="search-bar-container">
   <div class="search-bar" style="position: relative; width: 100%;">
     <input type="text" id="mobileSearchInput" placeholder="Search contracts, agencies, vendors..." class="search-input">
-    <button type="button" class="search-button" id="mobileSearchButton">
-      <i class="fas fa-search"></i>
-    </button>
   </div>
 </div>
       <!-- First row: Sankey (2/3) and Value by Month (1/3) -->
@@ -3599,7 +3636,16 @@ if (document.readyState === 'loading') {
   init();
 }
 function setupMobileSearch() {
-  if (window.innerWidth > 767) return;
+  // Do nothing on desktop - only run on mobile
+  if (window.innerWidth >= 768) {
+    // Remove mobile search if it exists when resizing to desktop
+    const existingSearchBar = document.querySelector('.search-bar-container');
+    if (existingSearchBar) {
+      existingSearchBar.remove();
+    }
+    return;
+  }
+  // Continue with mobile search setup
   let searchBarContainer = document.querySelector('.search-bar-container');
   if (!searchBarContainer) {
     searchBarContainer = document.createElement('div');
@@ -3607,9 +3653,6 @@ function setupMobileSearch() {
     searchBarContainer.innerHTML = `
       <div class="search-bar" style="position: relative; width: 100%;">
         <input type="text" id="mobileSearchInput" placeholder="Search contracts, agencies, vendors..." class="search-input">
-        <button type="button" class="search-button" id="mobileSearchButton">
-          <i class="fas fa-search"></i>
-        </button>
       </div>
     `;
     const dashboard = document.getElementById('dashboard');
@@ -3620,24 +3663,28 @@ function setupMobileSearch() {
     }
   }
   const mobileSearchInput = document.getElementById('mobileSearchInput');
-  const mobileSearchButton = document.getElementById('mobileSearchButton');
-  if (!mobileSearchInput || !mobileSearchButton) return;
+  if (!mobileSearchInput) return;
+  // Execute search function - called when typing stops or enter is pressed
   function executeSearch() {
     app.filters.search = mobileSearchInput.value;
     filterManager.applyFilters();
     dashboardManager.refreshDashboard();
-    mobileSearchInput.blur();
   }
+  // Handle Enter key
   mobileSearchInput.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
       event.preventDefault();
       executeSearch();
+      mobileSearchInput.blur(); // Close keyboard on Enter
     }
   });
-  mobileSearchButton.addEventListener('click', function(event) {
-    event.preventDefault();
-    executeSearch();
+  // Search as you type with debounce
+  let searchTimeout;
+  mobileSearchInput.addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(executeSearch, 500); // 500ms debounce
   });
+  // Sync with main search if it exists
   if (elements.searchInput) {
     elements.searchInput.addEventListener('input', function() {
       mobileSearchInput.value = elements.searchInput.value;
@@ -3649,6 +3696,61 @@ function setupMobileSearch() {
       mobileSearchInput.value = app.filters.search;
     }
   }
+  // Connect reset button to mobile search
+  if (elements.resetFilters) {
+    const originalResetHandler = elements.resetFilters.onclick;
+    elements.resetFilters.onclick = function(e) {
+      // Clear mobile search
+      if (mobileSearchInput) {
+        mobileSearchInput.value = '';
+      }
+      // Call original handler if it exists
+      if (typeof originalResetHandler === 'function') {
+        originalResetHandler.call(this, e);
+      } else {
+        // Fallback reset logic if original handler is not available
+        app.filters = {};
+        app.selection = { type: null, value: null, container: null };
+        // Clear all filter inputs
+        if (elements.valueFilter) elements.valueFilter.value = '';
+        if (elements.startDate) elements.startDate.value = '';
+        if (elements.endDate) elements.endDate.value = '';
+        if (elements.agencyFilter) elements.agencyFilter.value = '';
+        if (elements.officeFilter) elements.officeFilter.value = '';
+        if (elements.naicsFilter) elements.naicsFilter.value = '';
+        if (elements.pscFilter) elements.pscFilter.value = '';
+        if (elements.vendorFilter) elements.vendorFilter.value = '';
+        if (elements.searchInput) elements.searchInput.value = '';
+        // Clear indicators
+        document.querySelectorAll('.selection-indicator').forEach(ind => ind.style.display = 'none');
+        // Reset filtered data
+        if (app.data && app.data.length) {
+          app.filteredData = [...app.data];
+        }
+        // Update UI
+        if (filterManager && filterManager.updateFilterTags) {
+          filterManager.updateFilterTags();
+        }
+        if (dashboardManager && dashboardManager.refreshDashboard) {
+          dashboardManager.refreshDashboard();
+        }
+        // Close advanced filters if open
+        if (elements.advancedFiltersPanel) {
+          elements.advancedFiltersPanel.classList.remove('active');
+        }
+      }
+    };
+  }
+  // Also handle filter tag removal for search
+  document.addEventListener('click', function(e) {
+    if (e.target && e.target.closest('.filter-tag-remove') && 
+        e.target.closest('.filter-tag-remove').getAttribute('data-filter') === 'search') {
+      if (mobileSearchInput) {
+        mobileSearchInput.value = '';
+      }
+    }
+  }, true);
+  // Scroll behavior
   let lastScrollY = window.scrollY;
   let scrollingDown = false;
   window.addEventListener('scroll', function() {
@@ -3667,10 +3769,20 @@ function setupMobileSearch() {
     lastScrollY = currentScrollY;
   });
 }
+// Ensure proper handling of resize events
 window.addEventListener('resize', function() {
   clearTimeout(window.resizeTimer);
   window.resizeTimer = setTimeout(function() {
-    setupMobileSearch();
+    // If we're now on desktop, remove mobile search
+    if (window.innerWidth >= 768) {
+      const existingSearchBar = document.querySelector('.search-bar-container');
+      if (existingSearchBar) {
+        existingSearchBar.remove();
+      }
+    } else {
+      // If we're on mobile, set up mobile search
+      setupMobileSearch();
+    }
   }, 250);
 });
 </script>
