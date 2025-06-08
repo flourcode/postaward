@@ -583,6 +583,12 @@ main#dashboard {
   color: var(--text-primary);
   line-height: 1.1;
 }
+.stat-compnay {
+  font-size: var(--font-2xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
 /* Visualization Sections */
 .primary-viz, .charts-grid-container, .tables-section-container {
   background-color: var(--bg-primary);
@@ -1256,7 +1262,10 @@ main#dashboard {
     padding: var(--space-3);
   }
   .stat-value {
-    font-size: var(--font-2xl);
+    font-size: var(--font-3xl);
+  }
+  .stat-company {
+    font-size: var(--font-xl);
   }
   .primary-viz, .charts-grid-container, .tables-section-container {
     padding: var(--space-4);
@@ -1559,6 +1568,305 @@ main#dashboard {
     display: none !important;
   }
 }
+/* Reduce overall dashboard spacing */
+main#dashboard {
+  gap: var(--space-3) !important; /* Reduce from --space-6 to --space-3 */
+  padding: var(--space-4) var(--space-4) !important; /* Reduce top/bottom padding */
+}
+
+/* Reduce header padding */
+.app-header {
+  padding: var(--space-3) var(--space-6) !important; /* Reduce vertical padding */
+  gap: var(--space-2) !important; /* Reduce gap between header elements */
+}
+
+/* Reduce stats section margins */
+.stats-section {
+  margin-bottom: var(--space-3) !important; /* Reduce bottom margin */
+}
+
+.stats-row {
+  gap: var(--space-2) !important; /* Reduce gap between stat cards */
+}
+
+.stat-card {
+  padding: var(--space-3) !important; /* Reduce card padding */
+}
+
+/* Reduce primary viz section spacing */
+.primary-viz-row {
+  margin-bottom: var(--space-3) !important; /* Reduce bottom margin */
+  padding: var(--space-4) !important; /* Reduce internal padding */
+}
+
+.dashboard-section-header {
+  margin-bottom: var(--space-2) !important; /* Reduce bottom margin */
+  padding-bottom: var(--space-2) !important; /* Reduce bottom padding */
+}
+
+/* Reduce charts grid container spacing */
+.charts-grid-container {
+  padding: var(--space-4) !important; /* Reduce padding */
+  margin-bottom: var(--space-3) !important; /* Reduce bottom margin */
+}
+
+.charts-grid {
+  gap: var(--space-4) !important; /* Reduce gap between charts */
+}
+
+/* Reduce content wrapper margins */
+.content-wrapper {
+  margin-top: var(--space-3) !important; /* Reduce top margin */
+}
+
+/* Reduce tables section padding */
+.tables-section-container {
+  padding: var(--space-4) !important; /* Reduce padding */
+}
+
+/* Reduce primary viz container spacing */
+.primary-viz-container {
+  gap: var(--space-3) !important; /* Reduce gap between sankey and time chart */
+}
+
+/* Reduce status and filters spacing */
+.status-and-active-filters {
+  gap: var(--space-2) !important; /* Reduce gap */
+  padding: var(--space-2) 0 !important; /* Reduce padding */
+  margin-bottom: var(--space-2) !important; /* Reduce bottom margin */
+}
+
+/* Reduce primary controls spacing */
+.primary-controls-area {
+  gap: var(--space-2) !important; /* Reduce gap */
+}
+
+/* Reduce main filter inputs spacing */
+.main-filter-inputs {
+  gap: var(--space-2) !important; /* Reduce gap between filter elements */
+}
+
+/* Reduce advanced filters panel spacing */
+#advancedFiltersPanel {
+  margin-top: var(--space-2) !important; /* Reduce top margin */
+  padding: var(--space-4) !important; /* Reduce padding */
+}
+
+.filters-grid {
+  gap: var(--space-3) !important; /* Reduce gap between filter items */
+}
+
+/* Reduce chart title spacing */
+.chart-title-integrated {
+  margin-bottom: var(--space-1) !important; /* Reduce bottom margin */
+}
+
+/* Reduce tab spacing */
+.tables-section .tabs {
+  margin-bottom: var(--space-2) !important; /* Reduce bottom margin */
+}
+
+/* Mobile specific reductions */
+@media (max-width: 767px) {
+  main#dashboard {
+    padding: var(--space-3) var(--space-3) !important; /* Further reduce on mobile */
+    gap: var(--space-2) !important; /* Further reduce gaps on mobile */
+  }
+  
+  .stats-row {
+    gap: var(--space-2) !important; /* Reduce gap between stat cards on mobile */
+  }
+  
+  .primary-viz-row {
+    padding: var(--space-3) !important; /* Reduce padding on mobile */
+  }
+  
+  .charts-grid-container {
+    padding: var(--space-3) !important; /* Reduce padding on mobile */
+  }
+  
+  .tables-section-container {
+    padding: var(--space-3) !important; /* Reduce padding on mobile */
+  }
+}
+
+/* Desktop specific adjustments */
+@media (min-width: 768px) {
+  .app-header {
+    padding: var(--space-4) var(--space-6) !important; /* Slightly more padding on desktop */
+  }
+}
+
+/* Hide the status box completely */
+.status-and-active-filters,
+#statusBox {
+  display: none !important;
+}
+
+/* Alternative: Make it invisible but keep layout space */
+/*
+.status-and-active-filters,
+#statusBox {
+  visibility: hidden !important;
+}
+*/
+
+/* Alternative: Move it off-screen (for screen readers) */
+/*
+.status-and-active-filters,
+#statusBox {
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+}
+*/
+/* Add small vertical gap between load controls and primary controls */
+.data-load-controls {
+  margin-bottom: var(--space-4) !important; /* Adds gap after load controls */
+}
+
+/* Alternative: Add gap before primary controls */
+.primary-controls-area {
+  margin-top: var(--space-4) !important; /* Adds gap before primary controls */
+}
+
+/* For smaller gap, use --space-3 instead */
+/*
+.data-load-controls {
+  margin-bottom: var(--space-3) !important;
+}
+*/
+
+/* For larger gap, use --space-6 instead */
+/*
+.data-load-controls {
+  margin-bottom: var(--space-6) !important;
+}
+*/
+
+/* Mobile specific - smaller gap on mobile */
+@media (max-width: 767px) {
+  .data-load-controls {
+    margin-bottom: var(--space-3) !important;
+  }
+}
+/* Complete reset of mobile search positioning */
+@media (max-width: 767px) {
+  /* Hide the original search in header completely */
+  .app-header .search-bar,
+  .header-content .search-bar {
+    display: none !important;
+  }
+  
+  /* Remove any existing mobile search containers */
+  .search-bar-container {
+    display: none !important;
+  }
+  
+  /* Position the new search bar fixed at the top */
+  .mobile-search-fixed {
+    position: fixed;
+    top: var(--header-height-mobile);
+    left: 0;
+    right: 0;
+    z-index: 999; /* Higher than other elements */
+    background-color: var(--bg-primary);
+    padding: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    width: 100%;
+  }
+  
+  .mobile-search-fixed .search-input {
+    width: 100%;
+    height: 36px;
+    border-radius: 4px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    background-color: var(--bg-secondary);
+  }
+  
+  /* Add proper spacing to dashboard content */
+  main#dashboard {
+    padding-top: 100px !important; /* Fixed value to ensure enough space */
+  }
+  
+  /* Hide potentially interfering elements */
+  .header-main-content-row .search-bar,
+  .primary-controls-area .search-bar {
+    display: none !important;
+  }
+  
+  /* Ensure stats cards display properly */
+  .stats-section {
+    margin-top: 10px;
+  }
+}
+/* Complete reset of mobile search positioning */
+@media (max-width: 767px) {
+  /* Hide the original search in header completely */
+  .app-header .search-bar,
+  .header-content .search-bar {
+    display: none !important;
+  }
+  
+  /* Remove any existing mobile search containers */
+  .search-bar-container {
+    display: none !important;
+  }
+  
+  /* Position the new search bar fixed at the top */
+  .mobile-search-fixed {
+    position: fixed;
+    top: var(--header-height-mobile);
+    left: 0;
+    right: 0;
+    z-index: 999; /* Higher than other elements */
+    background-color: var(--bg-primary);
+    padding: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    display: block; /* Ensure it's visible on mobile */
+  }
+  
+  .mobile-search-fixed .search-input {
+    width: 100%;
+    height: 36px;
+    border-radius: 4px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    background-color: var(--bg-secondary);
+  }
+  
+  /* Add proper spacing to dashboard content */
+  main#dashboard {
+    padding-top: 100px !important; /* Fixed value to ensure enough space */
+  }
+  
+  /* Hide potentially interfering elements */
+  .header-main-content-row .search-bar,
+  .primary-controls-area .search-bar {
+    display: none !important;
+  }
+  
+  /* Ensure stats cards display properly */
+  .stats-section {
+    margin-top: 10px;
+  }
+}
+
+/* IMPORTANT: Completely hide mobile search on desktop */
+@media (min-width: 768px) {
+  .mobile-search-fixed {
+    display: none !important; /* Force hide on desktop */
+  }
+  
+  /* Make sure the original search bar is visible on desktop */
+  .app-header .search-bar,
+  .header-content .search-bar,
+  .primary-controls-area .search-bar {
+    display: block !important;
+  }
+}
   </style>
 </head>
 <body>
@@ -1578,8 +1886,7 @@ main#dashboard {
                     <span>Post Award</span>
                 </div>
                 <span class="logo-subtitle">
-                    Federal Awards Dashboard<br><br>
-                    PostAward.com lets you visualize fpds.gov search results.<br>Go to FPDS.gov and do an "EZ Search" by agency, vendor, keyword, etc.<br>Download the CSV and upload it here to spot who's buying what from who.
+                    Federal Contract Intelligence
                 </span>
             </div>
             <!-- Theme toggle on the right -->
@@ -1600,7 +1907,6 @@ main#dashboard {
                     <label for="csvFile" class="btn btn-secondary"><i class="fas fa-upload mr-2"></i>
                         <span class="btn-text">Upload fpds.gov CSV</span>
                     </label>
-                </div>
             </div>
             <div class="status-and-active-filters" id="statusBox">
                 <div class="status-title">No data loaded</div>
@@ -1683,6 +1989,28 @@ main#dashboard {
             </section>
         </div>
     </header> 
+	<!-- Mobile-only fixed search bar -->
+<div class="mobile-search-fixed" id="mobileSearchFixed">
+  <input type="text" class="search-input" placeholder="Search contracts, agencies, vendors..." id="mobileSearchInput">
+</div>
+
+<script>
+  // Sync the mobile search with the main search
+  document.addEventListener('DOMContentLoaded', function() {
+    const mobileSearch = document.getElementById('mobileSearchInput');
+    const mainSearch = document.getElementById('searchInput');
+    
+    if (mobileSearch && mainSearch) {
+      // Sync input values both ways
+      mobileSearch.addEventListener('input', function() {
+        mainSearch.value = this.value;
+        // Trigger the search functionality
+        const event = new Event('input', { bubbles: true });
+        mainSearch.dispatchEvent(event);
+      });
+    }
+  });
+</script>
     <div id="loadingIndicator" class="loading-state" style="display: none;">
         <div class="loading-spinner"></div>
         <div>Loading and processing contract data...</div>
@@ -1701,16 +2029,18 @@ main#dashboard {
     <input type="text" id="mobileSearchInput" placeholder="Search contracts, agencies, vendors..." class="search-input">
   </div>
 </div>
+
       <!-- First row: Sankey (2/3) and Value by Month (1/3) -->
       <section class="primary-viz-row">
         <div class="dashboard-section-header" style="display:flex; justify-content: space-between; align-items:center;">
-          <span>Award Flow & Monthly Buying Trends</span>
+          <span>Award Flow & Monthly Buying Trends</span>  
           <div class="sankey-controls">
             <button id="sankeyTop10" class="btn btn-sm btn-primary"><span class="btn-text">Top 10</span></button>
             <button id="sankeyTop25" class="btn btn-sm btn-secondary"><span class="btn-text">Top 25</span></button>
             <button id="sankeyAll" class="btn btn-sm btn-secondary"><span class="btn-text">All</span></button>
           </div>
         </div>
+		<div class="welcome-message">-</div></br>
         <div class="primary-viz-container">
           <div class="sankey-wrapper">
             <div class="sankey-chart-container" id="sankeyChartContainer">
@@ -1726,6 +2056,27 @@ main#dashboard {
           </div>
         </div>
       </section>
+	   <!-- Stats Cards in Container -->
+<section class="stats-section">
+  <div class="stats-row">
+      <div class="stat-card">
+      <p class="stat-label"">Contract Value</p>
+      <div class="stat-value" id="stat-value">-</div>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Total Awards</p>
+      <div class="stat-value" id="stat-contracts">-</div>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label"">Companies</p>
+      <div class="stat-value" id="stat-companies">-</div>
+    </div>
+		<div class="stat-card">
+      <p class="stat-label"">Market Leader</p>
+      <div class="stat-company" id="stat-top-company">-</div>
+    </div>
+  </div>
+</section>
       <!-- Second row: Three equal charts -->
       <section class="charts-grid-container">
         <h2 class="dashboard-section-header">Visualizations</h2>
@@ -1753,26 +2104,7 @@ main#dashboard {
           </div>
         </div>
       </section>
-      <section class="stats-section">
-        <div class="stats-row">
-          <div class="stat-card">
-            <div class="stat-label">Total Awards</div>
-            <div id="totalContracts" class="stat-value">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Total Value</div>
-            <div id="totalValue" class="stat-value">$0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Avg. Award</div>
-            <div id="avgValue" class="stat-value">$0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Unique Vendors</div>
-            <div id="uniqueVendors" class="stat-value">0</div>
-          </div>
-        </div>
-      </section>
+  
       <!-- Combined wrapper for tables and footer -->
       <div class="content-wrapper">
         <!-- Tables section -->
@@ -3335,7 +3667,7 @@ const dashboardManager = {
    this.refreshDashboard(); 
  },
  refreshDashboard: function() { 
-   this.updateStats(); chartManager.updateCharts(); tableManager.updateTables(); filterManager.updateFilterTags(); 
+   this.updateStats(); chartManager.updateCharts(); tableManager.updateTables(); filterManager.updateFilterTags(); updateInsightBanner(app.filteredData, app.filters.psc);
  },
  updateStats: function() { 
    const d = app.filteredData; 
@@ -3358,6 +3690,7 @@ const fileHandler = {
      app.naicsCodes = analysis.naicsCodes; app.pscCodes = analysis.pscCodes;
      this.populateFilterDropdowns();
      dashboardManager.initDashboard(); 
+	 updateInsightBanner(app.filteredData);
      const uploadBtnTextSpan = elements.uploadBtn.querySelector('.btn-text');
      if(uploadBtnTextSpan) uploadBtnTextSpan.textContent = 'Upload';
      elements.csvFile.value = ''; 
@@ -3499,6 +3832,14 @@ if(elements.loadExample4Btn) elements.loadExample4Btn.addEventListener('click', 
         });
     }
   };
+  if(elements.pscFilter) {
+  elements.pscFilter.addEventListener('change', () => {
+    const value = elements.pscFilter.value;
+    if (value) app.filters.psc = value;
+    else delete app.filters.psc;
+    updateInsightsAfterFilter();
+  });
+}
   addFilterListener(elements.agencyFilter, 'agency', elements.agencyChartContainer);
   addFilterListener(elements.vendorFilter, 'vendor', elements.vendorChartContainer);
   addFilterListener(elements.pscFilter, 'psc', null); 
@@ -3792,6 +4133,205 @@ window.addEventListener('resize', function() {
     }
   }, 250);
 });
+// Add these functions to your existing app.js
+
+// Function to analyze the data and generate market insights
+function generateContractInsights(data) {
+  if (!data || data.length === 0) return null;
+  
+  // Calculate total contract value
+  const totalValue = data.reduce((sum, contract) => sum + contract.value, 0);
+  
+  // Get unique companies and their market share
+  const companyData = {};
+  data.forEach(contract => {
+    if (!contract.vendor) return;
+    
+    if (!companyData[contract.vendor]) {
+      companyData[contract.vendor] = {
+        name: contract.vendor,
+        value: 0,
+        count: 0
+      };
+    }
+    
+    companyData[contract.vendor].value += contract.value;
+    companyData[contract.vendor].count++;
+  });
+  
+  // Convert to array and sort by value
+  const companies = Object.values(companyData)
+    .map(company => ({
+      ...company,
+      marketShare: (company.value / totalValue) * 100
+    }))
+    .sort((a, b) => b.value - a.value);
+  
+  // Get top company
+  const topCompany = companies[0];
+  
+  // Calculate time-based trends
+  const monthlyData = {};
+  data.forEach(contract => {
+    if (!contract.parsedDate) return;
+    
+    const monthYear = `${contract.parsedDate.getFullYear()}-${(contract.parsedDate.getMonth() + 1).toString().padStart(2, '0')}`;
+    if (!monthlyData[monthYear]) {
+      monthlyData[monthYear] = { value: 0, count: 0 };
+    }
+    
+    monthlyData[monthYear].value += contract.value;
+    monthlyData[monthYear].count++;
+  });
+  
+  // Sort months and find trend
+  const sortedMonths = Object.keys(monthlyData).sort();
+  let trend = 'stable';
+  if (sortedMonths.length > 1) {
+    const firstMonth = monthlyData[sortedMonths[0]].value;
+    const lastMonth = monthlyData[sortedMonths[sortedMonths.length - 1]].value;
+    const percentChange = ((lastMonth - firstMonth) / firstMonth) * 100;
+    
+    if (percentChange > 15) trend = 'increasing';
+    else if (percentChange < -15) trend = 'decreasing';
+  }
+  
+  // Get PSC code breakdown
+  const pscData = {};
+  data.forEach(contract => {
+    if (!contract.psc) return;
+    
+    if (!pscData[contract.psc]) {
+      pscData[contract.psc] = {
+        code: contract.psc,
+        description: contract.pscDescription || '',
+        value: 0,
+        count: 0
+      };
+    }
+    
+    pscData[contract.psc].value += contract.value;
+    pscData[contract.psc].count++;
+  });
+  
+  // Get top PSC code
+  const topPSC = Object.values(pscData)
+    .sort((a, b) => b.value - a.value)[0];
+  
+  // Format money values
+  const formatLargeValue = (value) => {
+    if (value >= 1000000000) return `$${(value / 1000000000).toFixed(1)}B`;
+    if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
+    if (value >= 1000) return `$${(value / 1000).toFixed(1)}K`;
+    return `$${value.toFixed(0)}`;
+  };
+  
+  return {
+    totalValue: formatLargeValue(totalValue),
+    totalContracts: data.length,
+    totalCompanies: companies.length,
+    topCompany: {
+      name: topCompany?.name || 'N/A',
+      value: formatLargeValue(topCompany?.value || 0),
+      marketShare: topCompany ? topCompany.marketShare.toFixed(1) + '%' : 'N/A'
+    },
+    trend,
+    dateRange: {
+      start: sortedMonths.length > 0 ? sortedMonths[0] : 'N/A',
+      end: sortedMonths.length > 0 ? sortedMonths[sortedMonths.length - 1] : 'N/A'
+    },
+    topPSC: topPSC ? {
+      code: topPSC.code,
+      description: topPSC.description,
+      value: formatLargeValue(topPSC.value)
+    } : { code: 'N/A', description: 'N/A', value: '$0' }
+  };
+}
+
+// Function to generate insight text based on data analysis
+function generateInsightMessage(insights, pscCode = null) {
+  if (!insights) return "No data available for analysis.";
+  
+  // Create dynamic message based on available insights
+  const messages = [];
+  
+  // PSC-specific message
+  if (pscCode) {
+    messages.push(`Analysis of PSC ${pscCode} (${insights.topPSC.description}) shows 
+    ${insights.totalValue} in total contract value across ${insights.totalContracts} awards to 
+    ${insights.totalCompanies} companies.`);
+  } else {
+    messages.push(`Current analysis shows ${insights.totalValue} across ${insights.totalContracts} 
+    contract awards to ${insights.totalCompanies} companies.`);
+  }
+  
+  // Add top company insight
+  if (insights.topCompany.name !== 'N/A') {
+    messages.push(`${insights.topCompany.name} is the market leader with ${insights.topCompany.marketShare} 
+    market share (${insights.topCompany.value}).`);
+  }
+  
+  // Add trend insight
+  if (insights.trend === 'increasing') {
+    messages.push(`Contract spending is trending upward over the analyzed period.`);
+  } else if (insights.trend === 'decreasing') {
+    messages.push(`Contract spending is trending downward over the analyzed period.`);
+  }
+  
+  return messages.join(' ');
+}
+
+// Function to update the insight banner with real analytics
+function updateInsightBanner(data, pscCode = null) {
+  const insights = generateContractInsights(data);
+  if (!insights) return;
+  
+  // Update date display
+  const dateElement = document.querySelector('.current-date');
+  if (dateElement) {
+    const now = new Date();
+    const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+    dateElement.textContent = now.toLocaleDateString('en-US', options);
+  }
+  
+  // Update insight message
+  const messageElement = document.querySelector('.welcome-message');
+  if (messageElement) {
+    const insightText = generateInsightMessage(insights, pscCode);
+    messageElement.innerHTML = insightText;
+  }
+  
+  // Update featured stats
+  updateFeaturedStats(insights);
+}
+
+// Update the featured stats cards with real data
+function updateFeaturedStats(insights) {
+  if (!insights) return;
+  
+  const statElements = {
+    contracts: document.querySelector('#stat-contracts'),
+    value: document.querySelector('#stat-value'),
+    companies: document.querySelector('#stat-companies'),
+    topCompany: document.querySelector('#stat-top-company')
+  };
+  
+  if (statElements.contracts) {
+    statElements.contracts.textContent = insights.totalContracts.toLocaleString();
+  }
+  
+  if (statElements.value) {
+    statElements.value.textContent = insights.totalValue;
+  }
+  
+  if (statElements.companies) {
+    statElements.companies.textContent = insights.totalCompanies;
+  }
+  
+  if (statElements.topCompany) {
+    statElements.topCompany.textContent = `${insights.topCompany.name} (${insights.topCompany.marketShare})`;
+  }
+}
 </script>
 </body>
 </html>
