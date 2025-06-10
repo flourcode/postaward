@@ -1900,7 +1900,7 @@ main#dashboard {
             <div class="data-load-controls example-csv-loader">
                 <div class="example-csv-buttons">
                     <button id="loadExample3" class="btn btn-secondary"><span class="btn-text">Q125 > $100K</span></button>
-                    <button id="loadExample1" class="btn btn-secondary"><span class="btn-text">Q225 > $100K</span></button>
+                    <button id="loadExample1" class="btn btn-secondary"><span class="btn-text">YTD > $100K</span></button>
 					 <button id="loadExample4" class="btn btn-primary"><span class="btn-text">SpaceX</span></button>
                     <button id="loadExample2" class="btn btn-secondary"><span class="btn-text">SaaS 3YR</span></button>
                     <input type="file" id="csvFile" accept=".csv,.xls" class="file-input" style="display: none;">
@@ -2312,7 +2312,6 @@ const elements = {
   uploadBtn: document.querySelector('label[for="csvFile"]'),
   loadExample1Btn: document.getElementById('loadExample1'),
   loadExample2Btn: document.getElementById('loadExample2'),
-  loadExample3Btn: document.getElementById('loadExample3'),
   loadExample4Btn: document.getElementById('loadExample4'),
   statusBox: document.getElementById('statusBox'), 
   activeFilters: document.getElementById('activeFilters'),
@@ -3790,7 +3789,7 @@ function setupEventListeners() {
   if(elements.csvFile) elements.csvFile.addEventListener('change', () => fileHandler.handleFileUpload());
   // Example 1 button (works)
 if(elements.loadExample1Btn) elements.loadExample1Btn.addEventListener('click', () => { 
-  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q225.csv', 'Q225 > $100K (q225.csv)'); 
+  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'ytd.csv', 'YTD > $100K (ytd.csv)'); 
   updateExampleButtonActiveState(elements.loadExample1Btn); 
 });
 // Example 2 button (works)
@@ -3798,11 +3797,7 @@ if(elements.loadExample2Btn) elements.loadExample2Btn.addEventListener('click', 
   fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'da10.csv', 'SaaS 3YR (da10.csv)'); 
   updateExampleButtonActiveState(elements.loadExample2Btn); 
 });
-// Example 3 button (not working - fixed version)
-if(elements.loadExample3Btn) elements.loadExample3Btn.addEventListener('click', () => { 
-  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'q125.csv', 'Q125 > $100K (q125.csv)'); 
-  updateExampleButtonActiveState(elements.loadExample3Btn); 
-});
+
 // Example 4 button (not working - fixed version)
 if(elements.loadExample4Btn) elements.loadExample4Btn.addEventListener('click', () => { 
   fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'spacex.csv', 'SpaceX (spacex.csv)'); 
@@ -3957,7 +3952,7 @@ function loadSavedTheme() {
  }
 }
 function updateExampleButtonActiveState(activeButton) {
-  const exampleButtons = [elements.loadExample1Btn, elements.loadExample2Btn, elements.loadExample3Btn, elements.loadExample4Btn];
+  const exampleButtons = [elements.loadExample1Btn, elements.loadExample2Btn, elements.loadExample4Btn];
   exampleButtons.forEach(button => {
     if (button) {
       if (button === activeButton) {
