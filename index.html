@@ -1900,7 +1900,7 @@ main#dashboard {
             <div class="data-load-controls example-csv-loader">
                 <div class="example-csv-buttons">
                     <button id="loadExample1" class="btn btn-secondary"><span class="btn-text">YTD > $100K</span></button>
-					 <button id="loadExample4" class="btn btn-primary"><span class="btn-text">SpaceX</span></button>
+					 <button id="loadExample4" class="btn btn-primary"><span class="btn-text">VMware</span></button>
                     <button id="loadExample2" class="btn btn-secondary"><span class="btn-text">SaaS 3YR</span></button>
                     <input type="file" id="csvFile" accept=".csv,.xls" class="file-input" style="display: none;">
                     <label for="csvFile" class="btn btn-secondary"><i class="fas fa-upload mr-2"></i>
@@ -3799,7 +3799,7 @@ if(elements.loadExample2Btn) elements.loadExample2Btn.addEventListener('click', 
 
 // Example 4 button (not working - fixed version)
 if(elements.loadExample4Btn) elements.loadExample4Btn.addEventListener('click', () => { 
-  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'spacex.csv', 'SpaceX (spacex.csv)'); 
+  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'vmware.csv', 'VMware (vmware.csv)'); 
   updateExampleButtonActiveState(elements.loadExample4Btn); 
 });
   let searchTimeout;
@@ -3969,7 +3969,7 @@ function init() {
   initThemeToggle();
   setupEventListeners();
   mobileHeaderManager.init();
-  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'spacex.csv', 'YTD Data (Initially Loaded)');
+  fileHandler.loadCsvFromUrl(app.s3BaseUrl + 'vmware.csv', 'YTD Data (Initially Loaded)');
   setTimeout(setupMobileSearch, 500);
 }
 if (document.readyState === 'loading') {
