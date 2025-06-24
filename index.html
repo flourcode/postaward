@@ -2108,7 +2108,7 @@ main#dashboard {
       <div class="content-wrapper">
         <!-- Tables section -->
         <section class="tables-section-container" style="border-radius: 0; box-shadow: none; margin-bottom: 0;">
-          <h2 class="dashboard-section-header">Propensity to Buy and Award Details</h2>
+          <h2 class="dashboard-section-header">Propensity to Buy (Experimental)</h2>
           <div class="tables-section">
             <div class="tabs">
               <button class="tab-btn active" data-tab="recent">Recent Awards</button>
@@ -4326,12 +4326,7 @@ function updateFeaturedStats(insights) {
     statElements.topCompany.textContent = `${insights.topCompany.name} (${insights.topCompany.marketShare})`;
   }
 }
-// ==========================================================
-// PROPENSITY TO BUY FEATURE - COMPLETE BUNDLE (CORRECTED)
-// Simply paste this code at the end of your existing JavaScript
-// ==========================================================
 
-// Add this HTML to your page (inside the tables-section, after the existing tab buttons)
 document.addEventListener('DOMContentLoaded', function() {
   // Find tables section tabs
   const tabsContainer = document.querySelector('.tables-section .tabs');
