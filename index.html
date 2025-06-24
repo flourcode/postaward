@@ -2108,7 +2108,7 @@ main#dashboard {
       <div class="content-wrapper">
         <!-- Tables section -->
         <section class="tables-section-container" style="border-radius: 0; box-shadow: none; margin-bottom: 0;">
-          <h2 class="dashboard-section-header">Award Details</h2>
+          <h2 class="dashboard-section-header">Propensity to Buy and Award Details</h2>
           <div class="tables-section">
             <div class="tabs">
               <button class="tab-btn active" data-tab="recent">Recent Awards</button>
@@ -4326,6 +4326,1063 @@ function updateFeaturedStats(insights) {
     statElements.topCompany.textContent = `${insights.topCompany.name} (${insights.topCompany.marketShare})`;
   }
 }
+// ==========================================================
+// PROPENSITY TO BUY FEATURE - COMPLETE BUNDLE (CORRECTED)
+// Simply paste this code at the end of your existing JavaScript
+// ==========================================================
+
+// Add this HTML to your page (inside the tables-section, after the existing tab buttons)
+document.addEventListener('DOMContentLoaded', function() {
+  // Find tables section tabs
+  const tabsContainer = document.querySelector('.tables-section .tabs');
+  if (!tabsContainer) {
+    console.error("Could not find tabs container to add propensity tab");
+    return;
+  }
+  
+  // Add the propensity tab button
+  const propensityTabBtn = document.createElement('button');
+  propensityTabBtn.className = 'tab-btn';
+  propensityTabBtn.setAttribute('data-tab', 'propensity');
+  propensityTabBtn.textContent = 'Propensity to Buy';
+  tabsContainer.appendChild(propensityTabBtn);
+  
+  // Find tab content container
+  const tabContentsContainer = document.querySelector('.tables-section');
+  if (!tabContentsContainer) {
+    console.error("Could not find tab contents container");
+    return;
+  }
+  
+  // Create and add propensity tab content
+  const propensityTab = document.createElement('div');
+  propensityTab.id = 'propensityTab';
+  propensityTab.className = 'tab-content';
+  propensityTab.innerHTML = `
+    <div class="propensity-header" style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+      <div class="propensity-info">
+        <h4 style="margin: 0; font-size: 16px; color: var(--text-primary);">
+          Agency Propensity to Buy Analysis
+        </h4>
+        <p style="margin: 5px 0 0; font-size: 13px; color: var(--text-secondary);">
+          Propensity to Buy Analysis uses historical federal contract data to predict which government agencies are most likely to make purchases soon. Each agency receives a score from 0-100 based on four factors: how recently they last purchased (30 points), how frequently they buy (25 points), their average contract value (25 points), and their vendor consistency patterns (20 points). The system then predicts next purchase dates by analyzing typical intervals between an agency's past purchases. While this data-driven approach helps sales teams prioritize outreach and identify timing, competitive, budget, and seasonal opportunities, it should be combined with other market intelligence since historical patterns don't guarantee future behavior—especially given budget changes, leadership transitions, and external disruptions like COVID-19 that can alter procurement cycles.
+        </p>
+      </div>
+      
+      <div class="propensity-actions">
+        <button id="exportPropensityBtn" class="btn btn-sm btn-secondary">
+          <i class="fas fa-download"></i>
+          <span class="btn-text">Export</span>
+        </button>
+      </div>
+    </div>
+    
+    <div class="propensity-legend" style="margin-bottom: 15px; display: flex; gap: 15px; justify-content: flex-start; flex-wrap: wrap;">
+      <div class="legend-item" style="display: flex; align-items: center; font-size: 13px;">
+        <span class="badge bg-success" style="min-width: 30px; margin-right: 5px;">70+</span>
+        <span>High Propensity</span>
+      </div>
+      <div class="legend-item" style="display: flex; align-items: center; font-size: 13px;">
+        <span class="badge bg-warning" style="min-width: 30px; margin-right: 5px;">40-69</span>
+        <span>Medium Propensity</span>
+      </div>
+      <div class="legend-item" style="display: flex; align-items: center; font-size: 13px;">
+        <span class="badge bg-danger" style="min-width: 30px; margin-right: 5px;">0-39</span>
+        <span>Low Propensity</span>
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <table id="propensityTable" class="data-table">
+        <thead>
+          <tr>
+            <th data-sort="agency">Agency</th>
+            <th data-sort="office">Office</th>
+            <th data-sort="score" class="text-center">Score</th>
+            <th data-sort="spend">Total Spend</th>
+            <th data-sort="contracts">Contracts</th>
+            <th data-sort="next-purchase">Next Likely Purchase</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="propensityTableBody">
+          <!-- Propensity data will be populated here -->
+        </tbody>
+      </table>
+    </div>
+  `;
+  
+  tabContentsContainer.appendChild(propensityTab);
+  
+  // Create and add recommendations modal
+  const modalDiv = document.createElement('div');
+  modalDiv.id = 'recommendationsModal';
+  modalDiv.className = 'modal-backdrop';
+  modalDiv.innerHTML = `
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Agency Buying Opportunities</h3>
+        <button id="closeRecommendationsBtn" class="modal-close" aria-label="Close modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="recommendationsModalBody">
+        <!-- Recommendations content will be populated here -->
+      </div>
+      <div class="modal-footer">
+        <button id="closeRecommendationsModalBtn" class="btn btn-secondary">
+          <span class="btn-text">Close</span>
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modalDiv);
+  
+  // Add styles
+  const styleTag = document.createElement('style');
+  styleTag.textContent = `
+    /* Style badges */
+    .badge {
+      display: inline-block;
+      padding: 0.25em 0.6em;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: baseline;
+      border-radius: 10px;
+      color: white;
+    }
+    
+    .bg-success {
+      background-color: var(--success);
+    }
+    
+    .bg-warning {
+      background-color: var(--warning);
+    }
+    
+    .bg-danger {
+      background-color: var(--danger);
+    }
+    
+    .text-center {
+      text-align: center;
+    }
+    
+    /* Custom styles for the propensity tab */
+    #propensityTable .agency-badge,
+    #propensityTable .office-badge {
+      display: flex;
+      align-items: center;
+    }
+    
+    #propensityTable .agency-icon,
+    #propensityTable .office-icon {
+      margin-right: 8px;
+      flex-shrink: 0;
+    }
+    
+    /* Recommendations modal styles */
+    #recommendationsModalBody .agency-badge {
+      display: flex;
+      align-items: center;
+    }
+    
+    #recommendationsModalBody .vendor-item:hover {
+      background-color: var(--bg-tertiary) !important;
+      transition: background-color 0.2s ease;
+    }
+    
+    /* Animation for the propensity score */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    #propensityTable .badge {
+      animation: pulse 2s infinite;
+    }
+  `;
+  
+  document.head.appendChild(styleTag);
+});
+
+// Add propensity analyzer to the app object
+if (!app.propensityAnalyzer) {
+// This is the complete updated propensityAnalyzer object with the future date logic implemented
+// You can replace the entire app.propensityAnalyzer section with this updated version
+
+app.propensityAnalyzer = {
+  propensityResults: [],
+  
+  // Calculate propensity to buy based on contract history
+  analyzePropensity: function(data) {
+    if (!data || data.length === 0) return [];
+    
+    // Group contracts by agency and office
+    const agencyOfficeContracts = {};
+    
+    data.forEach(contract => {
+      if (!contract.agency) return;
+      
+      const agency = contract.agency;
+      const office = contract.office || 'Unknown Office';
+      const key = `${agency}|${office}`;
+      
+      if (!agencyOfficeContracts[key]) {
+        agencyOfficeContracts[key] = {
+          agency: agency,
+          office: office,
+          contracts: []
+        };
+      }
+      
+      agencyOfficeContracts[key].contracts.push(contract);
+    });
+    
+    // Analyze each agency/office's purchase patterns
+    const propensityResults = [];
+    const today = new Date();
+    
+    Object.keys(agencyOfficeContracts).forEach(key => {
+      const agencyOffice = agencyOfficeContracts[key];
+      const contracts = agencyOffice.contracts;
+      
+      // Skip agencies with too few contracts for meaningful analysis
+      if (contracts.length < 2) return;
+      
+      // Calculate total spend
+      const totalSpend = contracts.reduce((sum, c) => sum + c.value, 0);
+      
+      // Analyze vendors purchased from
+      const vendorCounts = {};
+      const pscCounts = {};
+      const naicsCounts = {};
+      
+      contracts.forEach(c => {
+        // Track vendors
+        if (c.vendor) {
+          if (!vendorCounts[c.vendor]) {
+            vendorCounts[c.vendor] = {
+              name: c.vendor,
+              count: 0,
+              value: 0,
+              lastPurchase: null
+            };
+          }
+          
+          vendorCounts[c.vendor].count++;
+          vendorCounts[c.vendor].value += c.value;
+          
+          // Track most recent purchase from this vendor
+          const purchaseDate = c.parsedDate;
+          if (purchaseDate && (!vendorCounts[c.vendor].lastPurchase || 
+                              purchaseDate > vendorCounts[c.vendor].lastPurchase)) {
+            vendorCounts[c.vendor].lastPurchase = purchaseDate;
+          }
+        }
+        
+        // Track PSC codes
+        if (c.psc) {
+          if (!pscCounts[c.psc]) {
+            pscCounts[c.psc] = {
+              code: c.psc,
+              description: c.pscDescription || '',
+              count: 0,
+              value: 0
+            };
+          }
+          
+          pscCounts[c.psc].count++;
+          pscCounts[c.psc].value += c.value;
+        }
+        
+        // Track NAICS codes
+        if (c.naics) {
+          if (!naicsCounts[c.naics]) {
+            naicsCounts[c.naics] = {
+              code: c.naics,
+              description: c.naicsDescription || '',
+              count: 0,
+              value: 0
+            };
+          }
+          
+          naicsCounts[c.naics].count++;
+          naicsCounts[c.naics].value += c.value;
+        }
+      });
+      
+      // Find top vendors by spend
+      const topVendors = Object.values(vendorCounts)
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 5);
+      
+      // Find top PSC categories
+      const topPSCs = Object.values(pscCounts)
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 3);
+      
+      // Find purchase frequency and recency
+      let mostRecentPurchase = null;
+      contracts.forEach(c => {
+        if (c.parsedDate && (!mostRecentPurchase || c.parsedDate > mostRecentPurchase)) {
+          mostRecentPurchase = c.parsedDate;
+        }
+      });
+      
+      // Calculate average time between purchases (in days) by agency/office
+      const sortedDates = contracts
+        .map(c => c.parsedDate)
+        .filter(d => d instanceof Date && !isNaN(d))
+        .sort((a, b) => a - b);
+      
+      let avgPurchaseInterval = 0;
+      if (sortedDates.length > 1) {
+        let totalIntervals = 0;
+        for (let i = 1; i < sortedDates.length; i++) {
+          const daysDiff = (sortedDates[i] - sortedDates[i-1]) / (1000 * 60 * 60 * 24);
+          totalIntervals += daysDiff;
+        }
+        avgPurchaseInterval = Math.round(totalIntervals / (sortedDates.length - 1));
+      }
+      
+      // Calculate next likely purchase date (ensuring it's in the future)
+      let nextLikelyPurchaseDate = null;
+      if (mostRecentPurchase && avgPurchaseInterval > 0) {
+        // Start with the most recent purchase date
+        nextLikelyPurchaseDate = new Date(mostRecentPurchase.getTime());
+        
+        // Add purchase interval to get the next predicted date
+        nextLikelyPurchaseDate.setDate(nextLikelyPurchaseDate.getDate() + avgPurchaseInterval);
+        
+        // If this date is still in the past, keep adding intervals until we get a future date
+        while (nextLikelyPurchaseDate < today) {
+          nextLikelyPurchaseDate.setDate(nextLikelyPurchaseDate.getDate() + avgPurchaseInterval);
+        }
+      }
+      
+      // Calculate propensity score (0-100)
+      // Factors: recency, frequency, monetary value, consistency
+      let propensityScore = 0;
+      
+      // Recency factor (max 30 points)
+      if (mostRecentPurchase) {
+        const daysSinceLastPurchase = (today - mostRecentPurchase) / (1000 * 60 * 60 * 24);
+        propensityScore += Math.max(0, 30 - Math.min(30, Math.floor(daysSinceLastPurchase / 30)));
+      }
+      
+      // Frequency factor (max 25 points)
+      if (avgPurchaseInterval > 0) {
+        // More points for shorter intervals (more frequent purchases)
+        propensityScore += Math.min(25, Math.max(0, 25 - Math.floor(avgPurchaseInterval / 30)));
+      }
+      
+      // Monetary value factor (max 25 points)
+      const avgContractValue = totalSpend / contracts.length;
+      propensityScore += Math.min(25, Math.floor(avgContractValue / 10000));
+      
+      // Consistency factor (max 20 points)
+      // More points if repeatedly buys from same vendors
+      if (topVendors.length > 0) {
+        const topVendorPercentage = topVendors[0].value / totalSpend;
+        propensityScore += Math.min(20, Math.floor(topVendorPercentage * 100 / 5));
+      }
+      
+      // Add to results
+      propensityResults.push({
+        agency: agencyOffice.agency,
+        office: agencyOffice.office,
+        score: Math.min(100, propensityScore), // Cap at 100
+        totalSpend,
+        contractCount: contracts.length,
+        mostRecentPurchase,
+        avgPurchaseInterval,
+        nextLikelyPurchaseDate,
+        topVendors,
+        topPSCs,
+        topNAICS: Object.values(naicsCounts).sort((a, b) => b.value - a.value).slice(0, 3)
+      });
+    });
+    
+    // Sort by propensity score (highest first)
+    propensityResults.sort((a, b) => b.score - a.score);
+    
+    this.propensityResults = propensityResults;
+    return propensityResults;
+  },
+  
+  // Generate agency-specific buying opportunities
+  generateOpportunities: function(agency, office) {
+    const agencyData = this.propensityResults.find(a => 
+      a.agency === agency && a.office === office);
+    
+    if (!agencyData) return { vendors: [], opportunities: [] };
+    
+    // Top vendors this agency buys from
+    const vendors = agencyData.topVendors.map(vendor => ({
+      name: vendor.name,
+      spend: vendor.value,
+      count: vendor.count,
+      lastPurchase: vendor.lastPurchase
+    }));
+    
+    // Generate strategic opportunities
+    const opportunities = [];
+    const today = new Date();
+    
+    // Next purchase timing opportunity
+    if (agencyData.nextLikelyPurchaseDate) {
+      const timeUntilNext = Math.round((agencyData.nextLikelyPurchaseDate - today) / (1000 * 60 * 60 * 24));
+      
+      if (timeUntilNext <= 0) {
+        // Overdue purchase
+        opportunities.push({
+          type: 'timing',
+          title: 'Immediate Purchase Opportunity',
+          description: `Agency is due for a purchase now based on historical buying patterns`,
+          priority: 'high'
+        });
+      } else if (timeUntilNext < 30) {
+        // Coming soon
+        opportunities.push({
+          type: 'timing',
+          title: 'Upcoming Purchase Window',
+          description: `Agency likely to make purchases in the next ${timeUntilNext} days based on historical buying patterns`,
+          priority: 'high'
+        });
+      } else if (timeUntilNext < 90) {
+        // On the horizon
+        opportunities.push({
+          type: 'timing',
+          title: 'Purchase Window Approaching',
+          description: `Agency likely to make purchases in ${timeUntilNext} days based on historical buying patterns`,
+          priority: 'medium'
+        });
+      }
+    }
+    
+    // Vendor competitive opportunity
+    if (vendors.length > 1) {
+      const topVendor = vendors[0];
+      const runnerUpVendor = vendors[1];
+      
+      if (topVendor.spend > runnerUpVendor.spend * 2) {
+        opportunities.push({
+          type: 'vendor',
+          title: 'Dominant Vendor Relationship',
+          description: `${topVendor.name} currently dominates agency spend with ${utils.formatMoney(topVendor.spend)}`,
+          priority: 'medium'
+        });
+      } else {
+        opportunities.push({
+          type: 'competitive',
+          title: 'Competitive Vendor Environment',
+          description: `Multiple vendors competing for this agency's business`,
+          priority: 'medium'
+        });
+      }
+    }
+    
+    // Budget-based opportunity
+    if (agencyData.totalSpend > 1000000) {
+      opportunities.push({
+        type: 'budget',
+        title: 'High-Value Agency',
+        description: `Total spend of ${utils.formatMoney(agencyData.totalSpend)} indicates significant budget authority`,
+        priority: 'high'
+      });
+    }
+    
+    // Product category opportunity
+    if (agencyData.topPSCs.length > 0) {
+      const topCategory = agencyData.topPSCs[0];
+      
+      opportunities.push({
+        type: 'category',
+        title: 'Primary Product Category',
+        description: `Agency primarily purchases ${topCategory.description || topCategory.code}`,
+        priority: 'medium'
+      });
+    }
+    
+    // Seasonal trends
+    if (agencyData.mostRecentPurchase) {
+      const monthOfLastPurchase = agencyData.mostRecentPurchase.getMonth();
+      const currentMonth = today.getMonth();
+      
+      // If recent purchase was in the same quarter as current month
+      if (Math.floor(monthOfLastPurchase / 3) === Math.floor(currentMonth / 3)) {
+        opportunities.push({
+          type: 'seasonal',
+          title: 'Active Buying Season',
+          description: `Agency is currently in an active buying period based on seasonal patterns`,
+          priority: 'high'
+        });
+      }
+    }
+    
+    return {
+      vendors,
+      opportunities
+    };
+  }
+};
+  }
+// Updated updatePropensityTable function
+function updatePropensityTable(propensityResults) {
+  const tbody = document.getElementById('propensityTableBody');
+  if (!tbody) return;
+  
+  tbody.innerHTML = '';
+  
+  if (!propensityResults || propensityResults.length === 0) {
+    const emptyRow = document.createElement('tr');
+    emptyRow.innerHTML = '<td colspan="7" class="text-center">No propensity data available. Try adjusting filters or loading more contract data.</td>';
+    tbody.appendChild(emptyRow);
+    return;
+  }
+  
+  // Get current date for comparing next purchase dates
+  const today = new Date();
+  
+  propensityResults.slice(0, 15).forEach(result => {
+    const row = document.createElement('tr');
+    
+    // Create score badge with color based on score
+    let scoreColor = 'bg-success';
+    if (result.score < 40) scoreColor = 'bg-danger';
+    else if (result.score < 70) scoreColor = 'bg-warning';
+    
+    const scoreBadge = `<span class="badge ${scoreColor}" style="min-width: 40px;">${result.score}</span>`;
+    
+    // Format date with urgency indicator
+    let nextPurchaseDateText = 'Unknown';
+    let nextPurchaseDateClass = '';
+    
+    if (result.nextLikelyPurchaseDate) {
+      if (result.nextLikelyPurchaseDate <= today) {
+        nextPurchaseDateText = '<span style="color: var(--danger); font-weight: 600;">Due now</span>';
+        nextPurchaseDateClass = 'urgent-date';
+      } else {
+        const daysUntil = Math.round((result.nextLikelyPurchaseDate - today) / (1000 * 60 * 60 * 24));
+        if (daysUntil < 30) {
+          nextPurchaseDateText = `<span style="color: var(--warning); font-weight: 600;">${utils.formatDate(result.nextLikelyPurchaseDate)}</span>`;
+          nextPurchaseDateClass = 'soon-date';
+        } else {
+          nextPurchaseDateText = utils.formatDate(result.nextLikelyPurchaseDate);
+        }
+      }
+    }
+    
+    // Agency and office badges
+    const agencyInitials = utils.getInitials(result.agency);
+    const agencyColor = utils.stringToColor(result.agency);
+    
+    const officeInitials = utils.getInitials(result.office);
+    const officeColor = utils.stringToColor(result.office);
+    
+    row.innerHTML = `
+      <td>
+        <div class="agency-badge" title="${result.agency}">
+          <div class="agency-icon" style="background-color:${agencyColor}">${agencyInitials}</div>
+          ${utils.truncateText(result.agency, 20)}
+        </div>
+      </td>
+      <td>
+        <div class="office-badge" title="${result.office}">
+          <div class="office-icon" style="background-color:${officeColor}">${officeInitials}</div>
+          ${utils.truncateText(result.office, 20)}
+        </div>
+      </td>
+      <td class="text-center">${scoreBadge}</td>
+      <td>${utils.formatMoney(result.totalSpend)}</td>
+      <td>${result.contractCount}</td>
+      <td class="${nextPurchaseDateClass}">${nextPurchaseDateText}</td>
+      <td class="table-actions-cell">
+        <button class="btn btn-sm btn-primary view-opportunities" data-agency="${result.agency.replace(/"/g, '&quot;')}" data-office="${result.office.replace(/"/g, '&quot;')}">
+          <span class="btn-text">Opportunities</span>
+        </button>
+      </td>
+    `;
+    
+    tbody.appendChild(row);
+    
+    // Add event listener for opportunities button
+    const viewBtn = row.querySelector('.view-opportunities');
+    if (viewBtn) {
+      viewBtn.addEventListener('click', function() {
+        const agency = this.getAttribute('data-agency');
+        const office = this.getAttribute('data-office');
+        showOpportunitiesModal(agency, office);
+      });
+    }
+  });
+}
+
+
+// Add this function to refresh purchase dates that may be in the past
+function refreshPropensityDates() {
+  if (!app.propensityAnalyzer || !app.propensityAnalyzer.propensityResults) return;
+  
+  const now = new Date();
+  let needsUpdate = false;
+  
+  // Check if any next purchase dates are in the past
+  app.propensityAnalyzer.propensityResults.forEach(result => {
+    if (result.nextLikelyPurchaseDate && result.nextLikelyPurchaseDate < now) {
+      needsUpdate = true;
+    }
+  });
+  
+  // If we found past dates, reanalyze to refresh them
+  if (needsUpdate) {
+    app.propensityAnalyzer.analyzePropensity(app.filteredData);
+    updatePropensityTable(app.propensityAnalyzer.propensityResults);
+  }
+}
+
+// Add this CSS to style the date indicators
+document.addEventListener('DOMContentLoaded', function() {
+  const styleTag = document.createElement('style');
+  styleTag.textContent = `
+    .urgent-date {
+      color: var(--danger);
+      font-weight: 600;
+    }
+    
+    .soon-date {
+      color: var(--warning);
+      font-weight: 600;
+    }
+  `;
+  document.head.appendChild(styleTag);
+  
+  // Set up an event listener for tab changes to refresh dates
+  document.body.addEventListener('click', function(event) {
+    if (event.target.classList.contains('tab-btn') && 
+        event.target.getAttribute('data-tab') === 'propensity') {
+      // Refresh the dates when the propensity tab is clicked
+      refreshPropensityDates();
+    }
+  });
+  
+  // Also refresh on initial load if propensity tab is active
+  setTimeout(function() {
+    const propensityTab = document.querySelector('.tab-btn[data-tab="propensity"]');
+    if (propensityTab && propensityTab.classList.contains('active')) {
+      refreshPropensityDates();
+    }
+  }, 1000);
+});
+
+function showOpportunitiesModal(agency, office) {
+  // Get opportunities for this agency
+  const { vendors, opportunities } = app.propensityAnalyzer.generateOpportunities(agency, office);
+  
+  // Get agency data
+  const agencyData = app.propensityAnalyzer.propensityResults.find(a => 
+    a.agency === agency && a.office === office);
+  
+  if (!agencyData) return;
+  
+  // Update modal content
+  const modalBody = document.getElementById('recommendationsModalBody');
+  if (!modalBody) return;
+  
+  // Agency details section
+  const agencyInitials = utils.getInitials(agency);
+  const agencyColor = utils.stringToColor(agency);
+  
+  const officeInitials = utils.getInitials(office);
+  const officeColor = utils.stringToColor(office);
+  
+  // Format next purchase date
+  const nextPurchaseDate = agencyData.nextLikelyPurchaseDate ? 
+    utils.formatDate(agencyData.nextLikelyPurchaseDate) : 'Unknown';
+  
+  modalBody.innerHTML = `
+    <div class="agency-detail-header">
+      <div class="agency-office-badges" style="display: flex; align-items: center; margin-bottom: 15px;">
+        <div class="agency-badge" style="margin-right: 15px;">
+          <div class="agency-icon" style="background-color:${agencyColor}; width: 40px; height: 40px; font-size: 18px;">${agencyInitials}</div>
+          <h3 style="margin: 0 0 0 15px;">${agency}</h3>
+        </div>
+        <div class="office-badge">
+          <div class="office-icon" style="background-color:${officeColor}; width: 40px; height: 40px; font-size: 18px;">${officeInitials}</div>
+          <h4 style="margin: 0 0 0 15px;">${office}</h4>
+        </div>
+      </div>
+      
+      <div class="agency-stats" style="margin-bottom: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+        <div class="stat-item">
+          <div class="stat-label" style="font-size: 12px; color: var(--text-secondary);">Propensity Score</div>
+          <div class="stat-value" style="font-size: 24px; font-weight: 600;">${agencyData.score}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label" style="font-size: 12px; color: var(--text-secondary);">Total Spend</div>
+          <div class="stat-value" style="font-size: 24px; font-weight: 600;">${utils.formatMoney(agencyData.totalSpend)}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label" style="font-size: 12px; color: var(--text-secondary);">Purchase Interval</div>
+          <div class="stat-value" style="font-size: 24px; font-weight: 600;">${agencyData.avgPurchaseInterval || 'N/A'} days</div>
+        </div>
+      </div>
+    </div>
+    
+    <h4 style="margin: 20px 0 15px; font-size: 18px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+      Top Vendors
+    </h4>
+  `;
+  
+  // Add vendor list
+  if (vendors.length > 0) {
+    const vendorsContainer = document.createElement('div');
+    vendorsContainer.className = 'vendors-list';
+    vendorsContainer.style.display = 'grid';
+    vendorsContainer.style.gap = '10px';
+    
+    vendors.forEach(vendor => {
+      const vendorItem = document.createElement('div');
+      vendorItem.className = 'vendor-item';
+      vendorItem.style.padding = '12px';
+      vendorItem.style.borderRadius = 'var(--radius)';
+      vendorItem.style.backgroundColor = 'var(--bg-secondary)';
+      vendorItem.style.display = 'flex';
+      vendorItem.style.justifyContent = 'space-between';
+      vendorItem.style.alignItems = 'center';
+      
+      const vendorInitials = utils.getInitials(vendor.name);
+      const vendorColor = utils.stringToColor(vendor.name);
+      
+      const lastPurchaseDate = vendor.lastPurchase ? 
+        utils.formatDate(vendor.lastPurchase) : 'Unknown';
+      
+      vendorItem.innerHTML = `
+        <div style="display: flex; align-items: center;">
+          <div class="vendor-icon" style="background-color:${vendorColor}; width: 30px; height: 30px; font-size: 14px; display: flex; align-items: center; justify-content: center; margin-right: 10px;">${vendorInitials}</div>
+          <div>
+            <div style="font-weight: 600; color: var(--text-primary);">${vendor.name}</div>
+            <div style="font-size: 12px; color: var(--text-secondary);">Last purchase: ${lastPurchaseDate}</div>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-weight: 600; color: var(--text-primary);">${utils.formatMoney(vendor.spend)}</div>
+          <div style="font-size: 12px; color: var(--text-secondary);">${vendor.count} contracts</div>
+        </div>
+      `;
+      
+      vendorsContainer.appendChild(vendorItem);
+    });
+    
+    modalBody.appendChild(vendorsContainer);
+  } else {
+    modalBody.innerHTML += '<p>No vendor data available for this agency.</p>';
+  }
+  
+  // Add opportunities section
+  if (opportunities.length > 0) {
+    const opportunitiesSection = document.createElement('div');
+    opportunitiesSection.style.marginTop = '25px';
+    opportunitiesSection.innerHTML = `
+      <h4 style="margin: 0 0 15px; font-size: 18px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+        Buying Opportunities
+      </h4>
+    `;
+    
+    const opportunitiesList = document.createElement('div');
+    opportunitiesList.className = 'opportunities-list';
+    opportunitiesList.style.display = 'grid';
+    opportunitiesList.style.gap = '15px';
+    
+    opportunities.forEach(opp => {
+      const priorityColor = opp.priority === 'high' ? 'var(--success)' : 
+                           (opp.priority === 'medium' ? 'var(--warning)' : 'var(--secondary)');
+      
+      const oppItem = document.createElement('div');
+      oppItem.className = 'opportunity-item';
+      oppItem.style.padding = '15px';
+      oppItem.style.borderRadius = 'var(--radius)';
+      oppItem.style.backgroundColor = 'var(--bg-secondary)';
+      oppItem.style.borderLeft = `4px solid ${priorityColor}`;
+      
+      let iconClass;
+      switch (opp.type) {
+        case 'timing': iconClass = 'fa-clock'; break;
+        case 'vendor': iconClass = 'fa-building'; break;
+        case 'competitive': iconClass = 'fa-trophy'; break;
+        case 'budget': iconClass = 'fa-dollar-sign'; break;
+        case 'category': iconClass = 'fa-tags'; break;
+        case 'seasonal': iconClass = 'fa-calendar'; break;
+        default: iconClass = 'fa-lightbulb';
+      }
+      
+      oppItem.innerHTML = `
+        <div style="display: flex; align-items: flex-start;">
+          <div style="margin-right: 12px; color: ${priorityColor};">
+            <i class="fas ${iconClass}" style="font-size: 20px;"></i>
+          </div>
+          <div>
+            <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 5px;">${opp.title}</div>
+            <div style="font-size: 13px; color: var(--text-secondary);">${opp.description}</div>
+          </div>
+        </div>
+      `;
+      
+      opportunitiesList.appendChild(oppItem);
+    });
+    
+    opportunitiesSection.appendChild(opportunitiesList);
+    modalBody.appendChild(opportunitiesSection);
+    
+    // Add specific action steps
+    const actionSteps = document.createElement('div');
+    actionSteps.style.marginTop = '25px';
+    actionSteps.innerHTML = `
+      <h4 style="margin: 0 0 15px; font-size: 18px; color: var(--primary); border-bottom:1px solid var(--border); padding-bottom: 8px;">
+        Recommended Actions
+      </h4>
+      <ul style="padding-left: 20px; margin-bottom: 0;">
+        <li style="margin-bottom: 8px;">Monitor ${agency}'s ${nextPurchaseDate === 'Unknown' ? 'purchasing calendar' : 'upcoming purchase window around ' + nextPurchaseDate}</li>
+        <li style="margin-bottom: 8px;">Research existing contracts with ${vendors.length > 0 ? vendors[0].name : 'top vendors'}</li>
+        <li style="margin-bottom: 8px;">Track subcontracting opportunities with prime contractors</li>
+        <li style="margin-bottom: 8px;">Schedule follow-up calls with contracting officers</li>
+      </ul>
+    `;
+    
+    modalBody.appendChild(actionSteps);
+  }
+  
+  // Show modal
+  const modal = document.getElementById('recommendationsModal');
+  if (modal) modal.classList.add('active');
+}
+// Process propensity data function
+function processPropensityData() {
+  // Analyze propensity based on current filtered data
+  const propensityResults = app.propensityAnalyzer.analyzePropensity(app.filteredData);
+  
+  // Display results in the propensity table
+  updatePropensityTable(propensityResults);
+}
+
+// Hook into existing fileHandler
+const originalProcessAndDisplayCsv = fileHandler.processAndDisplayCsv;
+fileHandler.processAndDisplayCsv = function(csvText, fileNameForDisplay = "Uploaded Data") {
+  originalProcessAndDisplayCsv.call(this, csvText, fileNameForDisplay);
+  // Add propensity analysis after processing data
+  processPropensityData();
+};
+
+// Hook into existing dashboardManager
+const originalRefreshDashboard = dashboardManager.refreshDashboard;
+dashboardManager.refreshDashboard = function() {
+  originalRefreshDashboard.call(this);
+  // Update propensity data with current filtered data
+  app.propensityAnalyzer.analyzePropensity(app.filteredData);
+  updatePropensityTable(app.propensityAnalyzer.propensityResults);
+};
+
+// Set up event listeners
+document.addEventListener('DOMContentLoaded', function() {
+  // Add event listeners for modal close buttons
+  document.body.addEventListener('click', function(event) {
+    // Close recommendations modal
+    if (event.target.id === 'closeRecommendationsBtn' || 
+        event.target.id === 'closeRecommendationsModalBtn') {
+      const recommendationsModal = document.getElementById('recommendationsModal');
+      if (recommendationsModal) recommendationsModal.classList.remove('active');
+    }
+    
+    // Close modal when clicking outside
+    if (event.target.id === 'recommendationsModal') {
+      event.target.classList.remove('active');
+    }
+    
+    // Handle propensity tab click
+    if (event.target.classList.contains('tab-btn') && 
+        event.target.getAttribute('data-tab') === 'propensity') {
+      // Make sure all other tabs are inactive
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Make this tab active
+      event.target.classList.add('active');
+      
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // Show propensity tab content
+      const propensityTab = document.getElementById('propensityTab');
+      if (propensityTab) {
+        propensityTab.classList.add('active');
+      }
+      
+      // Update propensity data
+      app.propensityAnalyzer.analyzePropensity(app.filteredData);
+      updatePropensityTable(app.propensityAnalyzer.propensityResults);
+    }
+    
+    // Handle export button
+    if (event.target.id === 'exportPropensityBtn' || 
+        (event.target.parentElement && event.target.parentElement.id === 'exportPropensityBtn')) {
+      exportPropensityData();
+    }
+  });
+});
+
+// Function to export propensity data
+function exportPropensityData() {
+  const results = app.propensityAnalyzer.propensityResults;
+  if (!results || results.length === 0) return;
+  
+  // Create CSV content
+  let csvContent = "data:text/csv;charset=utf-8,";
+  csvContent += "Agency,Office,Propensity Score,Total Spend,Contracts,Next Likely Purchase,Top Vendor\n";
+  
+  results.forEach(item => {
+    const nextPurchaseDate = item.nextLikelyPurchaseDate ? 
+      utils.formatDate(item.nextLikelyPurchaseDate) : 'Unknown';
+    
+    const topVendor = item.topVendors && item.topVendors.length > 0 ? item.topVendors[0].name : 'N/A';
+    
+    csvContent += [
+      `"${item.agency}"`,
+      `"${item.office}"`,
+      item.score,
+      `"${utils.formatMoney(item.totalSpend)}"`,
+      item.contractCount,
+      `"${nextPurchaseDate}"`,
+      `"${topVendor}"`
+    ].join(',') + "\n";
+  });
+  
+  // Create download link
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", "agency_propensity_to_buy.csv");
+  document.body.appendChild(link);
+  
+  // Trigger download
+  link.click();
+  
+  // Clean up
+  document.body.removeChild(link);
+}
+
+// Initialize propensity tab
+document.addEventListener('DOMContentLoaded', function() {
+  console.log("Agency Propensity to Buy feature initialized!");
+});
+// Add this to the DOMContentLoaded event handler at the bottom of your file,
+// or near the end of the propensity feature implementation:
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Wait a short moment after page load to ensure all elements are ready
+  setTimeout(function() {
+    // Find the propensity tab button
+    const propensityTabBtn = document.querySelector('.tab-btn[data-tab="propensity"]');
+    
+    if (propensityTabBtn) {
+      // Make sure all other tabs are inactive
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Make propensity tab active
+      propensityTabBtn.classList.add('active');
+      
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // Show propensity tab content
+      const propensityTab = document.getElementById('propensityTab');
+      if (propensityTab) {
+        propensityTab.classList.add('active');
+      }
+      
+      // Update propensity data to ensure it's displayed
+      if (app.propensityAnalyzer) {
+        app.propensityAnalyzer.analyzePropensity(app.filteredData);
+        updatePropensityTable(app.propensityAnalyzer.propensityResults);
+      }
+    }
+  }, 500); // 500ms delay to ensure everything is loaded
+});
+// Add this simple fix at the end of your JavaScript
+// This solution doesn't rely on event delegation and directly attaches click handlers
+
+// Define a function to close the recommendations modal
+function closeRecommendationsModal() {
+  const modal = document.getElementById('recommendationsModal');
+  if (modal) {
+    modal.classList.remove('active');
+  }
+}
+
+// Function to set up close buttons after DOM is loaded
+function setupModalCloseButtons() {
+  // Set up the X button in the modal header
+  const closeBtn = document.getElementById('closeRecommendationsBtn');
+  if (closeBtn) {
+    closeBtn.onclick = closeRecommendationsModal;
+  }
+  
+  // Set up the Close button in the modal footer
+  const closeModalBtn = document.getElementById('closeRecommendationsModalBtn');
+  if (closeModalBtn) {
+    closeModalBtn.onclick = closeRecommendationsModal;
+  }
+  
+  // Set up the backdrop click to close
+  const modal = document.getElementById('recommendationsModal');
+  if (modal) {
+    modal.onclick = function(event) {
+      if (event.target === modal) {
+        closeRecommendationsModal();
+      }
+    };
+  }
+}
+
+// Run setup when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  // Initial setup
+  setupModalCloseButtons();
+  
+  // Re-run setup when propensity tab is activated (in case modal was created after initial load)
+  const propensityTabBtn = document.querySelector('.tab-btn[data-tab="propensity"]');
+  if (propensityTabBtn) {
+    propensityTabBtn.addEventListener('click', function() {
+      setTimeout(setupModalCloseButtons, 100);
+    });
+  }
+  
+  // Setup buttons again after showOpportunitiesModal is called
+  const originalShowOpportunitiesModal = showOpportunitiesModal;
+  if (typeof showOpportunitiesModal === 'function') {
+    window.showOpportunitiesModal = function(agency, office) {
+      originalShowOpportunitiesModal(agency, office);
+      setTimeout(setupModalCloseButtons, 100);
+    };
+  }
+  
+  // Add keyboard support to close with Escape key
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      closeRecommendationsModal();
+    }
+  });
+});
 </script>
 </body>
 </html>
