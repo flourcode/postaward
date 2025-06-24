@@ -2022,6 +2022,137 @@ main#dashboard {
         <p>Upload a CSV file from an FPDS.gov Search Result.</p>
     </div>
     <main id="dashboard" style="display: none;">
+	<!-- Federal Sales Insights Panel -->
+<section class="insights-panel" style="margin-bottom: var(--space-4);">
+  <div class="primary-viz-row" style="margin-bottom: var(--space-3);">
+    <div class="dashboard-section-header" style="display:flex; justify-content: space-between; align-items:center;">
+      <span>Federal Sales Insights</span>
+      <div class="insights-controls">
+        <button id="refreshInsights" class="btn btn-sm btn-secondary"><i class="fas fa-sync-alt"></i><span class="btn-text">Refresh</span></button>
+      </div>
+    </div>
+    <div class="insights-container">
+      <!-- Insights Header with Date -->
+      <div class="insights-header" style="display: flex; justify-content: space-between; margin-bottom: var(--space-3);">
+        <div class="insights-title">
+          <h3 style="margin: 0; font-size: var(--font-xl); font-weight: 600; color: var(--text-primary);">
+            Actionable Insights
+          </h3>
+          <p style="margin: 0; font-size: var(--font-sm); color: var(--text-secondary);">
+            Based on your filtered contract data
+          </p>
+        </div>
+        <div class="current-date" style="text-align: right; font-size: var(--font-sm); color: var(--text-secondary);">
+          <!-- Current date populated by JS -->
+        </div>
+      </div>
+      
+      <!-- Main Insights Grid -->
+      <div class="insights-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-4);">
+        <!-- Spending Trends Card -->
+        <div class="insight-card" style="background-color: var(--bg-secondary); border-radius: var(--radius-lg); padding: var(--space-4); box-shadow: var(--shadow);">
+          <div style="display: flex; align-items: center; margin-bottom: var(--space-3);">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--primary); display: flex; align-items: center; justify-content: center; margin-right: var(--space-3);">
+              <i class="fas fa-chart-line" style="color: white; font-size: var(--font-lg);"></i>
+            </div>
+            <h4 style="margin: 0; font-size: var(--font-lg); font-weight: 600; color: var(--text-primary);">Spending Trends</h4>
+          </div>
+          <div class="insight-content" id="spending-trends-content">
+            <p style="margin-bottom: var(--space-2);">
+              <span id="trend-message">Analyzing spending patterns...</span>
+            </p>
+            <ul style="padding-left: var(--space-4); margin-bottom: 0;">
+              <li id="trend-point-1" style="margin-bottom: var(--space-2);">Peak buying month: <strong>September</strong></li>
+              <li id="trend-point-2" style="margin-bottom: var(--space-2);">Q4 accounts for <strong>38%</strong> of annual spend</li>
+              <li id="trend-point-3">Month-over-month growth: <strong>+12%</strong></li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Vendor Opportunities Card -->
+        <div class="insight-card" style="background-color: var(--bg-secondary); border-radius: var(--radius-lg); padding: var(--space-4); box-shadow: var(--shadow);">
+          <div style="display: flex; align-items: center; margin-bottom: var(--space-3);">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--success); display: flex; align-items: center; justify-content: center; margin-right: var(--space-3);">
+              <i class="fas fa-handshake" style="color: white; font-size: var(--font-lg);"></i>
+            </div>
+            <h4 style="margin: 0; font-size: var(--font-lg); font-weight: 600; color: var(--text-primary);">Vendor Opportunities</h4>
+          </div>
+          <div class="insight-content" id="vendor-opportunities-content">
+            <p style="margin-bottom: var(--space-2);">
+              <span id="vendor-message">Top vendor opportunities:</span>
+            </p>
+            <ul style="padding-left: var(--space-4); margin-bottom: 0;">
+              <li id="vendor-point-1" style="margin-bottom: var(--space-2);"><strong>VMware</strong> has renewed contracts with <strong>5</strong> agencies</li>
+              <li id="vendor-point-2" style="margin-bottom: var(--space-2);">Multi-year SaaS contracts expiring in <strong>Q3</strong></li>
+              <li id="vendor-point-3">Subcontracting with <strong>top 3 primes</strong> can unlock <strong>$12.5M</strong></li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Agency Intelligence Card -->
+        <div class="insight-card" style="background-color: var(--bg-secondary); border-radius: var(--radius-lg); padding: var(--space-4); box-shadow: var(--shadow);">
+          <div style="display: flex; align-items: center; margin-bottom: var(--space-3);">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--warning); display: flex; align-items: center; justify-content: center; margin-right: var(--space-3);">
+              <i class="fas fa-building" style="color: white; font-size: var(--font-lg);"></i>
+            </div>
+            <h4 style="margin: 0; font-size: var(--font-lg); font-weight: 600; color: var(--text-primary);">Agency Intelligence</h4>
+          </div>
+          <div class="insight-content" id="agency-intelligence-content">
+            <p style="margin-bottom: var(--space-2);">
+              <span id="agency-message">Agency buying patterns:</span>
+            </p>
+            <ul style="padding-left: var(--space-4); margin-bottom: 0;">
+              <li id="agency-point-1" style="margin-bottom: var(--space-2);"><strong>DOD</strong> prioritizing cloud security contracts</li>
+              <li id="agency-point-2" style="margin-bottom: var(--space-2);"><strong>HHS</strong> increasing spend on data analytics by <strong>22%</strong></li>
+              <li id="agency-point-3">Agencies with most frequent buys: <strong>DHS, VA, GSA</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Recommendations Section -->
+      <div class="recommendations-section" style="background-color: var(--bg-primary); border-radius: var(--radius-lg); padding: var(--space-4); box-shadow: var(--shadow);">
+        <h4 style="margin-top: 0; margin-bottom: var(--space-3); font-size: var(--font-lg); font-weight: 600; color: var(--primary); display: flex; align-items: center;">
+          <i class="fas fa-lightbulb" style="margin-right: var(--space-2); color: var(--primary);"></i>
+          Recommended Actions
+        </h4>
+        <div class="recommendations-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-3);">
+          <!-- Recommendation 1 -->
+          <div class="recommendation-item" id="recommendation-1" style="padding: var(--space-3); background-color: var(--bg-secondary); border-left: 3px solid var(--primary); border-radius: var(--radius); display: flex; align-items: flex-start;">
+            <div style="min-width: 24px; margin-right: var(--space-2); color: var(--primary);">1</div>
+            <div>
+              <p style="margin: 0; font-weight: 500;">Engage contracting officers at <strong>GSA</strong> for upcoming SaaS renewals</p>
+            </div>
+          </div>
+          
+          <!-- Recommendation 2 -->
+          <div class="recommendation-item" id="recommendation-2" style="padding: var(--space-3); background-color: var(--bg-secondary); border-left: 3px solid var(--primary); border-radius: var(--radius); display: flex; align-items: flex-start;">
+            <div style="min-width: 24px; margin-right: var(--space-2); color: var(--primary);">2</div>
+            <div>
+              <p style="margin: 0; font-weight: 500;">Focus on <strong>DOD offices</strong> with highest propensity to buy in Q3</p>
+            </div>
+          </div>
+          
+          <!-- Recommendation 3 -->
+          <div class="recommendation-item" id="recommendation-3" style="padding: var(--space-3); background-color: var(--bg-secondary); border-left: 3px solid var(--primary); border-radius: var(--radius); display: flex; align-items: flex-start;">
+            <div style="min-width: 24px; margin-right: var(--space-2); color: var(--primary);">3</div>
+            <div>
+              <p style="margin: 0; font-weight: 500;">Target subcontracting opportunities with <strong>top VMware resellers</strong></p>
+            </div>
+          </div>
+          
+          <!-- Recommendation 4 -->
+          <div class="recommendation-item" id="recommendation-4" style="padding: var(--space-3); background-color: var(--bg-secondary); border-left: 3px solid var(--primary); border-radius: var(--radius); display: flex; align-items: flex-start;">
+            <div style="min-width: 24px; margin-right: var(--space-2); color: var(--primary);">4</div>
+            <div>
+              <p style="margin: 0; font-weight: 500;">Prepare for federal fiscal year-end spending in <strong>August-September</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 	<!-- Mobile Persistent Search Bar -->
 <div class="search-bar-container">
   <div class="search-bar" style="position: relative; width: 100%;">
@@ -5378,6 +5509,351 @@ document.addEventListener('DOMContentLoaded', function() {
       closeRecommendationsModal();
     }
   });
+});
+// Function to update the insight panels with real data from loaded CSV
+function updateInsightBanner(data, pscCode = null) {
+  if (!data || data.length === 0) return;
+  
+  // Update date display
+  const dateElement = document.querySelector('.current-date');
+  if (dateElement) {
+    const now = new Date();
+    dateElement.textContent = now.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      month: 'long', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
+  }
+  
+  // Calculate total contract value
+  const totalValue = data.reduce((sum, contract) => sum + contract.value, 0);
+  
+  // Analyze vendors and get top vendors
+  const vendorData = {};
+  data.forEach(contract => {
+    if (!contract.vendor) return;
+    if (!vendorData[contract.vendor]) {
+      vendorData[contract.vendor] = {
+        name: contract.vendor,
+        value: 0,
+        count: 0,
+        agencies: new Set()
+      };
+    }
+    vendorData[contract.vendor].value += contract.value;
+    vendorData[contract.vendor].count++;
+    if (contract.agency) vendorData[contract.vendor].agencies.add(contract.agency);
+  });
+  
+  const vendors = Object.values(vendorData)
+    .map(v => ({
+      ...v,
+      agencyCount: v.agencies.size,
+      marketShare: (v.value / totalValue) * 100
+    }))
+    .sort((a, b) => b.value - a.value);
+  
+  const topVendor = vendors[0] || null;
+  
+  // Analyze monthly trends
+  const monthlyData = {};
+  data.forEach(contract => {
+    if (!contract.parsedDate) return;
+    const monthYear = `${contract.parsedDate.getFullYear()}-${(contract.parsedDate.getMonth() + 1).toString().padStart(2, '0')}`;
+    if (!monthlyData[monthYear]) monthlyData[monthYear] = { value: 0, count: 0 };
+    monthlyData[monthYear].value += contract.value;
+    monthlyData[monthYear].count++;
+  });
+  
+  // Calculate growth rates
+  const sortedMonths = Object.keys(monthlyData).sort();
+  let avgGrowthRate = 0;
+  let peakMonthName = 'N/A';
+  let peakValue = 0;
+  
+  if (sortedMonths.length > 1) {
+    const growthRates = [];
+    for (let i = 1; i < sortedMonths.length; i++) {
+      const prevValue = monthlyData[sortedMonths[i-1]].value;
+      const currValue = monthlyData[sortedMonths[i]].value;
+      if (prevValue > 0) {
+        growthRates.push(((currValue - prevValue) / prevValue) * 100);
+      }
+      if (monthlyData[sortedMonths[i]].value > peakValue) {
+        peakValue = monthlyData[sortedMonths[i]].value;
+        const [year, month] = sortedMonths[i].split('-');
+        const date = new Date(parseInt(year), parseInt(month) - 1, 1);
+        peakMonthName = date.toLocaleString('default', { month: 'long' });
+      }
+    }
+    if (growthRates.length > 0) {
+      avgGrowthRate = growthRates.reduce((sum, rate) => sum + rate, 0) / growthRates.length;
+    }
+  }
+  
+  // Calculate quarterly data
+  const quarterlyData = { Q1: 0, Q2: 0, Q3: 0, Q4: 0 };
+  data.forEach(contract => {
+    if (!contract.parsedDate) return;
+    const month = contract.parsedDate.getMonth();
+    if (month >= 0 && month <= 2) quarterlyData.Q1 += contract.value;
+    else if (month >= 3 && month <= 5) quarterlyData.Q2 += contract.value;
+    else if (month >= 6 && month <= 8) quarterlyData.Q3 += contract.value;
+    else quarterlyData.Q4 += contract.value;
+  });
+  
+  // Find highest quarter
+  const totalQuarterlySpend = Object.values(quarterlyData).reduce((sum, val) => sum + val, 0);
+  const quarterlyPercentages = {};
+  let highestQuarter = null;
+  let highestPercentage = 0;
+  
+  if (totalQuarterlySpend > 0) {
+    Object.entries(quarterlyData).forEach(([quarter, value]) => {
+      const percentage = (value / totalQuarterlySpend) * 100;
+      quarterlyPercentages[quarter] = percentage;
+      if (percentage > highestPercentage) {
+        highestPercentage = percentage;
+        highestQuarter = quarter;
+      }
+    });
+  }
+  
+  // Analyze agencies
+  const agencyData = {};
+  data.forEach(contract => {
+    if (!contract.agency) return;
+    if (!agencyData[contract.agency]) {
+      agencyData[contract.agency] = {
+        name: contract.agency,
+        value: 0,
+        count: 0,
+        vendors: new Set()
+      };
+    }
+    agencyData[contract.agency].value += contract.value;
+    agencyData[contract.agency].count++;
+    if (contract.vendor) agencyData[contract.agency].vendors.add(contract.vendor);
+  });
+  
+  const agencies = Object.values(agencyData)
+    .map(a => ({
+      ...a,
+      vendorCount: a.vendors.size
+    }))
+    .sort((a, b) => b.value - a.value);
+  
+  const highFrequencyAgencies = agencies
+    .filter(a => a.count > 5)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 3)
+    .map(a => a.name);
+  
+  // Update Spending Trends card
+  updateSpendingTrendsCard(peakMonthName, highestQuarter, highestPercentage, avgGrowthRate);
+  
+  // Update Vendor Opportunities card
+  updateVendorOpportunitiesCard(topVendor, vendors, highestQuarter);
+  
+  // Update Agency Intelligence card
+  updateAgencyIntelligenceCard(agencies, highFrequencyAgencies);
+  
+  // Update Recommendations
+  updateRecommendationsCard(agencies, highestQuarter, vendors, peakMonthName);
+  
+  // Update stats
+  updateStatsSummary(data.length, totalValue, vendors.length, topVendor);
+}
+
+function updateSpendingTrendsCard(peakMonth, highestQuarter, highestPercentage, growthRate) {
+  const trendMessage = document.getElementById('trend-message');
+  const trendPoint1 = document.getElementById('trend-point-1');
+  const trendPoint2 = document.getElementById('trend-point-2');
+  const trendPoint3 = document.getElementById('trend-point-3');
+  
+  if (!trendMessage || !trendPoint1 || !trendPoint2 || !trendPoint3) return;
+  
+  // Format growth rate
+  const growthRateFormatted = growthRate.toFixed(1);
+  const growthSign = growthRate >= 0 ? '+' : '';
+  
+  // Set trend message based on growth rate
+  if (growthRate > 5) {
+    trendMessage.innerHTML = `Spending is <strong style="color: var(--success);">increasing</strong> by ${growthRateFormatted}% on average`;
+  } else if (growthRate < -5) {
+    trendMessage.innerHTML = `Spending is <strong style="color: var(--danger);">decreasing</strong> by ${Math.abs(growthRateFormatted)}% on average`;
+  } else {
+    trendMessage.innerHTML = `Spending is <strong>stable</strong> with ${Math.abs(growthRateFormatted)}% variance`;
+  }
+  
+  // Set peak month
+  trendPoint1.innerHTML = `Peak buying month: <strong>${peakMonth}</strong>`;
+  
+  // Set quarterly spend info
+  if (highestQuarter) {
+    trendPoint2.innerHTML = `${highestQuarter} accounts for <strong>${highestPercentage.toFixed(0)}%</strong> of annual spend`;
+  } else {
+    trendPoint2.innerHTML = `Quarterly data not available`;
+  }
+  
+  // Set growth rate
+  trendPoint3.innerHTML = `Month-over-month growth: <strong>${growthSign}${growthRateFormatted}%</strong>`;
+}
+
+function updateVendorOpportunitiesCard(topVendor, vendors, highestQuarter) {
+  const vendorMessage = document.getElementById('vendor-message');
+  const vendorPoint1 = document.getElementById('vendor-point-1');
+  const vendorPoint2 = document.getElementById('vendor-point-2');
+  const vendorPoint3 = document.getElementById('vendor-point-3');
+  
+  if (!vendorMessage || !vendorPoint1 || !vendorPoint2 || !vendorPoint3) return;
+  
+  // Set vendor message
+  vendorMessage.textContent = `Top vendor opportunities:`;
+  
+  // Set top vendor info
+  if (topVendor) {
+    vendorPoint1.innerHTML = `<strong>${topVendor.name}</strong> has contracts with <strong>${topVendor.agencyCount}</strong> agencies`;
+  } else {
+    vendorPoint1.innerHTML = `No dominant vendor identified`;
+  }
+  
+  // Set contract expiration prediction
+  if (highestQuarter) {
+    vendorPoint2.innerHTML = `Multi-year contracts likely expiring in <strong>${highestQuarter}</strong>`;
+  } else {
+    vendorPoint2.innerHTML = `Contract expiration data not available`;
+  }
+  
+  // Set subcontracting opportunity
+  if (vendors && vendors.length >= 3) {
+    const top3Value = vendors.slice(0, 3).reduce((sum, v) => sum + v.value, 0);
+    const formattedValue = utils.formatMoney(top3Value);
+    vendorPoint3.innerHTML = `Subcontracting with <strong>top 3 primes</strong> can unlock <strong>${formattedValue}</strong>`;
+  } else {
+    vendorPoint3.innerHTML = `Diversify vendor relationships to expand market reach`;
+  }
+}
+
+function updateAgencyIntelligenceCard(agencies, highFrequencyAgencies) {
+  const agencyMessage = document.getElementById('agency-message');
+  const agencyPoint1 = document.getElementById('agency-point-1');
+  const agencyPoint2 = document.getElementById('agency-point-2');
+  const agencyPoint3 = document.getElementById('agency-point-3');
+  
+  if (!agencyMessage || !agencyPoint1 || !agencyPoint2 || !agencyPoint3) return;
+  
+  // Set agency message
+  agencyMessage.textContent = `Agency buying patterns:`;
+  
+  // Set top agency info
+  if (agencies && agencies.length > 0) {
+    const topAgency = agencies[0];
+    agencyPoint1.innerHTML = `<strong>${topAgency.name}</strong> leads with <strong>${utils.formatMoney(topAgency.value)}</strong> in contract value`;
+  } else {
+    agencyPoint1.innerHTML = `No agency data available`;
+  }
+  
+  // Set secondary agency info
+  if (agencies && agencies.length > 1) {
+    const secondAgency = agencies[1];
+    agencyPoint2.innerHTML = `<strong>${secondAgency.name}</strong> has awarded <strong>${secondAgency.count}</strong> contracts worth <strong>${utils.formatMoney(secondAgency.value)}</strong>`;
+  } else {
+    agencyPoint2.innerHTML = `Limited agency diversity in dataset`;
+  }
+  
+  // Set high frequency agencies
+  if (highFrequencyAgencies && highFrequencyAgencies.length > 0) {
+    const agencyNames = highFrequencyAgencies
+      .map(name => `<strong>${name}</strong>`)
+      .join(', ');
+    
+    agencyPoint3.innerHTML = `Agencies with most frequent buys: ${agencyNames}`;
+  } else {
+    agencyPoint3.innerHTML = `No agencies with high purchase frequency detected`;
+  }
+}
+
+function updateRecommendationsCard(agencies, highestQuarter, vendors, peakMonth) {
+  const rec1 = document.getElementById('recommendation-1');
+  const rec2 = document.getElementById('recommendation-2');
+  const rec3 = document.getElementById('recommendation-3');
+  const rec4 = document.getElementById('recommendation-4');
+  
+  if (!rec1 || !rec2 || !rec3 || !rec4) return;
+  
+  // Recommendation 1: Target highest spending agency
+  if (agencies && agencies.length > 0) {
+    const topAgency = agencies[0];
+    rec1.querySelector('p').innerHTML = `Engage contracting officers at <strong>${topAgency.name}</strong> for upcoming opportunities`;
+  } else {
+    rec1.querySelector('p').innerHTML = `Expand agency relationships to diversify customer base`;
+  }
+  
+  // Recommendation 2: Focus on peak spending period
+  if (highestQuarter) {
+    rec2.querySelector('p').innerHTML = `Prepare sales pipeline for <strong>${highestQuarter}</strong> peak buying season`;
+  } else {
+    rec2.querySelector('p').innerHTML = `Analyze historical spending patterns to identify peak buying seasons`;
+  }
+  
+  // Recommendation 3: Target subcontracting
+  if (vendors && vendors.length > 0) {
+    const topVendor = vendors[0];
+    rec3.querySelector('p').innerHTML = `Target subcontracting opportunities with <strong>${topVendor.name}</strong> and other top vendors`;
+  } else {
+    rec3.querySelector('p').innerHTML = `Identify prime contractors for potential subcontracting partnerships`;
+  }
+  
+  // Recommendation 4: Specific to the data
+  if (peakMonth && peakMonth !== 'N/A') {
+    rec4.querySelector('p').innerHTML = `Focus resources on <strong>${peakMonth}</strong> for highest contract win probability`;
+  } else {
+    rec4.querySelector('p').innerHTML = `Develop year-round engagement strategy with contracting officers`;
+  }
+}
+
+function updateStatsSummary(contractCount, totalValue, vendorCount, topVendor) {
+  const statContracts = document.getElementById('stat-contracts');
+  const statValue = document.getElementById('stat-value');
+  const statCompanies = document.getElementById('stat-companies');
+  const statTopCompany = document.getElementById('stat-top-company');
+  
+  if (statContracts) {
+    statContracts.textContent = contractCount.toLocaleString();
+  }
+  
+  if (statValue) {
+    statValue.textContent = utils.formatMoney(totalValue);
+  }
+  
+  if (statCompanies) {
+    statCompanies.textContent = vendorCount;
+  }
+  
+  if (statTopCompany && topVendor) {
+    statTopCompany.textContent = `${topVendor.name} (${topVendor.marketShare.toFixed(1)}%)`;
+  } else if (statTopCompany) {
+    statTopCompany.textContent = 'None';
+  }
+}
+
+// Function to handle updates after filter changes
+function updateInsightsAfterFilter() {
+  filterManager.applyFilters();
+  updateInsightBanner(app.filteredData, app.filters.psc);
+  dashboardManager.refreshDashboard();
+}
+
+// Add event listener for refresh insights button
+document.addEventListener('DOMContentLoaded', function() {
+  const refreshInsightsBtn = document.getElementById('refreshInsights');
+  if (refreshInsightsBtn) {
+    refreshInsightsBtn.addEventListener('click', function() {
+      updateInsightBanner(app.filteredData, app.filters.psc);
+    });
+  }
 });
 </script>
 </body>
